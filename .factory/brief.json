@@ -1,0 +1,10 @@
+{
+  "slug": "clipboard-lan-bridge",
+  "title": "Clipboard LAN Bridge",
+  "artifact_class": "desktop-app",
+  "user": "People moving short text and links between their own nearby phone, Linux, macOS, and Windows machines who want a deliberate, local-only handoff.",
+  "smallest_useful_product": "Paired tray/mobile apps using local discovery and end-to-end encrypted transfer, with a one-tap send action, expiry, size/type allowlist, and visible receiving-device approval.",
+  "non_goals": ["clipboard surveillance", "image/file sync", "cloud relay", "clipboard history manager"],
+  "monetization": "one-time",
+  "constraints": ["explicit device pairing", "encrypted transport", "LAN-only default", "no automatic sensitive clipboard sync"]
+}

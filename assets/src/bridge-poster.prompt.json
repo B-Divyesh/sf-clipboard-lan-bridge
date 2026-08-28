@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-08-28",
+  "generator": "/opt/fleet/lib/gen-image.sh",
+  "deployment": "factory-image",
+  "size": "1536x1024",
+  "quality": "high",
+  "prompt": "Original art-deco transit poster metaphor for a private clipboard handoff across a local network. Midnight station-map world with four simplified device silhouettes—phone, laptop, desktop, small tablet—connected by one warm vermilion route, and a small cream paper ticket visibly traveling between two stops. Screen-printed 1930s geometric travel poster, flat shapes, precise stepped arches, subtle uncoated paper grain, no gradients. Wide 3:2 composition, devices clustered on the right two-thirds, quiet negative space at upper left for page copy, clear route direction. Palette: deep ink green, warm cream, vermilion, muted brass, restrained jade. Graphic pool-of-light shapes, calm and trustworthy. No readable text, no letters, no numbers, no watermark, no logos, no brands, no people, no cloud symbols, no padlocks, no QR codes, no cables, no photorealism, no generic blue or purple gradient, no unintended symbols.",
+  "review": "Accepted: four generic device silhouettes, intentional paper ticket, clean route direction, no brands or readable text. Abstract map/station elements are decorative and do not imply cloud connectivity."
+}
