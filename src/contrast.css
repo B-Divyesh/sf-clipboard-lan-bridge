@@ -1,0 +1,20 @@
+.primary-button {
+  background: #812b1c !important;
+  border-color: #762719 !important;
+}
+
+.primary-button:hover {
+  background: #6f2417 !important;
+}
+
+@media (max-width: 720px) {
+  .network-state::after {
+    content: "Offline";
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .network-state.online::after {
+    content: "LAN ready";
+  }
+}

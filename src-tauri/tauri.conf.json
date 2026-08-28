@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Clipboard LAN Bridge",
+  "version": "0.1.0",
+  "identifier": "in.sociobot.clipboard-lan-bridge",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build:app",
+    "frontendDist": "../dist/app"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Clipboard LAN Bridge",
+        "width": 1040,
+        "height": 720,
+        "minWidth": 390,
+        "minHeight": 620,
+        "backgroundColor": "#102a2b"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost https://api.sociobot.in"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Utility",
+    "shortDescription": "Private text handoffs over your LAN",
+    "longDescription": "Send short-lived text and links between your own paired devices without a cloud relay.",
+    "copyright": "Copyright 2026 Sociobot",
+    "resources": [],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+    "linux": { "appimage": { "bundleMediaFramework": false } }
+  }
+}
