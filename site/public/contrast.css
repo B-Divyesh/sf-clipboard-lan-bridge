@@ -1,0 +1,12 @@
+.primary-button {
+  background: #812b1c !important;
+  border-color: #d96d53 !important;
+}
+
+.primary-button:hover {
+  background: #6f2417 !important;
+}
+
+.fare-card.paid .section-kicker {
+  color: #e5bd58 !important;
+}

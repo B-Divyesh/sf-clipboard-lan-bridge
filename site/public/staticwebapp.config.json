@@ -1,0 +1,14 @@
+{
+  "navigationFallback": { "rewrite": "/index.html", "exclude": ["/assets/*", "/*.sh", "/*.ps1", "/*.json"] },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
+  },
+  "routes": [
+    { "route": "/assets/*", "headers": { "Cache-Control": "public, max-age=31536000, immutable" } },
+    { "route": "/sw.js", "headers": { "Cache-Control": "no-cache" } },
+    { "route": "/*.sh", "headers": { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" } },
+    { "route": "/*.ps1", "headers": { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" } }
+  ]
+}

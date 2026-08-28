@@ -1,0 +1,108 @@
+name: Release desktop apps
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag"
+        required: true
+        default: "v0.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: linux-x86_64
+          - platform: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: windows-x86_64
+          - platform: macos-latest
+            target: aarch64-apple-darwin
+            artifact: macos-aarch64
+          - platform: macos-latest
+            target: x86_64-apple-darwin
+            artifact: macos-x86_64
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Install Linux bundle dependencies
+        if: matrix.platform == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm
+      - run: npm ci
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: --target ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.dmg
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.msi
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.exe
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.AppImage
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.deb
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.rpm
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: gathered
+      - name: Flatten release assets
+        run: |
+          mkdir release
+          find gathered -type f -print0 | while IFS= read -r -d '' file; do
+            folder="$(echo "$file" | cut -d/ -f2)"
+            base="$(basename "$file")"
+            cp "$file" "release/${folder}-${base}"
+          done
+      - name: Build checksums and machine-readable manifest
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          cd release
+          sha256sum -- * | sort -k2 > SHA256SUMS
+          node <<'NODE'
+          const fs = require('fs');
+          const crypto = require('crypto');
+          const tag = process.env.TAG || 'manual';
+          const repo = process.env.REPOSITORY;
+          const files = fs.readdirSync('.').filter(f => !['SHA256SUMS', 'latest.json'].includes(f));
+          const assets = files.map(name => {
+            const lower = name.toLowerCase();
+            const platform = lower.startsWith('windows') ? 'windows' : lower.startsWith('macos') ? 'macos' : 'linux';
+            const arch = lower.includes('aarch64') ? 'aarch64' : 'x86_64';
+            const kind = lower.endsWith('.appimage') ? 'appimage' : lower.split('.').pop();
+            const sha256 = crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex');
+            return { platform, arch, kind, name, url: `https://github.com/${repo}/releases/download/${tag}/${encodeURIComponent(name)}`, sha256 };
+          });
+          fs.writeFileSync('latest.json', JSON.stringify({ version: tag, published_at: new Date().toISOString(), assets }, null, 2) + '\n');
+          NODE
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          files: release/*
