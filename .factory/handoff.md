@@ -32,7 +32,9 @@ Verified on 2026-08-28:
 - JavaScript/CSS: app 14.33 KB JS / 9.09 KB CSS raw; site 3.19 KB JS / 8.14 KB CSS raw. Hero WebP is 32 KB mobile / 65 KB desktop.
 - Lighthouse mobile against the production preview: **Performance 100, Accessibility 100, FCP 0.9 s, LCP 1.7 s, CLS 0, TBT 0 ms**.
 - Native Linux packaging: **pass** — the v0.1.0 smoke package built successfully before the icon-only v0.1.1 patch.
-- Release verification: v0.1.1 produced every platform package, but post-publish verification found GitHub filename normalization made the first manifest URLs stale. The v0.1.2 workflow normalizes filenames before producing the manifest; final asset verification is recorded after that run.
+- GitHub release: **v0.1.2 passed** — all four matrix builds and the publish job completed successfully. The release contains seven native packages: Linux `.AppImage`/`.deb`/`.rpm`, Windows `.msi`/`.exe`, and arm64/x86_64 macOS `.dmg`, plus `SHA256SUMS` and valid `latest.json`.
+- Release checksum: downloaded `linux-x86_64-Clipboard.LAN.Bridge_0.1.2_amd64.deb`; computed SHA-256 `01f73780daa6a9b2883acb605c76c65b0a8c78a0b64464ad7bbe24eeaa6488ad`, exactly matching `latest.json` and `SHA256SUMS`.
+- Installer smoke test: `site/public/install.sh` resolved v0.1.2, downloaded the 75 MB AppImage, verified its checksum, marked it executable, and installed it into an isolated `XDG_BIN_HOME`.
 
 ## Known gaps
 
