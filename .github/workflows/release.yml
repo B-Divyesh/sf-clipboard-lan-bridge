@@ -75,7 +75,8 @@ jobs:
           find gathered -type f -print0 | while IFS= read -r -d '' file; do
             folder="$(echo "$file" | cut -d/ -f2)"
             base="$(basename "$file")"
-            cp "$file" "release/${folder}-${base}"
+            safe="${base// /.}"
+            cp "$file" "release/${folder}-${safe}"
           done
       - name: Build checksums and machine-readable manifest
         env:

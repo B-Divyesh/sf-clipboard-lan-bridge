@@ -10,7 +10,7 @@
 - Local identity and paired public keys stored in the OS app-data directory. Transfer queues are memory-only and expire automatically. No relay, account, analytics, or telemetry.
 - Optional $9 one-time Personal Route pass with Sociobot checkout, return-token storage, daily verification cache, restore field, and a genuinely useful two-device free route.
 - Art-deco transit-poster visual system, generated original hero illustration and hand-authored route/device marks. Full provenance is in `.factory/design.md`.
-- Responsive static site at `dist/site/`, OS-aware release selection, verified shell/PowerShell installers, privacy and terms pages, offline cache, and immutable asset cache policy.
+- Responsive static site at `dist/site/`, OS-aware release selection, verified shell/PowerShell installers, privacy and terms pages, offline cache, and immutable asset cache policy. The browser uses GitHub's CORS-enabled latest-release API (and confirms `latest.json` is attached); command-line installers consume `latest.json` directly because GitHub's binary asset host does not expose it to browser JavaScript via CORS.
 - GitHub Actions release matrix for Linux x86_64, Windows x86_64, macOS arm64, and macOS x86_64. It publishes `.AppImage`, `.deb`, `.rpm`, `.msi`, `.exe`, `.dmg`, `SHA256SUMS`, and `latest.json` via `softprops/action-gh-release`.
 
 ## Verification
@@ -32,7 +32,7 @@ Verified on 2026-08-28:
 - JavaScript/CSS: app 14.33 KB JS / 9.09 KB CSS raw; site 3.19 KB JS / 8.14 KB CSS raw. Hero WebP is 32 KB mobile / 65 KB desktop.
 - Lighthouse mobile against the production preview: **Performance 100, Accessibility 100, FCP 0.9 s, LCP 1.7 s, CLS 0, TBT 0 ms**.
 - Native Linux packaging: **pass** — the v0.1.0 smoke package built successfully before the icon-only v0.1.1 patch.
-- Release verification: pending the tagged GitHub Actions run; update this section with asset/checksum evidence after it completes.
+- Release verification: v0.1.1 produced every platform package, but post-publish verification found GitHub filename normalization made the first manifest URLs stale. The v0.1.2 workflow normalizes filenames before producing the manifest; final asset verification is recorded after that run.
 
 ## Known gaps
 

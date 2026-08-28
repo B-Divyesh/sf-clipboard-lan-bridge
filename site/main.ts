@@ -31,14 +31,20 @@ async function loadRelease() {
   try {
     const releaseResponse = await fetch("https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1", { cache: "no-store" });
     if (!releaseResponse.ok) throw new Error("release manifest not published yet");
-    const releases = await releaseResponse.json() as Array<{ assets?: Array<{ name: string; browser_download_url: string }> }>;
+    const releases = await releaseResponse.json() as Array<{ tag_name: string; assets?: Array<{ name: string; browser_download_url: string }> }>;
     const release = releases[0];
     if (!release) throw new Error("release manifest not published yet");
-    const manifestUrl = release.assets?.find(asset => asset.name === "latest.json")?.browser_download_url;
-    if (!manifestUrl) throw new Error("latest.json is not attached to the current release");
-    const response = await fetch(manifestUrl, { cache: "no-store" });
-    if (!response.ok) throw new Error("release manifest could not be read");
-    const manifest = await response.json() as Manifest; const asset = preferredAsset(manifest.assets, os);
+    if (!release.assets?.some(asset => asset.name === "latest.json")) throw new Error("latest.json is not attached to the current release");
+    const assets: Asset[] = release.assets.filter(asset => !["latest.json", "SHA256SUMS"].includes(asset.name)).map(asset => {
+      const name = asset.name.toLowerCase();
+      return {
+        platform: name.startsWith("windows") ? "windows" : name.startsWith("macos") ? "macos" : "linux",
+        arch: name.includes("aarch64") ? "aarch64" : "x86_64",
+        kind: name.endsWith(".appimage") ? "appimage" : name.split(".").pop(),
+        url: asset.browser_download_url
+      };
+    });
+    const manifest: Manifest = { version: release.tag_name, assets }; const asset = preferredAsset(manifest.assets, os);
     if (!asset) throw new Error(`no ${label} package in the current release`);
     hero.href = main.href = asset.url; main.textContent = `Download ${manifest.version} for ${label}`;
     status.textContent = `${asset.kind?.toUpperCase() || "Package"} · checksum published in SHA256SUMS`;
