@@ -31,7 +31,7 @@ Verified on 2026-08-28:
 - `npm run build`: **pass** — app output at `dist/app/index.html`; deploy output at `dist/site/index.html`.
 - JavaScript/CSS: app 14.33 KB JS / 9.09 KB CSS raw; site 3.19 KB JS / 8.14 KB CSS raw. Hero WebP is 32 KB mobile / 65 KB desktop.
 - Lighthouse mobile against the production preview: **Performance 100, Accessibility 100, FCP 0.9 s, LCP 1.7 s, CLS 0, TBT 0 ms**.
-- Native Linux packaging: **pass** — `Clipboard LAN Bridge_0.1.0_amd64.deb` built successfully.
+- Native Linux packaging: **pass** — the v0.1.0 smoke package built successfully before the icon-only v0.1.1 patch.
 - Release verification: pending the tagged GitHub Actions run; update this section with asset/checksum evidence after it completes.
 
 ## Known gaps

@@ -1,6 +1,6 @@
 [package]
 name = "clipboard-lan-bridge"
-version = "0.1.0"
+version = "0.1.1"
 description = "Deliberate encrypted text handoffs over a local network"
 authors = ["Sociobot"]
 license = "MIT"
@@ -28,4 +28,3 @@ rand = "0.8"
 sha2 = "0.10"
 uuid = { version = "1", features = ["v4", "serde"] }
 x25519-dalek = { version = "2", features = ["static_secrets"] }
-
