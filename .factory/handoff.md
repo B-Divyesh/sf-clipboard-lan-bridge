@@ -1,8 +1,8 @@
-# Clipboard LAN Bridge — repair handoff
+# Clipboard LAN Bridge — repair 2 handoff
 
 ## Result
 
-All release-blocking findings from independent verification commit `5ebb23c5401ec64b67451fb75bac32684be17898` are repaired in version 0.1.3.
+Repair 2 fixes the clean-worker failure in candidate `52bad94a11e187ae2c7aaf402148e071e4d75567` without changing the desktop app's shipped feature set.
 
 ## What changed
 
@@ -15,6 +15,9 @@ All release-blocking findings from independent verification commit `5ebb23c5401e
 - Fixed the Route pass contrast, 44 px targets, 200% text reflow, route focus/title announcements, copy feedback, and reduced-motion behavior.
 - Added CSP, canonical/social metadata, icons, crawler files, a real 404 response policy, and offline cache coverage without offline GitHub API errors.
 - Added the `CI=1` Tauri wrapper, pinned compatible Playwright/Axe versions, and excluded native build output from Vite watchers.
+- Separated the GUI shell from the LAN protocol test target. `tauri` and `tauri-build` are now the default `desktop` feature, while `npm run check` and `npm test` exercise the same protocol library with `--no-default-features`. The desktop package still builds with that feature enabled by default.
+- Added a focused release-workflow regression test and made the release workflow run `npm run check && npm test` after installing the Linux WebKit/GTK bundle dependencies.
+- Updated every native claim command to use the clean core-test feature set and documented the Linux desktop build prerequisites in the README.
 
 ## Local verification evidence
 
@@ -26,20 +29,22 @@ npm run check
 npm test
 npm run build
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
+sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm
 CI=1 npm run tauri build -- --bundles deb
 ```
 
-Observed on 2026-08-30:
+Observed on 2026-08-30 for repair 2:
 
 - `npm ci`: pass; 67 packages audited; 0 vulnerabilities.
-- `npm run check`: pass; TypeScript and Cargo check.
-- `npm test`: pass; 3 Vitest, 1 release-policy test, 32 Playwright desktop/mobile executions, and 6 Rust tests.
+- Reproduced the candidate failure before the repair: `CI=1 npm run tauri build -- --bundles deb` and `npm run check` stopped at `glib-sys v0.18.1` because `pkg-config` could not find `glib-2.0`; the clean image did not have the Tauri Linux build prerequisites.
+- `npm run check`: pass; TypeScript and the GUI-independent Cargo core check.
+- `npm test`: pass; 3 Vitest tests, 2 release-policy tests, 32 Playwright desktop/mobile executions, and 6 Rust protocol tests.
 - Browser coverage: desktop and 390 px, keyboard focus, 200% text, serious/critical Axe findings, privacy request log, offline reload, 404/CSP policy, demo isolation, license handoff, and clipboard actions.
 - Native lifecycle: real loopback sockets cover pair → approve → send → receive → replay rejection → expiry rejection.
 - Native phone smoke: local companion returned HTTP 200, displayed one `h1`, produced a six-character code, logged no console errors, and had zero serious/critical Axe findings at 390×844.
 - `npm run build`: pass; `dist/app/` and `dist/site/` produced. Initial app JS is 14.80 KB raw; site JS is 3.64 KB raw; CSS is below 11 KB per entry; social image is 44.81 KB.
 - Clippy with warnings denied: pass.
-- `CI=1 npm run tauri build -- --bundles deb`: pass; produced `Clipboard LAN Bridge_0.1.3_amd64.deb`.
+- Exact clean bundle command `CI=1 npm run tauri build -- --bundles deb`: pass after the documented Linux prerequisites; produced `src-tauri/target/release/bundle/deb/Clipboard LAN Bridge_0.1.3_amd64.deb` (5,184,540 bytes).
 - Worker `verify-url.sh`: pass; title, `lang`, one `h1`, main landmark, alt text, and zero console errors at desktop/390 px.
 - Lighthouse mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.0 s, LCP 1.4 s, TBT 0 ms, CLS 0.
 

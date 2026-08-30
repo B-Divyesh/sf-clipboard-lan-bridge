@@ -1,3 +1,5 @@
+#![cfg_attr(not(feature = "desktop"), allow(dead_code))]
+
 use aes_gcm::{Aes256Gcm, Nonce as AesNonce};
 use axum::{
     extract::{Query, State as AxumState},
@@ -26,6 +28,7 @@ use std::{
     sync::Arc,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
+#[cfg(feature = "desktop")]
 use tauri::{
     menu::{Menu, MenuItem},
     tray::TrayIconBuilder,
@@ -209,6 +212,7 @@ struct LicenseVerdict {
     expires_at: Option<String>,
 }
 
+#[cfg(feature = "desktop")]
 struct AppState(Arc<RwLock<Inner>>);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -902,11 +906,11 @@ async fn run_network(shared: Arc<RwLock<Inner>>) {
         inner.network_error = None;
     }
     let accept_state = shared.clone();
-    tauri::async_runtime::spawn(async move {
+    tokio::spawn(async move {
         loop {
             if let Ok((stream, remote)) = listener.accept().await {
                 let state = accept_state.clone();
-                tauri::async_runtime::spawn(async move {
+                tokio::spawn(async move {
                     let _ = handle_connection(stream, remote, state).await;
                 });
             }
@@ -923,7 +927,7 @@ async fn run_network(shared: Arc<RwLock<Inner>>) {
     let _ = socket.set_broadcast(true);
     let announce_socket = socket.clone();
     let announce_state = shared.clone();
-    tauri::async_runtime::spawn(async move {
+    tokio::spawn(async move {
         loop {
             let msg = {
                 let inner = announce_state.read().await;
@@ -971,6 +975,7 @@ async fn run_network(shared: Arc<RwLock<Inner>>) {
     }
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn get_snapshot(state: State<'_, AppState>) -> Result<Snapshot, String> {
     let mut inner = state.0.write().await;
@@ -1051,6 +1056,7 @@ async fn get_snapshot(state: State<'_, AppState>) -> Result<Snapshot, String> {
     })
 }
 
+#[cfg(feature = "desktop")]
 async fn fetch_license_verdict(token: &str) -> Result<LicenseVerdict, String> {
     let response = reqwest::Client::new()
         .get("https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/verify")
@@ -1068,6 +1074,7 @@ async fn fetch_license_verdict(token: &str) -> Result<LicenseVerdict, String> {
         .map_err(|_| "License service returned an invalid response".into())
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn verify_license(
     token: String,
@@ -1089,6 +1096,7 @@ async fn verify_license(
     Ok(verdict)
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn remove_license(state: State<'_, AppState>) -> Result<(), String> {
     let mut inner = state.0.write().await;
@@ -1096,6 +1104,7 @@ async fn remove_license(state: State<'_, AppState>) -> Result<(), String> {
     save_config(&inner)
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn set_device_name(name: String, state: State<'_, AppState>) -> Result<(), String> {
     let clean = name.trim();
@@ -1107,6 +1116,7 @@ async fn set_device_name(name: String, state: State<'_, AppState>) -> Result<(),
     save_config(&inner)
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn request_pairing(peer_id: String, state: State<'_, AppState>) -> Result<(), String> {
     let (message, address, peer, code) = {
@@ -1151,6 +1161,7 @@ async fn request_pairing(peer_id: String, state: State<'_, AppState>) -> Result<
     Ok(())
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn approve_pairing(peer_id: String, state: State<'_, AppState>) -> Result<(), String> {
     let (message, address, stored) = {
@@ -1199,12 +1210,14 @@ async fn approve_pairing(peer_id: String, state: State<'_, AppState>) -> Result<
     save_config(&inner)
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn reject_pairing(peer_id: String, state: State<'_, AppState>) -> Result<(), String> {
     state.0.write().await.pending.remove(&peer_id);
     Ok(())
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn forget_peer(peer_id: String, state: State<'_, AppState>) -> Result<(), String> {
     let mut inner = state.0.write().await;
@@ -1213,12 +1226,14 @@ async fn forget_peer(peer_id: String, state: State<'_, AppState>) -> Result<(), 
     save_config(&inner)
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn delete_transfer(transfer_id: String, state: State<'_, AppState>) -> Result<(), String> {
     state.0.write().await.inbox.retain(|t| t.id != transfer_id);
     Ok(())
 }
 
+#[cfg(feature = "desktop")]
 #[tauri::command]
 async fn send_text(
     peer_id: String,
@@ -1323,6 +1338,7 @@ async fn send_text(
     Ok(())
 }
 
+#[cfg(feature = "desktop")]
 fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
     let show = MenuItem::with_id(app, "show", "Show Clipboard LAN Bridge", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
@@ -1344,6 +1360,7 @@ fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
     Ok(())
 }
 
+#[cfg(feature = "desktop")]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()

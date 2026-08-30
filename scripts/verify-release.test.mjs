@@ -12,3 +12,12 @@ test("@claim:release-packages workflow publishes every desktop platform with che
   assert.match(shellInstaller, /sha256/i);
   assert.match(powershellInstaller, /SHA256/i);
 });
+
+test("release workflow provisions the Linux GUI toolchain before the Tauri package build", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
+  for (const packageName of ["libwebkit2gtk-4.1-dev", "libappindicator3-dev", "librsvg2-dev", "patchelf", "rpm"]) {
+    assert.match(workflow, new RegExp(packageName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+  assert.match(workflow, /Install Linux bundle dependencies[\s\S]*npm ci[\s\S]*Run quality gates[\s\S]*tauri-apps\/tauri-action/);
+  assert.match(workflow, /npm run check && npm test/);
+});

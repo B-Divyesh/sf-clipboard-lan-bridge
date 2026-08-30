@@ -24,28 +24,28 @@
     "id": "lan-only",
     "claim": "Transfers go directly between paired devices on the local network without a cloud relay.",
     "where": "landing, app, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml pair_send_receive_replay_and_expire_lifecycle",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features pair_send_receive_replay_and_expire_lifecycle",
     "sandbox": "two fresh native identities; pair and process an authenticated transfer directly"
   },
   {
     "id": "end-to-end-encryption",
     "claim": "Transfer text and authenticated metadata are encrypted between paired devices.",
     "where": "landing, app, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml transfer_metadata_is_authenticated",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features transfer_metadata_is_authenticated",
     "sandbox": "fresh keys; decrypt valid transfer; reject changed ciphertext, transfer ID, and expiry"
   },
   {
     "id": "explicit-pairing",
     "claim": "A receiving device must approve the matching pairing code before transfer.",
     "where": "How it works and app Devices view",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml pair_send_receive_replay_and_expire_lifecycle",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features pair_send_receive_replay_and_expire_lifecycle",
     "sandbox": "fresh native identities; assert pending matching code before adding the peer"
   },
   {
     "id": "phone-companion",
     "claim": "A nearby phone can pair through the desktop app's local companion page and exchange encrypted text.",
     "where": "landing download section, app Devices view, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml phone_companion_crypto_round_trip",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features phone_companion_crypto_round_trip",
     "sandbox": "fresh desktop and phone P-256 identities; encrypt, decrypt, and reject changed expiry"
   },
   {
@@ -87,14 +87,14 @@
     "id": "two-device-free-tier",
     "claim": "The free route supports the local device plus one paired device.",
     "where": "pricing, app, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml free_and_paid_limits_are_enforced_in_native_state",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features free_and_paid_limits_are_enforced_in_native_state",
     "sandbox": "fresh native state; add one peer and assert a second peer is rejected"
   },
   {
     "id": "paid-route-pass",
     "claim": "A valid $9 one-time Route pass adds unlimited peers and one-hour expiry.",
     "where": "pricing, app, terms, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml free_and_paid_limits_are_enforced_in_native_state",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features free_and_paid_limits_are_enforced_in_native_state",
     "sandbox": "native state with recorded valid and revoked verdicts; assert peer and expiry gates"
   },
   {

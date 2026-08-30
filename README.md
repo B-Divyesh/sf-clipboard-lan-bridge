@@ -46,10 +46,11 @@ npm run build
 
 The test command runs unit, Chromium accessibility, claim, responsive, and native protocol tests. The build writes the desktop webview to `dist/app/` and the deployable site to `dist/site/`.
 
-Build a local desktop package with:
+Build a local desktop package with. On Linux, first install the same GUI toolchain used by the release workflow:
 
 ```sh
-CI=true npm run tauri build
+sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm
+CI=1 npm run tauri build
 ```
 
 ## Install and release
