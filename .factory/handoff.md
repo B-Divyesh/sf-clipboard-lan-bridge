@@ -1,51 +1,35 @@
-# Clipboard LAN Bridge — build handoff
+# Clipboard LAN Bridge — verification handoff
 
-## What shipped
+## Result: FAIL
 
-- Tauri 2 desktop app for Linux, macOS, and Windows with a responsive, keyboard-operable interface and tray menu.
-- LAN discovery over UDP broadcast (`38742`) and direct TCP delivery (`38741`).
-- Explicit pairing with a symmetric six-character public-key fingerprint and receiver-side approval.
-- X25519 shared-key agreement plus XChaCha20-Poly1305 authenticated encryption for every payload.
-- Deliberate clipboard read/write actions only; UTF-8 text allowlist, 32 KB limit, 2/10/60 minute expiry, online/offline/error/empty states, transfer acknowledgement, delete, and forget-device controls.
-- Local identity and paired public keys stored in the OS app-data directory. Transfer queues are memory-only and expire automatically. No relay, account, analytics, or telemetry.
-- Optional $9 one-time Personal Route pass with Sociobot checkout, return-token storage, daily verification cache, restore field, and a genuinely useful two-device free route.
-- Art-deco transit-poster visual system, generated original hero illustration and hand-authored route/device marks. Full provenance is in `.factory/design.md`.
-- Responsive static site at `dist/site/`, OS-aware release selection, verified shell/PowerShell installers, privacy and terms pages, offline cache, and immutable asset cache policy. The browser uses GitHub's CORS-enabled latest-release API (and confirms `latest.json` is attached); command-line installers consume `latest.json` directly because GitHub's binary asset host does not expose it to browser JavaScript via CORS.
-- GitHub Actions release matrix for Linux x86_64, Windows x86_64, macOS arm64, and macOS x86_64. It publishes `.AppImage`, `.deb`, `.rpm`, `.msi`, `.exe`, `.dmg`, `SHA256SUMS`, and `latest.json` via `softprops/action-gh-release`.
+Independent QA on 2026-08-30 tested candidate `86ba76033386b2b305b66857c4dd5f68c8511446` at <https://clipboard-lan-bridge.sociobot.in>. The live deploy matches the candidate site's bytes, but the release is blocked.
 
-## Verification
+Primary blockers:
 
-Run from a clean checkout with Node 22+, Rust stable, and the Tauri 2 platform prerequisites:
+- `.factory/claims.json` and all claim-tagged tests are missing.
+- There is no one-click sample demo; `/demo` is only the landing page.
+- The cold first screen uses a metaphorical headline and does not expose the required demo/first action.
+- The researched phone-to-computer job is incomplete because no phone companion ships.
+- The installed app cannot verify paid licenses because the billing API does not allow Tauri origins; the checkout return is trapped in website local storage. Paid limits are also not enforced by the Rust commands.
+- `npm run check` fails with Playwright/axe type incompatibilities.
+- Axe finds a serious 2.14:1 contrast failure on the app's Route pass stamp.
 
-```sh
-npm ci
-npm test
-npm run build
-npm run tauri build -- --bundles deb   # Linux smoke bundle
-```
+See [verification.md](verification.md) for exact evidence and the full severity list.
 
-Verified on 2026-08-28:
+## Verification summary
 
-- `npm test`: **pass** — 3 Vitest domain tests, 8 Playwright tests across desktop Chromium and a 393 px mobile profile, 3 Rust tests (encryption round trip, tamper rejection, symmetric pairing code, and payload cap).
-- Playwright + axe-core: **0 serious/critical violations** on the landing site and app empty/offline state; no console errors; legal routes and mobile overflow checked.
-- `npm run build`: **pass** — app output at `dist/app/index.html`; deploy output at `dist/site/index.html`.
-- JavaScript/CSS: app 14.33 KB JS / 9.09 KB CSS raw; site 3.19 KB JS / 8.14 KB CSS raw. Hero WebP is 32 KB mobile / 65 KB desktop.
-- Lighthouse mobile against the production preview: **Performance 100, Accessibility 100, FCP 0.9 s, LCP 1.7 s, CLS 0, TBT 0 ms**.
-- Native Linux packaging: **pass** — the v0.1.0 smoke package built successfully before the icon-only v0.1.1 patch.
-- GitHub release: **v0.1.2 passed** — all four matrix builds and the publish job completed successfully. The release contains seven native packages: Linux `.AppImage`/`.deb`/`.rpm`, Windows `.msi`/`.exe`, and arm64/x86_64 macOS `.dmg`, plus `SHA256SUMS` and valid `latest.json`.
-- Release checksum: downloaded `linux-x86_64-Clipboard.LAN.Bridge_0.1.2_amd64.deb`; computed SHA-256 `01f73780daa6a9b2883acb605c76c65b0a8c78a0b64464ad7bbe24eeaa6488ad`, exactly matching `latest.json` and `SHA256SUMS`.
-- Installer smoke test: `site/public/install.sh` resolved v0.1.2, downloaded the 75 MB AppImage, verified its checksum, marked it executable, and installed it into an isolated `XDG_BIN_HOME`.
+- `npm ci`: PASS, 0 vulnerabilities.
+- `npm test`: PASS after installing the repository workflow's documented Tauri Linux prerequisites (3 Vitest + 8 Playwright + 3 Rust).
+- `npm run check`: FAIL (TS2740 in both axe test files).
+- `npm run build`: PASS; `dist/app/` and `dist/site/` produced.
+- `npm run tauri build -- --bundles deb`: FAIL with worker `CI=1`; PASS with `CI=true`.
+- Live online console/page errors: none.
+- Live axe landing/privacy/terms: 0 serious/critical; app Route pass: 1 serious contrast violation.
+- Lighthouse mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 92; LCP 1.1 s, TBT 30 ms, CLS 0.
+- Live request log: own origin plus disclosed GitHub release API; no analytics observed.
+- License API allowance: 30 successful requests in the observed short window; request 31 returned 429 with `Retry-After: 3`.
+- Release install smoke: PASS; Linux AppImage checksum matched and native process opened TCP 38741 / UDP 38742.
 
-## Known gaps
+## Handoff state
 
-- The researched opportunity includes phones, but this orchestrated v1 build target is Tauri desktop and the required release matrix contains desktop operating systems only. The site states this plainly. Android/iOS companions require platform local-network permissions, foreground/background policy work, signing, and store distribution; none is simulated by the website.
-- Broadcast discovery can be blocked by guest Wi-Fi client isolation, host firewalls, or VPN routing. The app reports that state and does not fall back to a cloud relay.
-- Pairing and same-LAN transfer are covered by crypto/domain tests and a compiled native package, but the disposable build container does not provide two independently routed GUI hosts for a physical two-device acceptance test.
-- Active transfer queues are intentionally memory-only in v1, so quitting the receiving app clears arrivals before their expiry.
-
-## Needs operator action
-
-- Register the production paid product for slug `clipboard-lan-bridge` and ensure its return URL is `https://clipboard-lan-bridge.sociobot.in`.
-- Deploy exactly `dist/site/` at `https://clipboard-lan-bridge.sociobot.in`.
-- The shipped v1 packages are unsigned and the site says so. To sign/notarize later, add Apple signing/notarization secrets (`APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) and Windows Authenticode secrets (`WINDOWS_CERT_PFX`, `WINDOWS_CERT_PASSWORD`), then update the workflow signing steps.
-- Build Android/iOS companions before claiming phone support.
+Only `.factory/verification.md` and this handoff were changed by the verifier. Product code was not modified. Reverify only after every release blocker in the full report is addressed.
