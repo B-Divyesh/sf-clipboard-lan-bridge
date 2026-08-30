@@ -2,3 +2,18 @@
 @media(max-width:820px){.site-header nav{display:none}.small-download{margin-left:auto}.hero{grid-template-columns:1fr;padding-bottom:75px}.poster-frame{order:-1;transform:none;box-shadow:7px 7px 0 var(--signal)}.hero h1{font-size:54px}.marquee{overflow:hidden;justify-content:flex-start}.marquee span:nth-child(n+3){display:none}.route-steps,.safety-section,.price-section{grid-template-columns:1fr}.route-steps li{padding-left:0}.commands>div{grid-template-columns:1fr}.commands button{width:100%}footer{flex-direction:column;align-items:flex-start;gap:12px}footer p{margin:0}.hero-actions{align-items:stretch;flex-direction:column}.hero-actions .primary-button{width:100%}}
 @media(max-width:420px){.site-header{padding:10px 16px}.small-download{display:none}.hero{padding-left:20px;padding-right:20px}.hero h1{font-size:46px}.poster-frame{border-width:5px}.route-section,.safety-section,.price-section,.download-section{padding-left:20px;padding-right:20px}.download-panel{padding:20px}.marquee span:nth-child(n+2){display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.primary-button:hover{transform:none}}
+
+/* Repair pass: action visibility, touch sizing, and license handoff. */
+.site-header nav a,footer nav a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:4px}
+.small-download{display:inline-flex;align-items:center;min-height:44px}
+.hero{padding-top:clamp(40px,6vw,84px);padding-bottom:clamp(52px,7vw,96px)}
+.hero-actions{margin-top:26px}
+.hero-facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:22px 0 0;padding:0;list-style:none;color:var(--paper);font-size:14px;font-weight:800}
+.hero-facts li:before{content:"◆";margin-right:8px;color:var(--brass)}
+.license-return{position:fixed;z-index:50;left:50%;bottom:20px;transform:translateX(-50%);width:min(680px,calc(100% - 32px));padding:20px;background:var(--paper);color:var(--ink);border:3px solid var(--brass);box-shadow:8px 8px 0 var(--signal)}
+.license-return h2{margin:0 0 8px;font:900 24px Georgia,serif;text-transform:uppercase}
+.license-return code{display:block;max-width:100%;padding:10px;background:#fffaf0;overflow-wrap:anywhere}
+.license-return button{min-height:44px;margin:12px 10px 0 0;padding:8px 14px;border:2px solid var(--ink);background:transparent;font-weight:900}
+@media(max-width:820px){.hero{padding:32px 20px 56px}.poster-frame{order:initial;margin-top:14px}.hero h1{font-size:clamp(40px,12vw,54px)}.hero-actions{gap:10px}.quiet-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px}.platform-note{margin-bottom:0!important}}
+@media(max-width:420px){.poster-frame{margin-top:8px}.poster-frame figcaption{position:static;max-width:none}}
+html,body{min-width:0;max-width:100%;overflow-x:hidden}.wordmark,.hero-copy,.fare-card,.commands>*{min-width:0;overflow-wrap:anywhere}

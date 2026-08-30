@@ -56,3 +56,7 @@ Generation provenance: Azure OpenAI factory image deployment via `/opt/fleet/lib
 ## Hand-authored assets
 
 The bridge mark, route dividers, device pictograms, and ticket perforations are original inline SVG/CSS shapes authored for this repository. They use no external icon library.
+
+## Phone companion treatment
+
+The phone companion is served by the installed desktop app and uses the same ticket-stock surfaces, transit rails, clipped controls, and ink/brass/vermilion tokens. Its narrow layout drops the poster illustration and download chrome so pairing, sending, and arrivals remain the only visual hierarchy at 390 px. The bundled cryptography code and all interface assets are self-hosted by the app; the companion loads no remote fonts, scripts, or images.

@@ -1,35 +1,56 @@
-# Clipboard LAN Bridge — verification handoff
+# Clipboard LAN Bridge — repair handoff
 
-## Result: FAIL
+## Result
 
-Independent QA on 2026-08-30 tested candidate `86ba76033386b2b305b66857c4dd5f68c8511446` at <https://clipboard-lan-bridge.sociobot.in>. The live deploy matches the candidate site's bytes, but the release is blocked.
+All release-blocking findings from independent verification commit `5ebb23c5401ec64b67451fb75bac32684be17898` are repaired in version 0.1.3.
 
-Primary blockers:
+## What changed
 
-- `.factory/claims.json` and all claim-tagged tests are missing.
-- There is no one-click sample demo; `/demo` is only the landing page.
-- The cold first screen uses a metaphorical headline and does not expose the required demo/first action.
-- The researched phone-to-computer job is incomplete because no phone companion ships.
-- The installed app cannot verify paid licenses because the billing API does not allow Tauri origins; the checkout return is trapped in website local storage. Paid limits are also not enforced by the Rust commands.
-- `npm run check` fails with Playwright/axe type incompatibilities.
-- Axe finds a serious 2.14:1 contrast failure on the app's Route pass stamp.
+- Added the required claim registry and claim-tagged browser, Node, and native regression coverage.
+- Added `/demo/` with realistic sample transfers, a persistent demo banner, reset/exit actions, and isolated `demo:` session storage.
+- Rewrote the first screen in plain words and kept both primary actions visible at desktop and 390 px.
+- Added a self-hosted phone companion served by the desktop app on the LAN. Phone pairing requires desktop approval of the same six-character code. Phone transfers use P-256 key agreement and AES-256-GCM.
+- Moved license verification and cached verdicts into Rust. Native pairing, incoming approval, and one-hour expiry now enforce the free/pass gates. Checkout returns expose a copyable token for the installed app.
+- Bound sender, transfer ID, creation time, and expiry into AEAD associated data. Duplicate transfer IDs and changed metadata are rejected.
+- Fixed the Route pass contrast, 44 px targets, 200% text reflow, route focus/title announcements, copy feedback, and reduced-motion behavior.
+- Added CSP, canonical/social metadata, icons, crawler files, a real 404 response policy, and offline cache coverage without offline GitHub API errors.
+- Added the `CI=1` Tauri wrapper, pinned compatible Playwright/Axe versions, and excluded native build output from Vite watchers.
 
-See [verification.md](verification.md) for exact evidence and the full severity list.
+## Local verification evidence
 
-## Verification summary
+Run from a clean checkout:
 
-- `npm ci`: PASS, 0 vulnerabilities.
-- `npm test`: PASS after installing the repository workflow's documented Tauri Linux prerequisites (3 Vitest + 8 Playwright + 3 Rust).
-- `npm run check`: FAIL (TS2740 in both axe test files).
-- `npm run build`: PASS; `dist/app/` and `dist/site/` produced.
-- `npm run tauri build -- --bundles deb`: FAIL with worker `CI=1`; PASS with `CI=true`.
-- Live online console/page errors: none.
-- Live axe landing/privacy/terms: 0 serious/critical; app Route pass: 1 serious contrast violation.
-- Lighthouse mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 92; LCP 1.1 s, TBT 30 ms, CLS 0.
-- Live request log: own origin plus disclosed GitHub release API; no analytics observed.
-- License API allowance: 30 successful requests in the observed short window; request 31 returned 429 with `Retry-After: 3`.
-- Release install smoke: PASS; Linux AppImage checksum matched and native process opened TCP 38741 / UDP 38742.
+```sh
+npm ci
+npm run check
+npm test
+npm run build
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
+CI=1 npm run tauri build -- --bundles deb
+```
 
-## Handoff state
+Observed on 2026-08-30:
 
-Only `.factory/verification.md` and this handoff were changed by the verifier. Product code was not modified. Reverify only after every release blocker in the full report is addressed.
+- `npm ci`: pass; 67 packages audited; 0 vulnerabilities.
+- `npm run check`: pass; TypeScript and Cargo check.
+- `npm test`: pass; 3 Vitest, 1 release-policy test, 30 Playwright desktop/mobile executions, and 6 Rust tests.
+- Browser coverage: desktop and 390 px, keyboard focus, 200% text, serious/critical Axe findings, privacy request log, offline reload, 404/CSP policy, demo isolation, license handoff, and clipboard actions.
+- Native lifecycle: real loopback sockets cover pair → approve → send → receive → replay rejection → expiry rejection.
+- Native phone smoke: local companion returned HTTP 200, displayed one `h1`, produced a six-character code, logged no console errors, and had zero serious/critical Axe findings at 390×844.
+- `npm run build`: pass; `dist/app/` and `dist/site/` produced. Initial app JS is 14.80 KB raw; site JS is 3.64 KB raw; CSS is below 11 KB per entry; social image is 44.81 KB.
+- Clippy with warnings denied: pass.
+- `CI=1 npm run tauri build -- --bundles deb`: pass; produced `Clipboard LAN Bridge_0.1.3_amd64.deb`.
+- Worker `verify-url.sh`: pass; title, `lang`, one `h1`, main landmark, alt text, and zero console errors at desktop/390 px.
+- Lighthouse mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.0 s, LCP 1.4 s, TBT 0 ms, CLS 0.
+
+## Release and deployment
+
+Release and live deployment evidence is appended after the v0.1.3 workflow and production upload complete.
+
+## Needs operator action
+
+Release packages remain unsigned. Signing requires owner-provided `APPLE_CERTIFICATE` and `WINDOWS_CERT_PFX`; users currently receive the documented operating-system warning.
+
+## Known gaps
+
+No product-function gaps are known. The phone companion requires the phone and desktop to remain on the same LAN, as designed.

@@ -23,6 +23,9 @@ type Snapshot = {
   pairings: Pairing[];
   inbox: Transfer[];
   sent: Transfer[];
+  licensed: boolean;
+  license_reason: string;
+  companion_urls: string[];
 };
 
 const empty: Snapshot = {
@@ -30,7 +33,7 @@ const empty: Snapshot = {
   device_name: "This device",
   network_ready: false,
   network_error: "Open the installed app to discover devices on your LAN.",
-  peers: [], pairings: [], inbox: [], sent: []
+  peers: [], pairings: [], inbox: [], sent: [], licensed: false, license_reason: "not_checked", companion_urls: []
 };
 
 let state: Snapshot = empty;
@@ -47,6 +50,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         <span>Clipboard <b>LAN Bridge</b></span>
       </a>
       <div class="network-state" id="network-state" role="status"><span class="status-dot"></span><span>Starting route…</span></div>
+      <div class="sr-only" id="route-announcer" aria-live="polite"></div>
     </header>
 
     <nav class="rail-nav" aria-label="Main navigation">
@@ -59,7 +63,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     <main id="main" tabindex="-1">
       <section class="view active" id="view-send" aria-labelledby="send-title">
         <div class="eyebrow">Platform 01 · dispatch</div>
-        <h1 id="send-title">Send a ticket</h1>
+        <h1 id="send-title" tabindex="-1">Send a ticket</h1>
         <p class="lede">Move one short piece of text to one nearby device. Nothing is watched or synced in the background.</p>
 
         <form id="send-form" novalidate>
@@ -89,15 +93,16 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 
       <section class="view" id="view-receive" aria-labelledby="receive-title" hidden>
         <div class="eyebrow">Platform 02 · arrivals</div>
-        <h2 id="receive-title">Received tickets</h2>
+        <h2 id="receive-title" tabindex="-1">Received tickets</h2>
         <p class="lede">Items disappear when their sender’s expiry time arrives.</p>
         <div id="inbox-list" class="ticket-list"></div>
       </section>
 
       <section class="view" id="view-devices" aria-labelledby="devices-title" hidden>
         <div class="eyebrow">Local route board</div>
-        <h2 id="devices-title">Nearby devices</h2>
+        <h2 id="devices-title" tabindex="-1">Nearby devices</h2>
         <p class="lede">Both devices must be on the same LAN. Compare the code, then approve on the receiving device.</p>
+        <section class="phone-connect" aria-labelledby="phone-title"><h3 id="phone-title">Connect a phone</h3><p>Open one of these local addresses on a phone connected to the same Wi-Fi:</p><div id="companion-links"></div></section>
         <div id="pairing-list"></div>
         <div id="device-list" class="device-list"></div>
         <details class="settings-panel">
@@ -107,14 +112,14 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       </section>
 
       <section class="view" id="view-pass" aria-labelledby="pass-title" hidden>
-        <div class="eyebrow">Optional one-time unlock</div>
-        <h2 id="pass-title">Route pass</h2>
+        <div class="eyebrow">Optional one-time pass</div>
+        <h2 id="pass-title" tabindex="-1">Route pass</h2>
         <p class="lede">The free route connects two devices with ten-minute expiry. A $9 one-time pass adds unlimited paired devices and one-hour tickets.</p>
         <div class="pass-ticket">
           <div><span class="stamp">Personal route pass</span><strong id="license-state">Free route active</strong><p>No subscription. Safety controls and accessibility are always included.</p></div>
           <a class="primary-button" id="buy-pass" href="https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout" target="_blank" rel="noreferrer">Buy for $9</a>
         </div>
-        <form id="license-form" class="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form>
+        <form id="license-form" class="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
         <p class="legal-note">Sociobot/Dodo is the merchant of record. <a href="https://clipboard-lan-bridge.sociobot.in/privacy">Privacy</a> · <a href="https://clipboard-lan-bridge.sociobot.in/terms">Terms</a></p>
       </section>
     </main>
@@ -123,8 +128,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   </div>`;
 
 function paid(): boolean {
-  try { return JSON.parse(localStorage.getItem("sb_license_verdict:clipboard-lan-bridge") || "null")?.valid === true; }
-  catch { return false; }
+  return state.licensed;
 }
 
 function escapeHtml(value: string): string {
@@ -139,6 +143,7 @@ function render() {
   status.innerHTML = `<span class="status-dot" aria-hidden="true"></span><span>${escapeHtml(statusText)}</span>`;
   $("#device-name").setAttribute("value", state.device_name);
   $("#inbox-count").textContent = String(state.inbox.length);
+  $("#companion-links").innerHTML = state.companion_urls.length ? state.companion_urls.map(url => `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(url)}</a>`).join("") : `<p>The local phone address appears after the installed app joins a network.</p>`;
 
   const destinations = state.peers.filter(p => p.paired);
   $("#destination-list").innerHTML = destinations.length ? destinations.map(peer => `
@@ -175,27 +180,20 @@ function showNotice(message: string, kind: "success" | "error" = "success") {
   const node = $("#send-result"); node.hidden = false; node.className = `notice ${kind}`; node.textContent = message;
 }
 
-async function verifyLicense(token: string, force = false) {
+async function verifyLicense(token: string) {
   const result = $("#license-result");
   if (!token.trim()) { result.textContent = "Paste a license token first."; return; }
-  const cacheKey = "sb_license_verdict:clipboard-lan-bridge";
   try {
-    const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
-    if (!force && cached?.checked_at > Date.now() - 86_400_000) { render(); return; }
     result.textContent = "Checking license…";
-    const response = await fetch(`https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/verify?license=${encodeURIComponent(token.trim())}`);
-    if (!response.ok) throw new Error("License service unavailable");
-    const verdict = await response.json();
-    localStorage.setItem(cacheKey, JSON.stringify({ ...verdict, checked_at: Date.now() }));
+    const verdict = await call<{ valid: boolean; reason: string }>("verify_license", { token: token.trim() });
     result.textContent = verdict.valid ? "Route pass restored on this device." : "License no longer active. You can continue on the free route.";
   } catch { result.textContent = "Could not verify right now. Your current route remains available."; }
-  render();
+  await refresh();
 }
 
 function installLicenseReturn() {
   const url = new URL(location.href); const token = url.searchParams.get("license");
-  if (token) { localStorage.setItem("sb_license:clipboard-lan-bridge", token); url.searchParams.delete("license"); history.replaceState({}, "", url); void verifyLicense(token, true); }
-  else { const stored = localStorage.getItem("sb_license:clipboard-lan-bridge"); if (stored) void verifyLicense(stored); }
+  if (token) { url.searchParams.delete("license"); history.replaceState({}, "", url); void verifyLicense(token); }
 }
 
 window.addEventListener("hashchange", activateView);
@@ -203,7 +201,8 @@ function activateView() {
   const view = location.hash.slice(1) || "send";
   document.querySelectorAll<HTMLElement>(".view").forEach(el => { const active = el.id === `view-${view}`; el.hidden = !active; el.classList.toggle("active", active); });
   document.querySelectorAll<HTMLAnchorElement>("[data-view]").forEach(a => a.setAttribute("aria-current", a.dataset.view === view ? "page" : "false"));
-  document.querySelector<HTMLElement>(`#view-${view} h1, #view-${view} h2`)?.focus?.();
+  const heading = document.querySelector<HTMLElement>(`#view-${view} h1, #view-${view} h2`);
+  if (heading) { document.title = `${heading.textContent} — Clipboard LAN Bridge`; $("#route-announcer").textContent = heading.textContent || ""; heading.focus(); }
 }
 
 $("#payload").addEventListener("input", event => { $("#byte-count").textContent = `${byteLength((event.target as HTMLTextAreaElement).value).toLocaleString()} / 32 KB`; $("#payload-error").textContent = ""; });
@@ -220,18 +219,20 @@ $("#send-form").addEventListener("submit", async event => {
 document.body.addEventListener("click", async event => {
   const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button"); if (!button) return;
   try {
-    if (button.dataset.pair) await call("request_pairing", { peerId: button.dataset.pair });
-    if (button.dataset.approve) await call("approve_pairing", { peerId: button.dataset.approve });
-    if (button.dataset.reject) await call("reject_pairing", { peerId: button.dataset.reject });
-    if (button.dataset.forget && confirm("Forget this device? You will need to compare a new code to reconnect.")) await call("forget_peer", { peerId: button.dataset.forget });
+    let refreshNeeded = false;
+    if (button.dataset.pair) { await call("request_pairing", { peerId: button.dataset.pair }); refreshNeeded = true; }
+    if (button.dataset.approve) { await call("approve_pairing", { peerId: button.dataset.approve }); refreshNeeded = true; }
+    if (button.dataset.reject) { await call("reject_pairing", { peerId: button.dataset.reject }); refreshNeeded = true; }
+    if (button.dataset.forget && confirm("Forget this device? You will need to compare a new code to reconnect.")) { await call("forget_peer", { peerId: button.dataset.forget }); refreshNeeded = true; }
     if (button.dataset.copy) { const item = state.inbox.find(x => x.id === button.dataset.copy); if (item) { await navigator.clipboard.writeText(item.text); button.textContent = "Copied"; } }
-    if (button.dataset.delete) await call("delete_transfer", { transferId: button.dataset.delete });
-    await refresh();
+    if (button.dataset.delete) { await call("delete_transfer", { transferId: button.dataset.delete }); refreshNeeded = true; }
+    if (refreshNeeded) await refresh();
   } catch (error) { showNotice(String(error), "error"); }
 });
 
 $("#name-form").addEventListener("submit", async event => { event.preventDefault(); try { await call("set_device_name", { name: $<HTMLInputElement>("#device-name").value }); await refresh(); } catch (error) { alert(String(error)); } });
-$("#license-form").addEventListener("submit", event => { event.preventDefault(); const token = $<HTMLInputElement>("#license-token").value.trim(); if (token) localStorage.setItem("sb_license:clipboard-lan-bridge", token); void verifyLicense(token, true); });
+$("#license-form").addEventListener("submit", event => { event.preventDefault(); const token = $<HTMLInputElement>("#license-token").value.trim(); void verifyLicense(token); });
+$("#remove-license").addEventListener("click", async () => { try { await call("remove_license"); $("#license-result").textContent = "License removed from this device."; await refresh(); } catch (error) { $("#license-result").textContent = String(error); } });
 
 installLicenseReturn(); activateView(); void refresh(); refreshTimer = window.setInterval(refresh, 2500);
 window.addEventListener("beforeunload", () => clearInterval(refreshTimer));

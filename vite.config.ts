@@ -7,6 +7,10 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true
   },
-  server: { strictPort: true, port: 1420 },
+  server: {
+    strictPort: true,
+    port: 1420,
+    watch: { ignored: ["**/src-tauri/target/**", "**/dist/**", "**/test-results/**"] }
+  },
   clearScreen: false
 });

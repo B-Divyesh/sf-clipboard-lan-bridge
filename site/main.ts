@@ -29,9 +29,17 @@ async function loadRelease() {
   const status = document.querySelector<HTMLElement>("#download-status")!;
   hero.textContent = `Download for ${label} ↓`; note.textContent = `${label} detected · unsigned community build`;
   try {
-    const releaseResponse = await fetch("https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1", { cache: "no-store" });
-    if (!releaseResponse.ok) throw new Error("release manifest not published yet");
-    const releases = await releaseResponse.json() as Array<{ tag_name: string; assets?: Array<{ name: string; browser_download_url: string }> }>;
+    type Release = { tag_name: string; assets?: Array<{ name: string; browser_download_url: string }> };
+    const cached = JSON.parse(localStorage.getItem("release:clipboard-lan-bridge") || "null") as { checkedAt: number; releases: Release[] } | null;
+    let releases: Release[];
+    if (cached && cached.checkedAt > Date.now() - 3_600_000) releases = cached.releases;
+    else {
+      if (!navigator.onLine) throw new Error("offline");
+      const releaseResponse = await fetch("https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1", { cache: "no-store" });
+      if (!releaseResponse.ok) throw new Error("release manifest not published yet");
+      releases = await releaseResponse.json() as Release[];
+      localStorage.setItem("release:clipboard-lan-bridge", JSON.stringify({ checkedAt: Date.now(), releases }));
+    }
     const release = releases[0];
     if (!release) throw new Error("release manifest not published yet");
     if (!release.assets?.some(asset => asset.name === "latest.json")) throw new Error("latest.json is not attached to the current release");
@@ -60,6 +68,19 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach(butt
 }));
 
 const url = new URL(location.href); const license = url.searchParams.get("license");
-if (license) { localStorage.setItem("sb_license:clipboard-lan-bridge", license); url.searchParams.delete("license"); history.replaceState({}, "", url); }
+if (license) {
+  localStorage.setItem("sb_license:clipboard-lan-bridge", license);
+  url.searchParams.delete("license");
+  history.replaceState({}, "", url);
+  const panel = document.querySelector<HTMLElement>("#license-return")!;
+  const value = document.querySelector<HTMLElement>("#returned-license")!;
+  value.textContent = license;
+  panel.hidden = false;
+  document.querySelector<HTMLButtonElement>("#copy-license")!.addEventListener("click", async event => {
+    try { await navigator.clipboard.writeText(license); localStorage.removeItem("sb_license:clipboard-lan-bridge"); (event.currentTarget as HTMLButtonElement).textContent = "License copied"; }
+    catch { (event.currentTarget as HTMLButtonElement).textContent = "Select the license above"; }
+  });
+  document.querySelector<HTMLButtonElement>("#dismiss-license")!.addEventListener("click", () => { localStorage.removeItem("sb_license:clipboard-lan-bridge"); panel.hidden = true; });
+}
 void loadRelease();
-if ("serviceWorker" in navigator && location.protocol === "https:") void navigator.serviceWorker.register("/sw.js");
+if ("serviceWorker" in navigator && (location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname))) void navigator.serviceWorker.register("/sw.js");

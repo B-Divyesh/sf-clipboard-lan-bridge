@@ -1,5 +1,5 @@
 export const MAX_TEXT_BYTES = 32_768;
-export const FREE_DEVICE_LIMIT = 2;
+export const FREE_DEVICE_LIMIT = 1;
 
 export function byteLength(value: string): number {
   return new TextEncoder().encode(value).length;

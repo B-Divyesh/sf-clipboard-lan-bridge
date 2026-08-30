@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://clipboard-lan-bridge.sociobot.in/sitemap.xml

@@ -1,0 +1,107 @@
+[
+  {
+    "id": "release-packages",
+    "claim": "Release automation publishes macOS, Windows, and Linux packages with SHA-256 checksums.",
+    "where": "download section and README",
+    "test": "node --test --test-name-pattern @claim:release-packages scripts/verify-release.test.mjs",
+    "sandbox": "inspect the release matrix, release publisher, manifest generation, and both checksum-verifying installers"
+  },
+  {
+    "id": "sample-demo",
+    "claim": "The one-click demo uses realistic sample data and never writes to the real-data namespace.",
+    "where": "landing primary action and demo banner",
+    "test": "npx playwright test --grep @claim:sample-demo",
+    "sandbox": "fresh browser context at /demo/; send and reset; inspect sessionStorage and localStorage"
+  },
+  {
+    "id": "lan-only",
+    "claim": "Transfers go directly between paired devices on the local network without a cloud relay.",
+    "where": "landing, app, README",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml pair_send_receive_replay_and_expire_lifecycle",
+    "sandbox": "two fresh native identities; pair and process an authenticated transfer directly"
+  },
+  {
+    "id": "end-to-end-encryption",
+    "claim": "Transfer text and authenticated metadata are encrypted between paired devices.",
+    "where": "landing, app, README",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml transfer_metadata_is_authenticated",
+    "sandbox": "fresh keys; decrypt valid transfer; reject changed ciphertext, transfer ID, and expiry"
+  },
+  {
+    "id": "explicit-pairing",
+    "claim": "A receiving device must approve the matching pairing code before transfer.",
+    "where": "How it works and app Devices view",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml pair_send_receive_replay_and_expire_lifecycle",
+    "sandbox": "fresh native identities; assert pending matching code before adding the peer"
+  },
+  {
+    "id": "phone-companion",
+    "claim": "A nearby phone can pair through the desktop app's local companion page and exchange encrypted text.",
+    "where": "landing download section, app Devices view, README",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml phone_companion_crypto_round_trip",
+    "sandbox": "fresh desktop and phone P-256 identities; encrypt, decrypt, and reject changed expiry"
+  },
+  {
+    "id": "no-clipboard-monitoring",
+    "claim": "The app reads the clipboard only after the Paste from clipboard action.",
+    "where": "landing, app, README",
+    "test": "npx playwright test --grep @claim:no-clipboard-monitoring",
+    "sandbox": "fresh app page with a clipboard spy; wait, then select Paste from clipboard"
+  },
+  {
+    "id": "text-32kb",
+    "claim": "Only UTF-8 text of 32 KB or less can be sent.",
+    "where": "landing, app, README",
+    "test": "npx playwright test --grep @claim:text-32kb",
+    "sandbox": "fresh demo; submit 8,193 four-byte Unicode characters and observe rejection"
+  },
+  {
+    "id": "expiry",
+    "claim": "Free transfers expire after 2 or 10 minutes.",
+    "where": "landing, app, README",
+    "test": "npx playwright test --grep @claim:expiry",
+    "sandbox": "fresh demo; choose two minutes, send, and inspect the resulting expiry"
+  },
+  {
+    "id": "no-telemetry",
+    "claim": "The product includes no analytics, advertising, or telemetry.",
+    "where": "landing, privacy, README",
+    "test": "npx playwright test --grep @claim:no-telemetry",
+    "sandbox": "fresh demo and app flow with every outgoing request recorded"
+  },
+  {
+    "id": "no-account",
+    "claim": "The free sample and local transfer flow require no account.",
+    "where": "pricing and README",
+    "test": "npx playwright test --grep @claim:no-account",
+    "sandbox": "fresh demo; assert there is no sign-in field and complete a send"
+  },
+  {
+    "id": "two-device-free-tier",
+    "claim": "The free route supports the local device plus one paired device.",
+    "where": "pricing, app, README",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml free_and_paid_limits_are_enforced_in_native_state",
+    "sandbox": "fresh native state; add one peer and assert a second peer is rejected"
+  },
+  {
+    "id": "paid-route-pass",
+    "claim": "A valid $9 one-time Route pass adds unlimited peers and one-hour expiry.",
+    "where": "pricing, app, terms, README",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml free_and_paid_limits_are_enforced_in_native_state",
+    "sandbox": "native state with recorded valid and revoked verdicts; assert peer and expiry gates"
+  },
+  {
+    "id": "native-license-verification",
+    "claim": "The installed app verifies a pasted license through its native core and ignores browser-written verdicts.",
+    "where": "app Route pass view and README",
+    "test": "npx playwright test --grep @claim:native-license-verification",
+    "sandbox": "Tauri invoke fixture; seed a forged localStorage verdict, then verify a recorded valid native response"
+  },
+  {
+    "id": "license-handoff",
+    "claim": "Checkout return exposes a license that can be copied into the installed app.",
+    "where": "website checkout return and app restore form",
+    "test": "npx playwright test --grep @claim:license-handoff",
+    "sandbox": "fresh website context with a recorded checkout-return token"
+  }
+]
