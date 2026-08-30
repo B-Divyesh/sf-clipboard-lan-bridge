@@ -27,6 +27,23 @@ test("the first screen exposes the sample action and does not overflow", async (
   expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
 });
 
+test("@claim:platform-download selects the current package for this operating system", async ({ browser }) => {
+  const context = await browser.newContext({ userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36" });
+  const page = await context.newPage();
+  await page.route("https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1", route => route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify([{ tag_name: "v9.8.7", assets: [
+      { name: "latest.json", browser_download_url: "https://downloads.example/latest.json" },
+      { name: "linux-x86_64-Clipboard.LAN.Bridge.AppImage", browser_download_url: "https://downloads.example/bridge.AppImage" },
+      { name: "windows-x86_64-Clipboard.LAN.Bridge.msi", browser_download_url: "https://downloads.example/bridge.msi" }
+    ] }])
+  }));
+  await page.goto("/");
+  await expect(page.locator("#main-download")).toHaveText("Download v9.8.7 for Linux");
+  await expect(page.locator("#main-download")).toHaveAttribute("href", "https://downloads.example/bridge.AppImage");
+  await context.close();
+});
+
 test("@claim:sample-demo loads, sends, resets, and isolates realistic sample data", async ({ page }) => {
   await page.goto("/demo/");
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
@@ -83,7 +100,9 @@ test("offline reload uses the cached shell without console errors", async ({ bro
   const context = await browser.newContext();
   const page = await context.newPage();
   const errors: string[] = [];
+  const requests: string[] = [];
   page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
+  page.on("request", request => requests.push(new URL(request.url()).pathname));
   await page.goto("http://127.0.0.1:4173/demo/");
   await page.evaluate(() => navigator.serviceWorker.ready);
   if (!await page.evaluate(() => Boolean(navigator.serviceWorker.controller))) await page.reload();
@@ -91,6 +110,8 @@ test("offline reload uses the cached shell without console errors", async ({ bro
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
+  expect(requests.some(path => path.startsWith("/B-Divyesh/"))).toBe(false);
+  expect(requests.some(path => path.startsWith("/api/v1/products/"))).toBe(false);
   expect(errors).toEqual([]);
   await context.close();
 });

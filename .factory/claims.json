@@ -7,6 +7,13 @@
     "sandbox": "inspect the release matrix, release publisher, manifest generation, and both checksum-verifying installers"
   },
   {
+    "id": "platform-download",
+    "claim": "The site selects the current package for the visitor's operating system.",
+    "where": "download section",
+    "test": "npx playwright test --grep @claim:platform-download",
+    "sandbox": "fresh landing page with a recorded GitHub release response; assert the Linux AppImage is selected"
+  },
+  {
     "id": "sample-demo",
     "claim": "The one-click demo uses realistic sample data and never writes to the real-data namespace.",
     "where": "landing primary action and demo banner",

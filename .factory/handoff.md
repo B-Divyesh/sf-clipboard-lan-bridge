@@ -33,7 +33,7 @@ Observed on 2026-08-30:
 
 - `npm ci`: pass; 67 packages audited; 0 vulnerabilities.
 - `npm run check`: pass; TypeScript and Cargo check.
-- `npm test`: pass; 3 Vitest, 1 release-policy test, 30 Playwright desktop/mobile executions, and 6 Rust tests.
+- `npm test`: pass; 3 Vitest, 1 release-policy test, 32 Playwright desktop/mobile executions, and 6 Rust tests.
 - Browser coverage: desktop and 390 px, keyboard focus, 200% text, serious/critical Axe findings, privacy request log, offline reload, 404/CSP policy, demo isolation, license handoff, and clipboard actions.
 - Native lifecycle: real loopback sockets cover pair → approve → send → receive → replay rejection → expiry rejection.
 - Native phone smoke: local companion returned HTTP 200, displayed one `h1`, produced a six-character code, logged no console errors, and had zero serious/critical Axe findings at 390×844.
@@ -45,7 +45,17 @@ Observed on 2026-08-30:
 
 ## Release and deployment
 
-Release and live deployment evidence is appended after the v0.1.3 workflow and production upload complete.
+- Tag `v0.1.3` points to desktop release commit `550b4a5976bb939d453717fd782c498c390b2004`.
+- GitHub Actions run `33298966333` completed successfully. The release contains arm64/x86_64 macOS DMGs, Windows MSI/EXE, and Linux AppImage/DEB/RPM packages plus `SHA256SUMS` and valid `latest.json` metadata.
+- Downloaded DEB SHA-256 `665dc8d6173a596fc2111860634ae32c9c067173111f117989a4a5ad6a112aa5` matches `SHA256SUMS`.
+- The live installer downloaded and verified AppImage SHA-256 `020ad191346daa36fd5715ce97edbf0c932fd9124c88c8ed456d3f72658bc7ee`, installed it in an isolated directory, and the released app launched under Xvfb. Its phone companion answered HTTP 200 on port 38743.
+- `dist/site` was deployed to the existing `sf-clipboard-lan-bridge` Static Web App. No DNS, billing, database, vault, or unrelated service was read or modified.
+- Live routes `/`, `/demo/`, `/privacy/`, `/terms/`, `/robots.txt`, and `/sitemap.xml` return 200; an unknown route returns the designed page with 404 status.
+- Live HTML SHA-256 `8910a104d9faa413138c55cdf048317c882e3e9881206e20b0f593c2c95b13b1` and service-worker SHA-256 `644db754dff5b74de03668a13b30a1eb5eada5595c1453d7b748d5640dec124d` match the deployment build. CSP, HSTS, `nosniff`, referrer, and permissions headers are present.
+- Live desktop and 390 px checks across all public routes found one `h1`, no overflow, no serious/critical Axe finding, and no console error on successful pages.
+- Live offline reload of `/demo/` retains the demo banner with an active service worker and no console errors.
+- The live Linux action resolves to the v0.1.3 AppImage and reports its published checksum without console errors.
+- Live Lighthouse mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 0.9 s, LCP 1.1 s, TBT 30 ms, CLS 0.
 
 ## Needs operator action
 

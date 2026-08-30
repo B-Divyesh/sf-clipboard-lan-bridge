@@ -1,4 +1,4 @@
-const CACHE = "clipboard-lan-bridge-v2";
+const CACHE = "clipboard-lan-bridge-v3";
 const PAGES = ["/", "/demo/", "/privacy/", "/terms/"];
 const SHELL = ["/favicon.svg", "/assets/bridge-poster-768.webp", "/assets/bridge-poster-1200.webp"];
 
@@ -9,7 +9,10 @@ async function precache() {
     const response = await fetch(path);
     await cache.put(path, response.clone());
     const html = await response.text();
-    const assets = [...html.matchAll(/(?:src|href)="([^"#]+)"/g)].map(match => new URL(match[1], new URL(path, self.location.origin)).pathname).filter(asset => asset.startsWith("/") && !PAGES.includes(asset));
+    const assets = [...html.matchAll(/(?:src|href)="([^"#]+)"/g)]
+      .map(match => new URL(match[1], new URL(path, self.location.origin)))
+      .filter(asset => asset.origin === self.location.origin && !PAGES.includes(asset.pathname))
+      .map(asset => asset.pathname);
     await cache.addAll([...new Set(assets)]);
   }));
 }
