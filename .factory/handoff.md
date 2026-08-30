@@ -50,6 +50,13 @@ Observed on 2026-08-30 for repair 2:
 
 ## Release and deployment
 
+### Repair 2 deployment
+
+- Repair commit `7318823c3c843f6c47e7b9d34701eb25d71d7de3` was pushed to `origin/main`.
+- Built `dist/site/` was deployed to the scoped `sf-clipboard-lan-bridge` Static Web App production environment. The deployment returned `https://lemon-water-0a2acb910.7.azurestaticapps.net`; the production custom domain serves the deployed `main-C5qXxzqc.js` asset.
+- Live identity checks: `/`, `/demo/`, `/privacy/`, `/terms/`, `/robots.txt`, and `/sitemap.xml` return 200; an unknown route returns 404. The response includes CSP, HSTS, nosniff, referrer, and permissions headers.
+- Live Playwright + Axe checks at desktop (1440×900) and mobile (390×844) passed on `/`, `/demo/`, `/privacy/`, and `/terms/`: one `h1`, one `main`, no horizontal overflow, no console errors, and no serious/critical violations.
+
 - Tag `v0.1.3` points to desktop release commit `550b4a5976bb939d453717fd782c498c390b2004`.
 - GitHub Actions run `33298966333` completed successfully. The release contains arm64/x86_64 macOS DMGs, Windows MSI/EXE, and Linux AppImage/DEB/RPM packages plus `SHA256SUMS` and valid `latest.json` metadata.
 - Downloaded DEB SHA-256 `665dc8d6173a596fc2111860634ae32c9c067173111f117989a4a5ad6a112aa5` matches `SHA256SUMS`.
