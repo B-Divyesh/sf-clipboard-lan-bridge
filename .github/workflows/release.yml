@@ -46,9 +46,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm
       - run: npm ci
       - name: Install Playwright Chromium
+        if: matrix.platform == 'ubuntu-latest'
         run: npx playwright install chromium
-      - name: Run quality gates
+      - name: Run complete quality gates
+        if: matrix.platform == 'ubuntu-latest'
         run: npm run check && npm test
+      - name: Run cross-platform quality gates
+        if: matrix.platform != 'ubuntu-latest'
+        run: npm run check && npm run test:core
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -13,6 +13,7 @@
     "build": "npm run build:app && npm run build:site",
     "pretest": "npm run build:mobile",
     "test": "vitest run src/domain.test.ts && node --test scripts/verify-release.test.mjs && playwright test && cargo test --manifest-path src-tauri/Cargo.toml --no-default-features",
+    "test:core": "vitest run src/domain.test.ts && node --test scripts/verify-release.test.mjs && cargo test --manifest-path src-tauri/Cargo.toml --no-default-features",
     "test:ui": "playwright test",
     "precheck": "npm run build:mobile",
     "check": "tsc --noEmit && cargo check --manifest-path src-tauri/Cargo.toml --lib --no-default-features"

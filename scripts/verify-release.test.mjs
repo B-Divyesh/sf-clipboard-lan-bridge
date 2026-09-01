@@ -18,9 +18,10 @@ test("release workflow provisions the Linux GUI toolchain before the Tauri packa
   for (const packageName of ["libwebkit2gtk-4.1-dev", "libappindicator3-dev", "librsvg2-dev", "patchelf", "rpm"]) {
     assert.match(workflow, new RegExp(packageName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.match(workflow, /Install Linux bundle dependencies[\s\S]*npm ci[\s\S]*Run quality gates[\s\S]*tauri-apps\/tauri-action/);
+  assert.match(workflow, /Install Linux bundle dependencies[\s\S]*npm ci[\s\S]*Run complete quality gates[\s\S]*tauri-apps\/tauri-action/);
   assert.match(workflow, /npm run check && npm test/);
-  assert.match(workflow, /Install Playwright Chromium[\s\S]*npx playwright install chromium[\s\S]*Run quality gates/);
+  assert.match(workflow, /npm run check && npm run test:core/);
+  assert.match(workflow, /Install Playwright Chromium[\s\S]*npx playwright install chromium[\s\S]*Run complete quality gates/);
 });
 
 test("release provenance records the exact tagged source commit", () => {
