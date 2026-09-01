@@ -2,7 +2,7 @@
 
 ## Result
 
-The post-session 403 failure is repaired locally from base `fb377180bb9636a852387469a4b432a9552578f5`. The product remains a Tauri 2 desktop app with a static landing site in `dist/site/`.
+The post-session 403 failure is repaired from base `fb377180bb9636a852387469a4b432a9552578f5`. Repair commit `7a16d10` was pushed to `main` and deployed to production on 2026-09-01 UTC. The product remains a Tauri 2 desktop app with a static landing site in `dist/site/`.
 
 ## Root cause and repair
 
@@ -39,7 +39,15 @@ cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 
 ## Deploy and verify
 
-The scoped production target is Azure Static Web App `sf-clipboard-lan-bridge` in resource group `sociobot`, default hostname `lemon-water-0a2acb910.7.azurestaticapps.net`. Deploy only `dist/site/` with that resource's token. Record the deployed commit, worker verifier result, live browser checks, Lighthouse result, file identity, and link/package verification here after deployment.
+The verified `dist/site/` artifact was uploaded with Static Web Apps CLI 2.0.10 to the scoped Azure Static Web App `sf-clipboard-lan-bridge` in resource group `sociobot`. The custom domain and default hostname serve the repaired artifact.
+
+- `/opt/fleet/lib/verify-url.sh` passed for `/`, `/demo/`, `/privacy/`, and `/terms/`: each returned 200 with the expected title, `lang="en"`, one `<h1>`, a `<main>`, complete image alt attributes, and no console errors.
+- A fresh live Playwright suite passed 41/41 checks across desktop and 390 px mobile. It covered five public routes, Axe serious/critical findings, keyboard skip focus, 44 px targets, overflow, all three platform package links, reduced motion, demo send/isolation, CSP, and offline reload from `clipboard-lan-bridge-v6`.
+- The live suite recorded zero off-origin cold-load requests, zero responses at or above 400, zero console errors, and zero page errors on both viewports.
+- Live Lighthouse scored 100 performance, 100 accessibility, 100 best practices, and 100 SEO. LCP was 1.1 s, CLS was 0, and total blocking time was 40 ms.
+- All 22 deployable files were byte-identical between local `dist/site/` and the custom domain. `staticwebapp.config.json` correctly returned 404. The default hostname's root HTML also matched local SHA-256 `c5a3d474f4a86030c1ad7388a9ba4cf00d568b79bd730d65aada722db1ebc1ee`.
+- The live crawl found 15 links and no failing target.
+- Screenshots, returned HTML, verifier JSON, and the full live Lighthouse report are in `.factory/evidence/repair-5/`.
 
 ## Run locally
 
