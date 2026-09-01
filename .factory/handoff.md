@@ -1,17 +1,64 @@
-# Clipboard LAN Bridge — verification 4 handoff
+# Clipboard LAN Bridge — repair 6 handoff
 
-## Result: FAIL
+## Result
 
-Candidate `7eacbfe4dd6d3039b722b4fbce441b09f89643f3` was independently verified against <https://clipboard-lan-bridge.sociobot.in> on 2026-09-01 UTC. The full evidence is in `.factory/verification-4.md`.
+The stale desktop-package release blocker is repaired and deployed. The public site now binds to immutable GitHub Release `v0.1.6`, whose desktop packages were built from `c7271bc7818695e3a3caab69b9aa66924ed249f9`. Its landing manifest is byte-identical to the release asset.
 
-The static website, demo, automated claims, build, native checks, accessibility, privacy boundary, offline reload, headers, and performance checks passed. The candidate is not releasable because:
+The $9 checkout remains intentionally unavailable. The controller explicitly required that it remain unavailable until the shared Sociobot product registration is enabled; this worker did not touch any shared Sociobot resource. The site and app state this honestly and offer only existing-license restore.
 
-1. The advertised $9 Personal Route pass has no active product-scoped checkout. The documented checkout endpoint returned HTTP 404.
-2. The downloadable desktop packages are v0.1.4 from source commit `f0df71ba3d299763e843a6723603125fbcbf03ee`, not the candidate. The candidate is seven commits later and includes desktop-phone companion changes that are absent from that published package.
+## Root cause and repair
 
-Required next steps: enable and verify the scoped checkout flow; tag and publish desktop packages from the final candidate; update `site/release-manifest.json`; then rerun independent verification.
+- Reproduced the verifier's exact provenance failure. The old v0.1.4 manifest named `f0df71ba3d299763e843a6723603125fbcbf03ee`; the candidate had changed five desktop phone-companion inputs after that source commit.
+- Added `@regression:release-provenance`: a published manifest must point to a real commit and `git diff` must show no desktop package-input changes after it. The regression fails with the reported five stale files and passes for v0.1.6.
+- Added a safe release-draft state. It never advertises unbuilt download links; it renders “Downloads are being published” until GitHub Actions produces the immutable `latest.json`.
+- The tag workflow validates the planned tag on every OS, checks out full history for provenance, emits `release_state: "published"`, package URLs, and SHA-256 values. The validation now explicitly uses Bash so the Windows job runs it correctly.
+- `v0.1.5` was an unsuccessful tag-only attempt: Windows interpreted the original heredoc as PowerShell. It published no release. `v0.1.6` is the successful immutable release.
 
-## Previous builder handoff
+## Release evidence
+
+- GitHub Actions run: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33568179450> — Linux, Windows, macOS arm64, macOS x86_64, and publish all passed.
+- Release: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/tag/v0.1.6>. It contains AppImage, DEB, RPM, MSI, EXE, both DMGs, `SHA256SUMS`, and `latest.json`.
+- A fresh DEB download, <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.deb>, measured `859e13fd0a668fb4b25f909eb8318ea7f8d8c41a64c46cab7951b0ed867b2dcb`, exactly matching `SHA256SUMS` and `latest.json`.
+- Live `/install.sh` and `/install.ps1` return 200/no-cache and read GitHub's latest manifest before SHA-256 verification. The release manifest redirect is live, and the selected site button points to the immutable Linux AppImage URL.
+
+## Verification
+
+```sh
+npm ci
+npm test
+npm run check
+npm run build
+cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
+```
+
+- Clean `npm ci` installed 67 packages with 0 vulnerabilities. `npm test` passed 3 Vitest tests, 5 release-policy tests, 46 Playwright executions, and 8 native tests.
+- All 21 commands in `.factory/claims.json` passed independently from the final checkout.
+- Production site: `verify-url.sh` passed for root, demo, privacy, and terms. Live Axe at 390 px found zero serious/critical violations on all four routes.
+- Live desktop and 390 px checks passed: v0.1.6 OS selection, skip-link keyboard behavior, no off-origin cold-load requests, designed 404, no overflow, and offline demo reload from service-worker cache v7.
+- Response policy has CSP `frame-ancestors 'none'`, HSTS, `nosniff`, `no-referrer`, and disabled camera/microphone/geolocation. No analytics or GitHub API request occurs during public-page load.
+- Mobile Lighthouse recorded Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.1 s, CLS 0, TBT 30 ms. Lighthouse wrote a complete scored report but logged the known post-report `TARGET_CRASHED` screenshot-tab error.
+
+## Deploy and evidence
+
+`dist/site/` was deployed to production with Static Web Apps CLI 2.0.10 for scoped app `sf-clipboard-lan-bridge` in resource group `sociobot`. The live root SHA-256 matches local `dist/site/index.html`: `3c96973f2f77f4a6c37fa8f8ed5bc2699b673be7b27ed9eddfef6a7fcddea09d`.
+
+Live page captures, verifier JSON, screenshots, and Lighthouse report are in `.factory/evidence/repair-6/`.
+
+## Run locally
+
+```sh
+npm ci
+npm run tauri dev
+npm test
+npm run build
+```
+
+## Known operator action
+
+Register and enable the scoped `clipboard-lan-bridge` product in Sociobot billing, confirm a hosted checkout → return → license path, then replace the unavailable checkout copy with the $9 purchase action. This is deliberately not done in this repair.
+
+## Historical handoff
 
 ## Result
 
