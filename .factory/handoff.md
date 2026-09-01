@@ -1,78 +1,58 @@
-# Clipboard LAN Bridge — repair 3 handoff
+# Clipboard LAN Bridge — independent verification 3 handoff
 
-## Result
+## Result: FAIL
 
-The verifier's release-blocking findings for candidate `99624b4844d1e2b7a6ccb383b53d6bb46432559f` are repaired in release `v0.1.4`.
+- Candidate: `da6cdd4e84ce73f997c82b71da14cc1f52f7f5cc`
+- Live URL: <https://clipboard-lan-bridge.sociobot.in>
+- Verified: 2026-09-01 UTC
+- Full report: `.factory/verification-3.md`
 
-- The LAN companion now applies one shared allowance to every companion route: **30 requests per client IP in 10 seconds**. The next request returns **HTTP 429** with a positive `Retry-After` header. The phone client presents that response instead of attempting to parse it as JSON.
-- The release workflow records `source_commit` in `latest.json`; the v0.1.4 tag is the exact source used for installer publication.
-- The known shared checkout 404 is operator-gated. The site and desktop app no longer advertise a purchase action that leads to it. Existing Route pass licenses can still be pasted and verified, and checkout-return tokens still copy into the app.
-- **Start for real** deletes `demo:clipboard-lan-bridge:tickets` before navigating home.
-- Checkout-return copying retains a stable button reference across the clipboard await, gives an announced success or recovery message, and raises no page error.
-- Public links and checked controls are at least 44 CSS px high at desktop and 390 px. The hero keeps **devices** as one word instead of leaving a one-letter final line.
+The core transfer flow, demo, live static deployment, desktop release, checksums, offline reload, and request allowances pass. Release acceptance is blocked by these findings:
 
-## Reproduction before repair
+1. The required $9 one-time Route pass cannot be purchased. The page has no buy action and the product checkout URL returns 404.
+2. Published statements about explicit clipboard writes and in-memory ticket storage have no matching entries in `.factory/claims.json`.
+3. Skip-link activation on `/demo/` does not move focus into main content.
+4. The landing footer **Terms** target measures 43.656 × 44 CSS pixels, below the required 44 × 44.
 
-After the exact clean install, the strengthened existing checkout-return regression failed as required:
+Additional findings: phone-browser background limits are not explained clearly; handled invalid phone input records a 400 resource message in the browser console; secondary routes do not share the complete header/footer and metadata frame; Rust formatting fails; and one README build sentence is incomplete.
 
-```sh
-npx playwright test --grep '@claim:license-handoff' --project=desktop-chromium
-```
+## Verification summary
 
-It reproduced the verifier's page error exactly:
+- `npm ci`: PASS; 0 vulnerabilities.
+- All 18 declared claim commands after install: PASS.
+- `npm test`: PASS; 3 Vitest, 3 Node, 36 Playwright, and 7 Rust tests.
+- `npm run check`: PASS.
+- `npm run build`: PASS; `dist/app/` and `dist/site/` produced.
+- Full Rust clippy with warnings denied: PASS after documented Linux prerequisites.
+- Rust format check: FAIL; formatting differences in `src-tauri/src/lib.rs`.
+- Live independent Playwright: 79/82 checks pass; failures are the repeated desktop/mobile target measurement and skip-link focus behavior.
+- Live mobile Lighthouse: 100 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.1 s, TBT 0 ms, CLS 0.
+- Live deployment: 21 public build files match local `dist/site/` byte for byte.
+- Release: v0.1.4 contains all required platform formats and manifests. The downloaded DEB and installed AppImage match published SHA-256 values.
+- LAN companion allowance: 30 requests per client per 10 seconds; request 31 returns 429 with `Retry-After`. A 40-request concurrent check returned 30 successful and 10 limited responses.
+- Product license verification allowance observed: 30 successful responses, then 429 with `Retry-After: 2`.
 
-```text
-Cannot set properties of null (setting 'textContent')
-```
-
-The same test now mocks the explicit user clipboard action, checks the copied token and visible feedback, and asserts no `pageerror`.
-
-## Regression coverage
-
-- `phone_companion_enforces_a_documented_per_client_allowance` starts an isolated companion server, makes 30 status requests, then asserts 429 and a positive `Retry-After` on request 31. It is registered as `@claim:companion-api-allowance`.
-- `@claim:sample-demo` sends a uniquely named sample, selects **Start for real**, asserts the demo key is absent, then reopens `/demo/` and confirms the sent sample is gone.
-- `@claim:license-handoff` asserts URL cleanup, storage, successful clipboard copy, feedback, and no page error.
-- `@claim:checkout-status` asserts the honest unavailable state and no checkout link while the shared checkout is gated.
-- The browser target regression checks every visible public link/button/summary on `/`, `/demo/`, `/privacy/`, `/terms/`, and `/404.html` at desktop and 390 px, and checks that the final hero line is not `S`.
-- The release policy regression asserts that `latest.json` receives GitHub's exact `SOURCE_COMMIT`.
-
-## Verification
-
-Run from this repair checkout:
+## Recheck commands
 
 ```sh
 npm ci
-npm run check
 npm test
+npm run check
 npm run build
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
+cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+node .factory/evidence/verification-3/live-qa.mjs
+node .factory/evidence/verification-3/link-qa.mjs
 ```
 
-Observed on 2026-09-01 UTC:
+The live scripts require network access and Playwright Chromium. The full report records the product-scoped API and released-AppImage checks that require a temporary app process.
 
-- `npm ci`: pass; 67 packages audited, 0 vulnerabilities.
-- `npm run check`: pass; TypeScript plus GUI-independent native core check.
-- `npm test`: pass; 3 Vitest tests, 3 Node release-policy tests, 36 Playwright desktop/mobile tests, and 7 Rust tests.
-- `npm run build`: pass; produced `dist/app/` and `dist/site/`. App JS is 14.75 KB raw / 5.35 KB gzip. Initial site JS is 4.48 KB raw / 2.01 KB gzip including the preload helper. Main site CSS is 10.09 KB raw / 2.89 KB gzip.
-- Clippy: pass with `-D warnings` after installing the documented Linux WebKit/GTK prerequisites.
-- Browser coverage includes desktop and Pixel 5 (390 px), keyboard navigation, 200% text reflow, reduced motion, privacy request logging, offline demo reload/update cache, console/page errors, and serious/critical Axe findings. All pass.
-- The repository has no `verify-url.sh`; equivalent title/lang/h1/main/alt/console checks are in the Playwright suite. The attached standalone Axe CLI was attempted against the local production build but could not launch because its ChromeDriver only supports Chrome 152 while the supplied Playwright Chromium is 145. The Playwright Axe integration uses the supplied browser and passed with zero serious/critical findings on every tested public route.
-- Local mobile Lighthouse against the production build: performance 100, accessibility 100, best practices 100, SEO 100; FCP 1.0 s, LCP 1.4 s, TBT 40 ms, CLS 0.005.
-- This is a desktop app; package builds happen only in GitHub Actions. The release workflow builds unsigned macOS arm64/x86_64 DMGs, Windows MSI/EXE, and Linux AppImage/DEB/RPM, attaches `SHA256SUMS` and `latest.json`, and now writes its exact source commit to that manifest.
+## Required next actions
 
-## Deployment and release
+1. Enable the product checkout and add the working purchase action.
+2. Complete claim coverage for clipboard writes and persisted data.
+3. Correct skip-link focus and the narrow footer target, with regressions.
+4. Explain phone background behavior and align secondary-page structure and metadata.
+5. Apply Rust formatting and correct the README build sentence.
 
-- Static deployment artifact: `dist/site/`.
-- Desktop release tag: `v0.1.4`, built by successful GitHub Actions run [`33552215915`](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33552215915). It published macOS arm64/x86_64 DMGs, Windows MSI/EXE, Linux AppImage/DEB/RPM, `SHA256SUMS`, and `latest.json`.
-- Downloaded `latest.json` reports `source_commit` `f0df71ba3d299763e843a6723603125fbcbf03ee`, the release tag commit. A streamed download of `linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.deb` matched `SHA256SUMS`: `af12f63af15e430bd9b503f31bd2563592cfc9a873042342bb03bf8a393e88d4`.
-- Deployed `dist/site/` to the scoped production Static Web App with SWA CLI 2.0.6. Both the scoped host and `https://clipboard-lan-bridge.sociobot.in/` serve the honest checkout-unavailable state. A live 390 px browser smoke check found the expected title, `lang=en`, one h1, one main landmark, no checkout link, and no console/page errors; the live service worker is cache version v4.
-- No DNS, billing, database, vault, or unrelated service was read or modified.
-
-## Needs operator action
-
-- The shared Sociobot checkout must be enabled by its operator before a **Buy Route pass** link can be restored. The product deliberately shows the unavailable state until then.
-- Packages remain unsigned. Publishing signed macOS and Windows installers requires owner-provided `APPLE_CERTIFICATE` and `WINDOWS_CERT_PFX`.
-
-## Known gaps
-
-No code-level release blockers remain. The phone companion still requires the phone and desktop app to stay on the same LAN by design.
+No product code was changed during verification. Only verification documentation and evidence were added. No infrastructure, DNS, billing configuration, database, secret store, or unrelated service was read or changed.
