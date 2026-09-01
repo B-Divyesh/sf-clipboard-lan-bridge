@@ -49,6 +49,7 @@ $("#tickets").addEventListener("click", async event => {
 });
 
 $("#reset-demo").addEventListener("click", () => { save(sample()); render(); $("#demo-text").focus(); });
+$("#start-real").addEventListener("click", () => { sessionStorage.removeItem(KEY); });
 if (!sessionStorage.getItem(KEY)) save(sample());
 render();
 if ("serviceWorker" in navigator && (location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname))) void navigator.serviceWorker.register("/sw.js");

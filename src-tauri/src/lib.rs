@@ -2,9 +2,10 @@
 
 use aes_gcm::{Aes256Gcm, Nonce as AesNonce};
 use axum::{
-    extract::{Query, State as AxumState},
+    extract::{ConnectInfo, Query, State as AxumState},
     http::{header, HeaderMap, HeaderValue, StatusCode},
-    response::{Html, IntoResponse},
+    middleware::{self, Next},
+    response::{Html, IntoResponse, Response},
     routing::{get, post},
     Json, Router,
 };
@@ -25,8 +26,8 @@ use std::{
     fs,
     net::{IpAddr, SocketAddr},
     path::PathBuf,
-    sync::Arc,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    sync::{Arc, Mutex},
+    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 #[cfg(feature = "desktop")]
 use tauri::{
@@ -48,6 +49,11 @@ const MAX_WIRE_BYTES: usize = 131_072;
 const MAX_TEXT_BYTES: usize = 32_768;
 const FREE_PEER_LIMIT: usize = 1;
 const MOBILE_PORT: u16 = 38_743;
+/// Every LAN companion route shares this per-client allowance. It keeps a
+/// misbehaving phone page from turning the desktop app into a LAN request
+/// amplifier while leaving normal status polling comfortably below the cap.
+const MOBILE_API_ALLOWANCE: usize = 30;
+const MOBILE_API_WINDOW: Duration = Duration::from_secs(10);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Identity {
@@ -161,6 +167,41 @@ struct Inner {
     network_ready: bool,
     network_error: Option<String>,
     mobile_outbox: HashMap<String, Vec<MobileEnvelope>>,
+}
+
+#[derive(Clone, Default)]
+struct CompanionRateLimiter {
+    clients: Arc<Mutex<HashMap<IpAddr, CompanionRateWindow>>>,
+}
+
+struct CompanionRateWindow {
+    started: Instant,
+    requests: usize,
+}
+
+impl CompanionRateLimiter {
+    /// Returns the whole-second `Retry-After` value when this client has used
+    /// its allowance in the current window.
+    fn retry_after(&self, client: IpAddr) -> Option<u64> {
+        let now = Instant::now();
+        let mut clients = self.clients.lock().expect("companion rate limiter lock");
+        clients.retain(|_, entry| now.duration_since(entry.started) < MOBILE_API_WINDOW);
+        let entry = clients.entry(client).or_insert_with(|| CompanionRateWindow {
+            started: now,
+            requests: 0,
+        });
+        if entry.requests >= MOBILE_API_ALLOWANCE {
+            let remaining = MOBILE_API_WINDOW.saturating_sub(now.duration_since(entry.started));
+            return Some(
+                remaining
+                    .as_secs()
+                    .saturating_add(u64::from(remaining.subsec_nanos() > 0))
+                    .max(1),
+            );
+        }
+        entry.requests += 1;
+        None
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -724,8 +765,33 @@ async fn mobile_inbox(
     Ok(Json(outbox.clone()))
 }
 
-async fn run_mobile_server(shared: Arc<RwLock<Inner>>) {
-    let app = Router::new()
+async fn limit_companion_requests(
+    AxumState(limiter): AxumState<CompanionRateLimiter>,
+    ConnectInfo(remote): ConnectInfo<SocketAddr>,
+    request: axum::extract::Request,
+    next: Next,
+) -> Response {
+    if let Some(retry_after) = limiter.retry_after(remote.ip()) {
+        let mut response = (
+            StatusCode::TOO_MANY_REQUESTS,
+            "Too many companion requests. Wait before trying again.",
+        )
+            .into_response();
+        response.headers_mut().insert(
+            header::RETRY_AFTER,
+            HeaderValue::from_str(&retry_after.to_string())
+                .expect("positive retry-after seconds are valid headers"),
+        );
+        response
+            .headers_mut()
+            .insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+        return response;
+    }
+    next.run(request).await
+}
+
+fn companion_router(shared: Arc<RwLock<Inner>>) -> Router {
+    Router::new()
         .route("/", get(mobile_home))
         .route("/mobile.js", get(mobile_script))
         .route("/mobile.css", get(mobile_style))
@@ -733,9 +799,17 @@ async fn run_mobile_server(shared: Arc<RwLock<Inner>>) {
         .route("/api/status", get(mobile_status))
         .route("/api/send", post(mobile_send))
         .route("/api/inbox", get(mobile_inbox))
-        .with_state(shared);
+        .with_state(shared)
+        .layer(middleware::from_fn_with_state(
+            CompanionRateLimiter::default(),
+            limit_companion_requests,
+        ))
+}
+
+async fn run_mobile_server(shared: Arc<RwLock<Inner>>) {
+    let app = companion_router(shared);
     if let Ok(listener) = tokio::net::TcpListener::bind(("0.0.0.0", MOBILE_PORT)).await {
-        let _ = axum::serve(listener, app).await;
+        let _ = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await;
     }
 }
 
@@ -1579,6 +1653,39 @@ mod tests {
         let mut tampered = encrypted.clone();
         tampered.expires_at += 60_000;
         assert!(mobile_decrypt(&desktop, &mobile_public_key(&phone).unwrap(), &tampered).is_err());
+    }
+
+    #[tokio::test]
+    // @claim:companion-api-allowance
+    async fn phone_companion_enforces_a_documented_per_client_allowance() {
+        let state = Arc::new(RwLock::new(test_inner(fresh_identity())));
+        let listener = TcpListener::bind(("127.0.0.1", 0)).await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            axum::serve(
+                listener,
+                companion_router(state).into_make_service_with_connect_info::<SocketAddr>(),
+            )
+            .await
+            .unwrap();
+        });
+
+        let client = reqwest::Client::new();
+        let status_url = format!(
+            "http://{address}/api/status?device_id=allowance-regression-device"
+        );
+        for _ in 0..MOBILE_API_ALLOWANCE {
+            assert_eq!(client.get(&status_url).send().await.unwrap().status(), StatusCode::OK);
+        }
+        let limited = client.get(&status_url).send().await.unwrap();
+        assert_eq!(limited.status(), StatusCode::TOO_MANY_REQUESTS);
+        let retry_after = limited
+            .headers()
+            .get(header::RETRY_AFTER)
+            .and_then(|value| value.to_str().ok())
+            .and_then(|value| value.parse::<u64>().ok());
+        assert!(retry_after.is_some_and(|seconds| seconds > 0));
+        server.abort();
     }
 
     #[test]

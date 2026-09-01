@@ -84,6 +84,7 @@ jobs:
         env:
           TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
           REPOSITORY: ${{ github.repository }}
+          SOURCE_COMMIT: ${{ github.sha }}
         run: |
           cd release
           sha256sum -- * | sort -k2 > SHA256SUMS
@@ -101,7 +102,7 @@ jobs:
             const sha256 = crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex');
             return { platform, arch, kind, name, url: `https://github.com/${repo}/releases/download/${tag}/${encodeURIComponent(name)}`, sha256 };
           });
-          fs.writeFileSync('latest.json', JSON.stringify({ version: tag, published_at: new Date().toISOString(), assets }, null, 2) + '\n');
+          fs.writeFileSync('latest.json', JSON.stringify({ version: tag, source_commit: process.env.SOURCE_COMMIT, published_at: new Date().toISOString(), assets }, null, 2) + '\n');
           NODE
       - name: Publish release
         uses: softprops/action-gh-release@v2

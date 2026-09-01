@@ -31,7 +31,7 @@
       <section class="hero">
         <div class="hero-copy">
           <div class="line-label">For your own nearby devices</div>
-          <h1>Send text to nearby devices</h1>
+          <h1>Send text to nearby <span class="keep-word">devices</span></h1>
           <p>Move one link, address, or note between your phone and computers on the same local network.</p>
           <div class="hero-actions"><a class="primary-button" href="/demo/">Try it with sample data</a><a id="hero-download" class="quiet-link" href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest">Download the desktop app</a></div>
           <ul class="hero-facts"><li>No cloud relay</li><li>No clipboard monitoring</li><li>Free for two devices</li></ul>
@@ -61,7 +61,7 @@
 
       <section class="price-section" id="price" aria-labelledby="price-title">
         <div class="fare-card free"><span class="ticket-notch"></span><div class="section-kicker">Free route</div><h2 id="price-title">Two devices. No account.</h2><p class="fare">$0</p><ul><li>One paired route</li><li>2 and 10 minute expiry</li><li>Full encryption and safety</li></ul><a class="secondary-button" href="#download">Download free</a></div>
-        <div class="fare-card paid"><span class="ticket-notch"></span><div class="section-kicker">Personal route pass</div><h2>Use every device you own</h2><p class="fare">$9 <small>once</small></p><ul><li>Unlimited paired devices</li><li>Optional 1 hour expiry</li><li>Restore the pass on your devices</li></ul><a class="primary-button" href="https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout">Buy route pass</a><p class="merchant">One-time purchase. Sociobot/Dodo is merchant of record.</p></div>
+        <div class="fare-card paid"><span class="ticket-notch"></span><div class="section-kicker">Personal route pass</div><h2>Use every device you own</h2><p class="fare">$9 <small>once</small></p><ul><li>Unlimited paired devices</li><li>Optional 1 hour expiry</li><li>Restore the pass on your devices</li></ul><p class="checkout-status" role="status">Checkout is temporarily unavailable. If you already have a license, paste it in the desktop app.</p><p class="merchant">One-time purchase. Sociobot/Dodo is merchant of record.</p></div>
       </section>
 
       <section class="download-section" id="download" aria-labelledby="download-title">
@@ -74,8 +74,8 @@
         <p class="mobile-truth">To connect a phone, open the local phone address shown by the desktop app. Nothing needs an app store or cloud account.</p>
       </section>
     </main>
-    <aside class="license-return" id="license-return" aria-labelledby="license-return-title" hidden><h2 id="license-return-title">Move your pass into the app</h2><p>Your purchase is ready. Copy this license, then paste it in the desktop app under Route pass.</p><code id="returned-license"></code><button id="copy-license" type="button">Copy license</button><button id="dismiss-license" type="button">Dismiss</button></aside>
-    <footer><a class="wordmark" href="/"><span>Clipboard <b>LAN Bridge</b></span></a><p>Send short text between nearby devices. Original generated artwork. Built by Param Factory. v0.1.3</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge">Source</a></nav></footer>
+    <aside class="license-return" id="license-return" aria-labelledby="license-return-title" hidden><h2 id="license-return-title">Move your pass into the app</h2><p>Your purchase is ready. Copy this license, then paste it in the desktop app under Route pass.</p><code id="returned-license"></code><p id="license-feedback" role="status" aria-live="polite"></p><button id="copy-license" type="button">Copy license</button><button id="dismiss-license" type="button">Dismiss</button></aside>
+    <footer><a class="wordmark" href="/"><span>Clipboard <b>LAN Bridge</b></span></a><p>Send short text between nearby devices. Original generated artwork. Built by Param Factory. v0.1.4</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge">Source</a></nav></footer>
     <script type="module" src="/main.ts"></script>
   </body>
 </html>

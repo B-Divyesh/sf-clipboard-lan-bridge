@@ -49,22 +49,35 @@ function decrypt(item: Envelope): string {
   return decoder.decode(gcm(cipherKey(), fromB64(item.nonce), aad(item)).decrypt(fromB64(item.ciphertext)));
 }
 
+async function responseError(response: Response): Promise<string> {
+  if (response.status === 429) {
+    const seconds = response.headers.get("Retry-After");
+    return seconds ? `Too many companion requests. Wait ${seconds} seconds, then try again.` : "Too many companion requests. Wait, then try again.";
+  }
+  return (await response.text()) || "The desktop app could not complete that request.";
+}
+
 async function status() {
-  const response = await fetch(`/api/status?device_id=${encodeURIComponent(identity.deviceId)}`);
-  const value = await response.json() as { paired: boolean; desktop_name: string; licensed: boolean };
-  if (value.paired) {
-    $("#pair-view").hidden = true; $("#send-view").hidden = false;
-    $("#route-state").textContent = "Encrypted route ready";
-    $("#paired-with").textContent = `Paired with ${value.desktop_name}. Both devices must stay on this local network.`;
-    $<HTMLOptionElement>("#phone-hour").disabled = !value.licensed;
-    await inbox();
+  try {
+    const response = await fetch(`/api/status?device_id=${encodeURIComponent(identity.deviceId)}`);
+    if (!response.ok) { $("#route-state").textContent = await responseError(response); return; }
+    const value = await response.json() as { paired: boolean; desktop_name: string; licensed: boolean };
+    if (value.paired) {
+      $("#pair-view").hidden = true; $("#send-view").hidden = false;
+      $("#route-state").textContent = "Encrypted route ready";
+      $("#paired-with").textContent = `Paired with ${value.desktop_name}. Both devices must stay on this local network.`;
+      $<HTMLOptionElement>("#phone-hour").disabled = !value.licensed;
+      await inbox();
+    }
+  } catch {
+    $("#route-state").textContent = "Could not reach the desktop app. Check this phone is on the same local network.";
   }
 }
 
 async function inbox() {
   if ($<HTMLElement>("#send-view").hidden) return;
   const response = await fetch(`/api/inbox?device_id=${encodeURIComponent(identity.deviceId)}`);
-  if (!response.ok) return;
+  if (!response.ok) { $("#route-state").textContent = await responseError(response); return; }
   const items = await response.json() as Envelope[];
   const node = $("#phone-inbox"); node.textContent = "";
   for (const item of items) {
@@ -85,7 +98,7 @@ $("#pair-phone").addEventListener("click", async () => {
   const name = $<HTMLInputElement>("#phone-name").value.trim();
   try {
     const response = await fetch("/api/pair", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ device_id: identity.deviceId, device_name: name, public_key: identity.publicKey }) });
-    if (!response.ok) throw new Error(await response.text());
+    if (!response.ok) throw new Error(await responseError(response));
     const result = await response.json() as { desktop_public_key: string; code: string }; localStorage.setItem(DESKTOP_KEY, result.desktop_public_key);
     const box = $("#pair-code"); box.hidden = false; box.innerHTML = "Compare this code in the desktop app:<strong></strong>Then choose Approve device there."; box.querySelector("strong")!.textContent = result.code;
   } catch (error) { $("#pair-error").textContent = String(error).replace("Error: ", ""); }
@@ -98,7 +111,7 @@ $("#send-form").addEventListener("submit", async event => {
   try {
     const transfer = encrypt(text, Number($<HTMLSelectElement>("#phone-expiry").value));
     const response = await fetch("/api/send", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ device_id: identity.deviceId, transfer }) });
-    if (!response.ok) throw new Error(await response.text());
+    if (!response.ok) throw new Error(await responseError(response));
     input.value = ""; $("#send-error").textContent = "Sent to your computer.";
   } catch (error) { $("#send-error").textContent = String(error).replace("Error: ", ""); }
 });

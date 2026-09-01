@@ -18,6 +18,7 @@ It is for people who message themselves just to move a URL, address, command, or
 - Only valid UTF-8 text up to 32 KB is accepted. Free items expire after 2 or 10 minutes.
 - Clipboard reads and writes happen only after a button press.
 - Identities, peer keys, and any license token stay in the operating system app-data directory. Active tickets stay in memory.
+- The LAN companion allows 30 HTTP requests per client IP every 10 seconds. It replies with HTTP 429 and a `Retry-After` header until that window resets.
 
 This is a personal LAN tool, not a password manager. Pair only on networks you trust and compare the displayed code.
 
@@ -65,8 +66,12 @@ Windows PowerShell: `irm https://clipboard-lan-bridge.sociobot.in/install.ps1 | 
 
 The installers read `latest.json` and verify SHA-256 before installing. Packages are also available from the [latest release](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest).
 
+## Deploy
+
+Run `npm run build` to create the static site in `dist/site/`; the factory's static deployment publishes that directory from `main`. Push a version tag such as `v0.1.4` to build the unsigned macOS, Windows, and Linux installers in GitHub Actions. The release `latest.json` records the tag and exact source commit alongside package checksums.
+
 ## License and policy
 
 Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and purchase terms are at `/terms/`.
 
-The free route connects the local device plus one peer. A $9 one-time Personal Route pass adds more peers and one-hour expiry. Verification runs in the Rust core through the Sociobot billing API, so the installed app does not depend on browser CORS.
+The free route connects the local device plus one peer. A $9 one-time Personal Route pass adds more peers and one-hour expiry. The shared checkout is temporarily unavailable, so the site does not offer a purchase action; existing licenses can still be restored in the app. Verification runs in the Rust core through the Sociobot billing API, so the installed app does not depend on browser CORS.

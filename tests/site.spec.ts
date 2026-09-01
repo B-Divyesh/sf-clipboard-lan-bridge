@@ -54,6 +54,13 @@ test("@claim:sample-demo loads, sends, resets, and isolates realistic sample dat
   expect(await page.evaluate(() => ({ demo: sessionStorage.getItem("demo:clipboard-lan-bridge:tickets"), real: localStorage.getItem("clipboard-lan-bridge:tickets") }))).toEqual(expect.objectContaining({ real: null }));
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByText("Gate changed to 8. Share this with the laptop.")).toHaveCount(0);
+  await page.getByLabel("Text or link").fill("Should be discarded when leaving the demo.");
+  await page.getByRole("button", { name: "Send sample ticket" }).click();
+  await page.getByRole("link", { name: "Start for real" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  expect(await page.evaluate(() => sessionStorage.getItem("demo:clipboard-lan-bridge:tickets"))).toBeNull();
+  await page.goto("/demo/");
+  await expect(page.getByText("Should be discarded when leaving the demo.")).toHaveCount(0);
 });
 
 test("@claim:text-32kb enforces the UTF-8 transfer limit", async ({ page }) => {
@@ -89,11 +96,60 @@ test("@claim:no-account runs the sample handoff without sign-in", async ({ page 
 });
 
 test("@claim:license-handoff exposes a checkout token for the desktop app", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.addInitScript(() => {
+    let copied = "";
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: async (value: string) => { copied = value; } } });
+    Object.defineProperty(window, "returnedLicenseClipboard", { get: () => copied });
+  });
   await page.goto("/?license=qa-fixture-license");
   await expect(page).not.toHaveURL(/license=/);
   await expect(page.getByRole("heading", { name: "Move your pass into the app" })).toBeVisible();
   await expect(page.locator("#returned-license")).toHaveText("qa-fixture-license");
   expect(await page.evaluate(() => localStorage.getItem("sb_license:clipboard-lan-bridge"))).toBe("qa-fixture-license");
+  await page.getByRole("button", { name: "Copy license" }).click();
+  await page.waitForTimeout(25);
+  expect(errors).toEqual([]);
+  await expect(page.getByRole("button", { name: "License copied" })).toBeVisible();
+  await expect(page.locator("#license-feedback")).toContainText("License copied. Paste it in the desktop app");
+  expect(await page.evaluate(() => (window as unknown as { returnedLicenseClipboard: string }).returnedLicenseClipboard)).toBe("qa-fixture-license");
+});
+
+test("@claim:checkout-status does not advertise an operator-gated checkout", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Checkout is temporarily unavailable. If you already have a license, paste it in the desktop app.")).toBeVisible();
+  await expect(page.locator('a[href*="/checkout"]')).toHaveCount(0);
+});
+
+test("links and controls retain 44px targets and the hero heading keeps devices whole", async ({ page }, testInfo) => {
+  const viewport = testInfo.project.name.includes("mobile") ? { width: 390, height: 844 } : { width: 1440, height: 900 };
+  await page.setViewportSize(viewport);
+  for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
+    await page.goto(route);
+    const undersized = await page.locator("a:visible, button:visible, summary:visible").evaluateAll(elements => elements
+      .filter(element => element.getBoundingClientRect().height < 44)
+      .map(element => ({ name: (element.textContent || "").trim(), height: element.getBoundingClientRect().height })));
+    expect(undersized).toEqual([]);
+  }
+  await page.goto("/");
+  const headingLines = await page.locator("h1").evaluate(element => {
+    const lines = new Map<number, string>();
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    let node: Node | null;
+    while ((node = walker.nextNode())) {
+      for (let index = 0; index < (node.textContent || "").length; index += 1) {
+        const range = document.createRange();
+        range.setStart(node, index); range.setEnd(node, index + 1);
+        const rect = range.getBoundingClientRect();
+        const top = Math.round(rect.top);
+        lines.set(top, `${lines.get(top) || ""}${node.textContent?.[index] || ""}`);
+      }
+    }
+    return [...lines.entries()].sort(([a], [b]) => a - b).map(([, text]) => text.trim()).filter(Boolean);
+  });
+  expect(headingLines).not.toContain("S");
+  expect(headingLines.join(" ")).toContain("devices");
 });
 
 test("offline reload uses the cached shell without console errors", async ({ browser }) => {

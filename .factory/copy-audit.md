@@ -37,6 +37,8 @@ Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numb
 | Unlimited paired devices | 3 |
 | Optional 1 hour expiry | 4 |
 | Restore the pass on your devices | 6 |
+| Checkout is temporarily unavailable. | 4 |
+| If you already have a license, paste it in the desktop app. | 12 |
 | One-time purchase. | 2 |
 | Sociobot/Dodo is merchant of record. | 5 |
 | Install the desktop app | 4 |
@@ -47,6 +49,8 @@ Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numb
 | Move your pass into the app | 6 |
 | Your purchase is ready. | 4 |
 | Copy this license, then paste it in the desktop app under Route pass. | 13 |
+| License copied. Paste it in the desktop app under Route pass. | 10 |
+| Clipboard access was unavailable. Select the license above and copy it manually. | 12 |
 | Send short text between nearby devices. | 6 |
 | Original generated artwork. | 3 |
 | Built by Param Factory. | 4 |

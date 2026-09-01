@@ -49,6 +49,13 @@
     "sandbox": "fresh desktop and phone P-256 identities; encrypt, decrypt, and reject changed expiry"
   },
   {
+    "id": "companion-api-allowance",
+    "claim": "The LAN companion allows 30 requests per client IP every 10 seconds and replies 429 with Retry-After after that allowance.",
+    "where": "README LAN companion allowance",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features phone_companion_enforces_a_documented_per_client_allowance",
+    "sandbox": "isolated companion server; make 30 status requests from one loopback client, then assert 429 and a positive Retry-After header"
+  },
+  {
     "id": "no-clipboard-monitoring",
     "claim": "The app reads the clipboard only after the Paste from clipboard action.",
     "where": "landing, app, README",
@@ -110,5 +117,12 @@
     "where": "website checkout return and app restore form",
     "test": "npx playwright test --grep @claim:license-handoff",
     "sandbox": "fresh website context with a recorded checkout-return token"
+  },
+  {
+    "id": "checkout-status",
+    "claim": "The site does not advertise the Route pass checkout while the shared checkout is unavailable.",
+    "where": "Route pass section",
+    "test": "npx playwright test --grep @claim:checkout-status",
+    "sandbox": "fresh landing page; assert the temporary checkout status and no checkout link"
   }
 ]

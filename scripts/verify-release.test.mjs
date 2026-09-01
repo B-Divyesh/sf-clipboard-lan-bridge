@@ -21,3 +21,9 @@ test("release workflow provisions the Linux GUI toolchain before the Tauri packa
   assert.match(workflow, /Install Linux bundle dependencies[\s\S]*npm ci[\s\S]*Run quality gates[\s\S]*tauri-apps\/tauri-action/);
   assert.match(workflow, /npm run check && npm test/);
 });
+
+test("release provenance records the exact tagged source commit", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
+  assert.match(workflow, /SOURCE_COMMIT:\s*\$\{\{ github\.sha \}\}/);
+  assert.match(workflow, /source_commit:\s*process\.env\.SOURCE_COMMIT/);
+});

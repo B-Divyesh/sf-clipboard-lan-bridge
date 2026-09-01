@@ -474,7 +474,7 @@ dependencies = [
 
 [[package]]
 name = "clipboard-lan-bridge"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "aes-gcm",
  "axum",

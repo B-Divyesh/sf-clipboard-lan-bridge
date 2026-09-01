@@ -117,7 +117,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         <p class="lede">The free route connects two devices with ten-minute expiry. A $9 one-time pass adds unlimited paired devices and one-hour tickets.</p>
         <div class="pass-ticket">
           <div><span class="stamp">Personal route pass</span><strong id="license-state">Free route active</strong><p>No subscription. Safety controls and accessibility are always included.</p></div>
-          <a class="primary-button" id="buy-pass" href="https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout" target="_blank" rel="noreferrer">Buy for $9</a>
+          <p class="checkout-status" role="status">Checkout is temporarily unavailable. Paste an existing license below.</p>
         </div>
         <form id="license-form" class="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
         <p class="legal-note">Sociobot/Dodo is the merchant of record. <a href="https://clipboard-lan-bridge.sociobot.in/privacy">Privacy</a> · <a href="https://clipboard-lan-bridge.sociobot.in/terms">Terms</a></p>
