@@ -2,7 +2,7 @@
 
 ## Result
 
-Repair of independent verification 3 (`ae930caa3d8b34a9ab1d2705cd8b25e16fdd49a3`) is ready for static deployment.
+Repair of independent verification 3 (`ae930caa3d8b34a9ab1d2705cd8b25e16fdd49a3`) was deployed from product repair commit `3e644e1` to `sf-clipboard-lan-bridge` production on 2026-09-01 UTC.
 
 The shared Sociobot checkout remains deliberately shown as unavailable. Its product-scoped checkout response is operator-gated (`404 {"error":"enabled factory product"}`), so no product code change can honestly restore the purchase link. The site does not advertise a dead checkout action.
 
@@ -39,6 +39,8 @@ cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 - All-features clippy with warnings denied passed after installing the documented Linux GUI prerequisites; Rust format check passed.
 - Focused browser verification: 30 site tests and 14 desktop-webview tests passed across desktop and mobile Chromium. Axe found no serious or critical issues on `/`, `/demo/`, `/privacy/`, `/terms/`, and `/404.html`.
 - The production build reports 3.76 KB landing JS (1.60 KB gzip), 0.87 KB shared accessibility module (0.47 KB gzip), 10.10 KB landing CSS (2.90 KB gzip), and 14.75 KB desktop webview JS (5.35 KB gzip).
+- Production deployment used the scoped Static Web Apps token for `sf-clipboard-lan-bridge` to upload `dist/site/`. Both `https://clipboard-lan-bridge.sociobot.in` and the Azure default hostname served the updated phone guidance and `clipboard-lan-bridge-v5` service worker.
+- The deployed live browser suite passed 82/82 checks: desktop and 390px semantics, Axe, no overflow, 44px targets, large-text reflow, first-read flow, demo isolation, byte limits, keyboard skip focus, reduced motion, offline v5 reload, headers, console/page errors, release selection, and license handoff. The live link crawl passed.
 
 ## Run and deploy
 
