@@ -30,18 +30,41 @@ test("the first screen exposes the sample action and does not overflow", async (
 test("@claim:platform-download selects the current package for this operating system", async ({ browser }) => {
   const context = await browser.newContext({ userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36" });
   const page = await context.newPage();
-  await page.route("https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1", route => route.fulfill({
-    contentType: "application/json",
-    body: JSON.stringify([{ tag_name: "v9.8.7", assets: [
-      { name: "latest.json", browser_download_url: "https://downloads.example/latest.json" },
-      { name: "linux-x86_64-Clipboard.LAN.Bridge.AppImage", browser_download_url: "https://downloads.example/bridge.AppImage" },
-      { name: "windows-x86_64-Clipboard.LAN.Bridge.msi", browser_download_url: "https://downloads.example/bridge.msi" }
-    ] }])
-  }));
+  const offOriginRequests: string[] = [];
+  page.on("request", request => {
+    if (new URL(request.url()).origin !== "http://127.0.0.1:4173") offOriginRequests.push(request.url());
+  });
   await page.goto("/");
-  await expect(page.locator("#main-download")).toHaveText("Download v9.8.7 for Linux");
-  await expect(page.locator("#main-download")).toHaveAttribute("href", "https://downloads.example/bridge.AppImage");
+  await expect(page.locator("#main-download")).toHaveText("Download v0.1.4 for Linux");
+  await expect(page.locator("#main-download")).toHaveAttribute("href", "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.AppImage");
+  expect(offOriginRequests).toEqual([]);
   await context.close();
+});
+
+test("@claim:public-page-network-boundary cold public routes do not request GitHub or emit HTTP errors", async ({ page }) => {
+  const githubRequests: string[] = [];
+  const failedResponses: string[] = [];
+  const consoleErrors: string[] = [];
+  const pageErrors: string[] = [];
+  await page.route("https://api.github.com/**", route => {
+    githubRequests.push(route.request().url());
+    return route.fulfill({ status: 403, contentType: "application/json", body: JSON.stringify({ message: "API rate limit exceeded" }) });
+  });
+  page.on("response", response => {
+    if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.request().method()} ${response.url()}`);
+  });
+  page.on("console", message => { if (message.type() === "error") consoleErrors.push(message.text()); });
+  page.on("pageerror", error => pageErrors.push(error.message));
+
+  for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
+    await page.goto(route);
+    await expect(page.locator("main")).toBeVisible();
+  }
+
+  expect(githubRequests).toEqual([]);
+  expect(failedResponses).toEqual([]);
+  expect(consoleErrors).toEqual([]);
+  expect(pageErrors).toEqual([]);
 });
 
 test("@claim:sample-demo loads, sends, resets, and isolates realistic sample data", async ({ page }) => {

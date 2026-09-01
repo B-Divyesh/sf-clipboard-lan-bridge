@@ -1,5 +1,6 @@
 import "./styles.css";
 import "./a11y";
+import releaseManifest from "./release-manifest.json";
 
 type Asset = { platform: string; arch?: string; kind?: string; url: string; sha256?: string };
 type Manifest = { version: string; assets: Asset[] };
@@ -22,7 +23,7 @@ function preferredAsset(assets: Asset[], os: string): Asset | undefined {
   return matches.find(a => a.kind === "appimage") || matches.find(a => a.kind === "deb") || matches[0];
 }
 
-async function loadRelease() {
+function loadRelease() {
   const os = platform(); const label = { windows: "Windows", macos: "macOS", linux: "Linux" }[os];
   const hero = document.querySelector<HTMLAnchorElement>("#hero-download")!;
   const main = document.querySelector<HTMLAnchorElement>("#main-download")!;
@@ -30,30 +31,8 @@ async function loadRelease() {
   const status = document.querySelector<HTMLElement>("#download-status")!;
   hero.textContent = `Download for ${label} ↓`; note.textContent = `${label} detected · unsigned community build`;
   try {
-    type Release = { tag_name: string; assets?: Array<{ name: string; browser_download_url: string }> };
-    const cached = JSON.parse(localStorage.getItem("release:clipboard-lan-bridge") || "null") as { checkedAt: number; releases: Release[] } | null;
-    let releases: Release[];
-    if (cached && cached.checkedAt > Date.now() - 3_600_000) releases = cached.releases;
-    else {
-      if (!navigator.onLine) throw new Error("offline");
-      const releaseResponse = await fetch("https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1", { cache: "no-store" });
-      if (!releaseResponse.ok) throw new Error("release manifest not published yet");
-      releases = await releaseResponse.json() as Release[];
-      localStorage.setItem("release:clipboard-lan-bridge", JSON.stringify({ checkedAt: Date.now(), releases }));
-    }
-    const release = releases[0];
-    if (!release) throw new Error("release manifest not published yet");
-    if (!release.assets?.some(asset => asset.name === "latest.json")) throw new Error("latest.json is not attached to the current release");
-    const assets: Asset[] = release.assets.filter(asset => !["latest.json", "SHA256SUMS"].includes(asset.name)).map(asset => {
-      const name = asset.name.toLowerCase();
-      return {
-        platform: name.startsWith("windows") ? "windows" : name.startsWith("macos") ? "macos" : "linux",
-        arch: name.includes("aarch64") ? "aarch64" : "x86_64",
-        kind: name.endsWith(".appimage") ? "appimage" : name.split(".").pop(),
-        url: asset.browser_download_url
-      };
-    });
-    const manifest: Manifest = { version: release.tag_name, assets }; const asset = preferredAsset(manifest.assets, os);
+    const manifest = releaseManifest as Manifest;
+    const asset = preferredAsset(manifest.assets, os);
     if (!asset) throw new Error(`no ${label} package in the current release`);
     hero.href = main.href = asset.url; main.textContent = `Download ${manifest.version} for ${label}`;
     status.textContent = `${asset.kind?.toUpperCase() || "Package"} · checksum published in SHA256SUMS`;
@@ -92,5 +71,5 @@ if (license) {
   });
   document.querySelector<HTMLButtonElement>("#dismiss-license")!.addEventListener("click", () => { localStorage.removeItem("sb_license:clipboard-lan-bridge"); panel.hidden = true; });
 }
-void loadRelease();
+loadRelease();
 if ("serviceWorker" in navigator && (location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname))) void navigator.serviceWorker.register("/sw.js");

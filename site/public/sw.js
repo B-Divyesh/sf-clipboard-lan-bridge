@@ -1,4 +1,4 @@
-const CACHE = "clipboard-lan-bridge-v5";
+const CACHE = "clipboard-lan-bridge-v6";
 const PAGES = ["/", "/demo/", "/privacy/", "/terms/"];
 const SHELL = ["/favicon.svg", "/assets/bridge-poster-768.webp", "/assets/bridge-poster-1200.webp"];
 

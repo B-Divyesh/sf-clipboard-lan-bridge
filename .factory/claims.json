@@ -11,7 +11,14 @@
     "claim": "The site selects the current package for the visitor's operating system.",
     "where": "download section",
     "test": "npx playwright test --grep @claim:platform-download",
-    "sandbox": "fresh landing page with a recorded GitHub release response; assert the Linux AppImage is selected"
+    "sandbox": "fresh landing page using the bundled published release manifest; assert the real Linux AppImage is selected"
+  },
+  {
+    "id": "public-page-network-boundary",
+    "claim": "Public page loads do not make off-origin requests, including GitHub API requests.",
+    "where": "privacy page and README",
+    "test": "npx playwright test --grep @claim:public-page-network-boundary",
+    "sandbox": "fresh desktop and mobile pages for landing, demo, privacy, terms, and 404; make GitHub API return 403 if requested; assert no request, HTTP failure, console error, or page error"
   },
   {
     "id": "sample-demo",

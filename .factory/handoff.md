@@ -1,26 +1,21 @@
-# Clipboard LAN Bridge — repair handoff
+# Clipboard LAN Bridge — repair 5 handoff
 
 ## Result
 
-Repair of independent verification 3 (`ae930caa3d8b34a9ab1d2705cd8b25e16fdd49a3`) was deployed from product repair commit `3e644e1` to `sf-clipboard-lan-bridge` production on 2026-09-01 UTC.
+The post-session 403 failure is repaired locally from base `fb377180bb9636a852387469a4b432a9552578f5`. The product remains a Tauri 2 desktop app with a static landing site in `dist/site/`.
 
-The shared Sociobot checkout remains deliberately shown as unavailable. Its product-scoped checkout response is operator-gated (`404 {"error":"enabled factory product"}`), so no product code change can honestly restore the purchase link. The site does not advertise a dead checkout action.
+## Root cause and repair
 
-## Fixed findings
+- Reproduced the failure at both 1440 × 900 and 390 × 844. A cold landing load requested `GET https://api.github.com/repos/B-Divyesh/sf-clipboard-lan-bridge/releases?per_page=1`.
+- A recorded HTTP 403 response produced Chromium's uncaught console entry `Failed to load resource: the server responded with a status of 403 (Forbidden)`. The visible `try/catch` fallback did not suppress that browser-level error.
+- Removed the GitHub API request from cold load. The site now bundles the exact published v0.1.4 `latest.json` as `site/release-manifest.json` and selects a real platform package without runtime metadata fetches.
+- Removed `api.github.com` from `connect-src`, updated the privacy explanation, and bumped the service-worker cache to `clipboard-lan-bridge-v6`.
+- Added a release-manifest structure/link/checksum test and a Playwright regression that makes the GitHub API return 403 if called. The test opens landing, demo, privacy, terms, and 404 routes and requires zero GitHub requests, HTTP failures, console errors, and page errors on desktop and mobile.
+- Registered the stricter public-page network boundary in `.factory/claims.json`.
 
-- Added claim entries and tagged regression coverage for deliberate clipboard writes and the local persistence boundary. Identity, paired keys, and license data are written to app configuration; active inbox and sent tickets are not.
-- Reproduced the phone companion failure before changing it: a one-character name displayed `Use a valid phone name and identity.` and Chromium logged `Failed to load resource: the server responded with a status of 400 (Bad Request)`. The client now validates the UTF-8 byte length before posting. Server validation remains in place. The regression uses the real bundled companion script and a 400 pairing fixture, verifies the recovery message, zero pairing requests, and zero console errors.
-- Made every public `<main>` programmatically focusable and added a shared skip-link focus handler. Regression covers `/`, `/demo/`, `/privacy/`, `/terms/`, and `/404.html`.
-- Enforced 44 × 44 px link targets, including legal-footer links, and strengthened the browser regression to inspect both width and height at desktop and 390 px.
-- Explained phone browser background-polling limits in the landing page, phone companion, README, and Terms. The companion tells people to keep the page open and that arrivals may wait until they return.
-- Brought demo, Privacy, Terms, and 404 into the shared wordmark/header/footer frame. Each has route-specific title, description, canonical URL, Open Graph, Twitter card, favicon, and apple-touch metadata.
-- Ran `cargo fmt`; the native core now satisfies the format check.
-- Repaired the incomplete README local-package instruction and refreshed the landing copy audit.
-- Bumped the service-worker cache name to `clipboard-lan-bridge-v5` so updated public route shells are fetched after deployment.
+## Local verification
 
-## Verification
-
-Clean install and quality gates completed in this worker:
+Commands completed in this repair worker:
 
 ```sh
 npm ci
@@ -31,19 +26,22 @@ cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -
 cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 ```
 
-- `npm ci`: 67 packages, 0 vulnerabilities.
-- `npm test`: passed 3 Vitest tests, 3 release-policy tests, 44 Playwright executions, and 8 Rust tests.
-- All 20 commands in `.factory/claims.json` passed exactly as declared.
-- `npm run check`: TypeScript and native core check passed.
-- `npm run build`: generated `dist/app/` and `dist/site/`.
-- All-features clippy with warnings denied passed after installing the documented Linux GUI prerequisites; Rust format check passed.
-- Focused browser verification: 30 site tests and 14 desktop-webview tests passed across desktop and mobile Chromium. Axe found no serious or critical issues on `/`, `/demo/`, `/privacy/`, `/terms/`, and `/404.html`.
-- The production build reports 3.76 KB landing JS (1.60 KB gzip), 0.87 KB shared accessibility module (0.47 KB gzip), 10.10 KB landing CSS (2.90 KB gzip), and 14.75 KB desktop webview JS (5.35 KB gzip).
-- Production deployment used the scoped Static Web Apps token for `sf-clipboard-lan-bridge` to upload `dist/site/`. Both `https://clipboard-lan-bridge.sociobot.in` and the Azure default hostname served the updated phone guidance and `clipboard-lan-bridge-v5` service worker.
-- The deployed live browser suite passed 82/82 checks: desktop and 390px semantics, Axe, no overflow, 44px targets, large-text reflow, first-read flow, demo isolation, byte limits, keyboard skip focus, reduced motion, offline v5 reload, headers, console/page errors, release selection, and license handoff. The live link crawl passed.
-- Live identity verification found all 22 deployable public files byte-identical to the current local `dist/site/` artifact; `staticwebapp.config.json` is correctly not public.
+- Exact clean install/build sequence: `npm ci && npm run build` passed; 67 packages audited with 0 vulnerabilities. It generated `dist/app/` and `dist/site/`.
+- `npm test` passed 3 Vitest tests, 4 release-policy tests, 46 Playwright executions, and 8 Rust tests.
+- All 21 commands declared in `.factory/claims.json` passed independently.
+- Focused 403 coverage passed in desktop and mobile projects. It found no GitHub request, response at or above 400, console error, or page error across every public route.
+- The Playwright suite covers desktop and 390 px mobile layouts, keyboard focus, 44 px targets, reduced motion, Axe serious/critical findings, offline/update behavior, demo storage isolation, clipboard boundaries, native license handling, and encrypted LAN lifecycle tests.
+- `npm run check`, all-features Clippy with warnings denied, Rust format verification, and `git diff --check` passed.
+- The published v0.1.4 `latest.json` is byte-identical to `site/release-manifest.json`. The 76.3 MB Linux AppImage downloaded successfully and matched SHA-256 `5c57c30ce8cf99dceac33957c172d5f8606407df9734a1a8ee0c77ab31a6742c`.
+- Mobile Lighthouse against the production build scored 100 performance, 100 accessibility, 100 best practices, and 100 SEO. LCP was 1.4 s, CLS was 0, and total blocking time was 0 ms.
+- Production budgets: landing JS 5.07 KB (1.88 KB gzip), shared JS 0.87 KB (0.47 KB gzip), landing CSS 10.10 KB (2.90 KB gzip), and largest hero WebP 65.81 KB.
+- The existing `.factory/copy-audit.md` still matches unchanged landing copy. A fresh rendered-text scan found no sentence over 22 words and no banned marketing term.
 
-## Run and deploy
+## Deploy and verify
+
+The scoped production target is Azure Static Web App `sf-clipboard-lan-bridge` in resource group `sociobot`, default hostname `lemon-water-0a2acb910.7.azurestaticapps.net`. Deploy only `dist/site/` with that resource's token. Record the deployed commit, worker verifier result, live browser checks, Lighthouse result, file identity, and link/package verification here after deployment.
+
+## Run locally
 
 ```sh
 npm ci
@@ -52,8 +50,8 @@ npm test
 npm run build
 ```
 
-The static deployment artifact is `dist/site/`. Pushing `main` publishes it through the factory static deployment. Desktop packages remain built by the repository’s tag-triggered GitHub Actions release workflow.
+The static artifact is `dist/site/`. Desktop packages remain built by the tag-triggered GitHub Actions workflow.
 
 ## Known operator action
 
-Enable the registered `clipboard-lan-bridge` product in the Sociobot billing service, verify its hosted checkout and return URL, then replace the current honest unavailable state with the `$9 once` purchase action. This is intentionally not a repository repair because the current product-scoped checkout endpoint returns the documented operator-gated 404.
+Enable the registered `clipboard-lan-bridge` product in the Sociobot billing service, verify its hosted checkout and return URL, then restore the `$9 once` purchase action. The current site honestly marks checkout unavailable because that shared product registration is operator-gated.
