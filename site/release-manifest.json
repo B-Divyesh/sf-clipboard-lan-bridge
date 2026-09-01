@@ -1,62 +1,62 @@
 {
   "release_state": "draft",
-  "version": "v0.1.5",
+  "version": "v0.1.6",
   "source_commit": "release-tag",
   "assets": [
     {
       "platform": "linux",
       "arch": "x86_64",
       "kind": "rpm",
-      "name": "linux-x86_64-Clipboard.LAN.Bridge-0.1.5-1.x86_64.rpm",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/linux-x86_64-Clipboard.LAN.Bridge-0.1.5-1.x86_64.rpm",
+      "name": "linux-x86_64-Clipboard.LAN.Bridge-0.1.6-1.x86_64.rpm",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/linux-x86_64-Clipboard.LAN.Bridge-0.1.6-1.x86_64.rpm",
       "sha256": "pending"
     },
     {
       "platform": "linux",
       "arch": "x86_64",
       "kind": "appimage",
-      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.5_amd64.AppImage",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/linux-x86_64-Clipboard.LAN.Bridge_0.1.5_amd64.AppImage",
+      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.AppImage",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.AppImage",
       "sha256": "pending"
     },
     {
       "platform": "linux",
       "arch": "x86_64",
       "kind": "deb",
-      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.5_amd64.deb",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/linux-x86_64-Clipboard.LAN.Bridge_0.1.5_amd64.deb",
+      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.deb",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.deb",
       "sha256": "pending"
     },
     {
       "platform": "macos",
       "arch": "aarch64",
       "kind": "dmg",
-      "name": "macos-aarch64-Clipboard.LAN.Bridge_0.1.5_aarch64.dmg",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/macos-aarch64-Clipboard.LAN.Bridge_0.1.5_aarch64.dmg",
+      "name": "macos-aarch64-Clipboard.LAN.Bridge_0.1.6_aarch64.dmg",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/macos-aarch64-Clipboard.LAN.Bridge_0.1.6_aarch64.dmg",
       "sha256": "pending"
     },
     {
       "platform": "macos",
       "arch": "x86_64",
       "kind": "dmg",
-      "name": "macos-x86_64-Clipboard.LAN.Bridge_0.1.5_x64.dmg",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/macos-x86_64-Clipboard.LAN.Bridge_0.1.5_x64.dmg",
+      "name": "macos-x86_64-Clipboard.LAN.Bridge_0.1.6_x64.dmg",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/macos-x86_64-Clipboard.LAN.Bridge_0.1.6_x64.dmg",
       "sha256": "pending"
     },
     {
       "platform": "windows",
       "arch": "x86_64",
       "kind": "exe",
-      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.5_x64-setup.exe",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/windows-x86_64-Clipboard.LAN.Bridge_0.1.5_x64-setup.exe",
+      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64-setup.exe",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64-setup.exe",
       "sha256": "pending"
     },
     {
       "platform": "windows",
       "arch": "x86_64",
       "kind": "msi",
-      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.5_x64_en-US.msi",
-      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.5/windows-x86_64-Clipboard.LAN.Bridge_0.1.5_x64_en-US.msi",
+      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64_en-US.msi",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64_en-US.msi",
       "sha256": "pending"
     }
   ]
