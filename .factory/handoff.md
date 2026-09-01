@@ -57,13 +57,16 @@ Observed on 2026-09-01 UTC:
 - Clippy: pass with `-D warnings` after installing the documented Linux WebKit/GTK prerequisites.
 - Browser coverage includes desktop and Pixel 5 (390 px), keyboard navigation, 200% text reflow, reduced motion, privacy request logging, offline demo reload/update cache, console/page errors, and serious/critical Axe findings. All pass.
 - The repository has no `verify-url.sh`; equivalent title/lang/h1/main/alt/console checks are in the Playwright suite. The attached standalone Axe CLI was attempted against the local production build but could not launch because its ChromeDriver only supports Chrome 152 while the supplied Playwright Chromium is 145. The Playwright Axe integration uses the supplied browser and passed with zero serious/critical findings on every tested public route.
+- Local mobile Lighthouse against the production build: performance 100, accessibility 100, best practices 100, SEO 100; FCP 1.0 s, LCP 1.4 s, TBT 40 ms, CLS 0.005.
 - This is a desktop app; package builds happen only in GitHub Actions. The release workflow builds unsigned macOS arm64/x86_64 DMGs, Windows MSI/EXE, and Linux AppImage/DEB/RPM, attaches `SHA256SUMS` and `latest.json`, and now writes its exact source commit to that manifest.
 
 ## Deployment and release
 
 - Static deployment artifact: `dist/site/`.
-- Desktop release tag: `v0.1.4`, pushed with this repair candidate. The GitHub Actions release workflow is the authorized installer builder; its `latest.json.source_commit` is the tag commit for provenance verification.
-- The static deployment is triggered from the scoped product repository's `main` branch. No DNS, billing, database, vault, or unrelated service was read or modified.
+- Desktop release tag: `v0.1.4`, built by successful GitHub Actions run [`33552215915`](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33552215915). It published macOS arm64/x86_64 DMGs, Windows MSI/EXE, Linux AppImage/DEB/RPM, `SHA256SUMS`, and `latest.json`.
+- Downloaded `latest.json` reports `source_commit` `f0df71ba3d299763e843a6723603125fbcbf03ee`, the release tag commit. A streamed download of `linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.deb` matched `SHA256SUMS`: `af12f63af15e430bd9b503f31bd2563592cfc9a873042342bb03bf8a393e88d4`.
+- Deployed `dist/site/` to the scoped production Static Web App with SWA CLI 2.0.6. Both the scoped host and `https://clipboard-lan-bridge.sociobot.in/` serve the honest checkout-unavailable state. A live 390 px browser smoke check found the expected title, `lang=en`, one h1, one main landmark, no checkout link, and no console/page errors; the live service worker is cache version v4.
+- No DNS, billing, database, vault, or unrelated service was read or modified.
 
 ## Needs operator action
 
