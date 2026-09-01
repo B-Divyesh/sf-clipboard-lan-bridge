@@ -41,6 +41,7 @@ cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 - The production build reports 3.76 KB landing JS (1.60 KB gzip), 0.87 KB shared accessibility module (0.47 KB gzip), 10.10 KB landing CSS (2.90 KB gzip), and 14.75 KB desktop webview JS (5.35 KB gzip).
 - Production deployment used the scoped Static Web Apps token for `sf-clipboard-lan-bridge` to upload `dist/site/`. Both `https://clipboard-lan-bridge.sociobot.in` and the Azure default hostname served the updated phone guidance and `clipboard-lan-bridge-v5` service worker.
 - The deployed live browser suite passed 82/82 checks: desktop and 390px semantics, Axe, no overflow, 44px targets, large-text reflow, first-read flow, demo isolation, byte limits, keyboard skip focus, reduced motion, offline v5 reload, headers, console/page errors, release selection, and license handoff. The live link crawl passed.
+- Live identity verification found all 22 deployable public files byte-identical to the current local `dist/site/` artifact; `staticwebapp.config.json` is correctly not public.
 
 ## Run and deploy
 
