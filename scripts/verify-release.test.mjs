@@ -20,6 +20,7 @@ test("release workflow provisions the Linux GUI toolchain before the Tauri packa
   }
   assert.match(workflow, /Install Linux bundle dependencies[\s\S]*npm ci[\s\S]*Run quality gates[\s\S]*tauri-apps\/tauri-action/);
   assert.match(workflow, /npm run check && npm test/);
+  assert.match(workflow, /Install Playwright Chromium[\s\S]*npx playwright install chromium[\s\S]*Run quality gates/);
 });
 
 test("release provenance records the exact tagged source commit", () => {
