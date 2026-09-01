@@ -1,0 +1,56 @@
+{
+  "version": "v0.1.6",
+  "source_commit": "c7271bc7818695e3a3caab69b9aa66924ed249f9",
+  "assets": [
+    {
+      "name": "linux-x86_64-Clipboard.LAN.Bridge-0.1.6-1.x86_64.rpm",
+      "manifest": "1f1208b13783df5ef144b6039d2cce974fde52fff81117d355005ea0538590ec",
+      "sums": "1f1208b13783df5ef144b6039d2cce974fde52fff81117d355005ea0538590ec",
+      "github": "1f1208b13783df5ef144b6039d2cce974fde52fff81117d355005ea0538590ec",
+      "match": true
+    },
+    {
+      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.AppImage",
+      "manifest": "c9e64ff8302da9ddd56439accb2ad2664bfb781acb2a79292f9fdc064fe3fd29",
+      "sums": "c9e64ff8302da9ddd56439accb2ad2664bfb781acb2a79292f9fdc064fe3fd29",
+      "github": "c9e64ff8302da9ddd56439accb2ad2664bfb781acb2a79292f9fdc064fe3fd29",
+      "match": true
+    },
+    {
+      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.deb",
+      "manifest": "859e13fd0a668fb4b25f909eb8318ea7f8d8c41a64c46cab7951b0ed867b2dcb",
+      "sums": "859e13fd0a668fb4b25f909eb8318ea7f8d8c41a64c46cab7951b0ed867b2dcb",
+      "github": "859e13fd0a668fb4b25f909eb8318ea7f8d8c41a64c46cab7951b0ed867b2dcb",
+      "match": true
+    },
+    {
+      "name": "macos-aarch64-Clipboard.LAN.Bridge_0.1.6_aarch64.dmg",
+      "manifest": "6a113bb0251488103aa4e6c5be563411619b2f64f4af49c7a49091afacaece87",
+      "sums": "6a113bb0251488103aa4e6c5be563411619b2f64f4af49c7a49091afacaece87",
+      "github": "6a113bb0251488103aa4e6c5be563411619b2f64f4af49c7a49091afacaece87",
+      "match": true
+    },
+    {
+      "name": "macos-x86_64-Clipboard.LAN.Bridge_0.1.6_x64.dmg",
+      "manifest": "b85f7a5119093115eda3ba08ccc6baca16a5fe55fb37e421ceb3306830980bd9",
+      "sums": "b85f7a5119093115eda3ba08ccc6baca16a5fe55fb37e421ceb3306830980bd9",
+      "github": "b85f7a5119093115eda3ba08ccc6baca16a5fe55fb37e421ceb3306830980bd9",
+      "match": true
+    },
+    {
+      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64-setup.exe",
+      "manifest": "6c872b9c845e6fcd852abb53f1586935cdaeced839861c5a412b138dbe0c22e3",
+      "sums": "6c872b9c845e6fcd852abb53f1586935cdaeced839861c5a412b138dbe0c22e3",
+      "github": "6c872b9c845e6fcd852abb53f1586935cdaeced839861c5a412b138dbe0c22e3",
+      "match": true
+    },
+    {
+      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64_en-US.msi",
+      "manifest": "06ca92717f2c0b5b6bbc3f07939a187b4a5007fa6a2a51c19eb7095954032cf7",
+      "sums": "06ca92717f2c0b5b6bbc3f07939a187b4a5007fa6a2a51c19eb7095954032cf7",
+      "github": "06ca92717f2c0b5b6bbc3f07939a187b4a5007fa6a2a51c19eb7095954032cf7",
+      "match": true
+    }
+  ],
+  "all_match": true
+}

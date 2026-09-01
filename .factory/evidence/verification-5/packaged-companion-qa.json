@@ -1,0 +1,23 @@
+{
+  "status": 200,
+  "semantic": {
+    "lang": "en",
+    "title": "Phone companion — Clipboard LAN Bridge",
+    "h1": 1,
+    "main": 1,
+    "overflow": false
+  },
+  "axeSeriousCritical": [],
+  "invalidMessage": "Use a valid phone name and identity.",
+  "code": "89E278",
+  "codeLength": 6,
+  "storage": [
+    "clb:phone-identity",
+    "clb:desktop-public-key"
+  ],
+  "requestOrigins": [
+    "http://127.0.0.1:38743"
+  ],
+  "consoleErrors": [],
+  "pageErrors": []
+}

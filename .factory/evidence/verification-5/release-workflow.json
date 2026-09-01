@@ -1,0 +1,14 @@
+[
+  {
+    "id": 33568179450,
+    "name": "Release desktop apps",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "c7271bc7818695e3a3caab69b9aa66924ed249f9",
+    "head_branch": "v0.1.6",
+    "created_at": "2026-09-01T22:49:57Z",
+    "updated_at": "2026-09-01T22:59:42Z",
+    "html_url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33568179450"
+  }
+]

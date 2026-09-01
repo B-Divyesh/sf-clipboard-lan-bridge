@@ -1,0 +1,6 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+ 42 76.3M   42 32.2M    0     0  47.0M      0  0:00:01 --:--:--  0:00:01 47.0M100 76.3M  100 76.3M    0     0  60.0M      0  0:00:01  0:00:01 --:--:-- 75.3M
+Installed and verified Clipboard LAN Bridge at /tmp/clipboard-installer.EWBJNn/clipboard-lan-bridge
+If needed, add /tmp/clipboard-installer.EWBJNn to PATH. Run: clipboard-lan-bridge

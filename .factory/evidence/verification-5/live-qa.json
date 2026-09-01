@@ -1,0 +1,632 @@
+{
+  "summary": {
+    "total": 91,
+    "passed": 91,
+    "failed": 0
+  },
+  "failed": [],
+  "checks": [
+    {
+      "name": "desktop / status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "desktop / semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Clipboard LAN Bridge — send text to nearby devices",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "desktop / no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "desktop / 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop / axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop /demo/ status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "desktop /demo/ semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Demo — Clipboard LAN Bridge",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "desktop /demo/ no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "desktop /demo/ 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop /demo/ axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop /privacy/ status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "desktop /privacy/ semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Privacy — Clipboard LAN Bridge",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "desktop /privacy/ no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "desktop /privacy/ 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop /privacy/ axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop /terms/ status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "desktop /terms/ semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Terms — Clipboard LAN Bridge",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "desktop /terms/ no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "desktop /terms/ 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop /terms/ axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop public routes no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop public routes no page errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop designed 404",
+      "pass": true,
+      "detail": 404
+    },
+    {
+      "name": "desktop 404 axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop requests remain same-origin",
+      "pass": true,
+      "detail": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "desktop no request failures",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop post-404 no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "desktop post-404 no page errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile / status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "mobile / semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Clipboard LAN Bridge — send text to nearby devices",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "mobile / no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "mobile / 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile / axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile /demo/ status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "mobile /demo/ semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Demo — Clipboard LAN Bridge",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "mobile /demo/ no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "mobile /demo/ 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile /demo/ axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile /privacy/ status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "mobile /privacy/ semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Privacy — Clipboard LAN Bridge",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "mobile /privacy/ no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "mobile /privacy/ 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile /privacy/ axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile /terms/ status",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "name": "mobile /terms/ semantics",
+      "pass": true,
+      "detail": {
+        "lang": "en",
+        "title": "Terms — Clipboard LAN Bridge",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "overflow": false,
+        "undersized": []
+      }
+    },
+    {
+      "name": "mobile /terms/ no overflow",
+      "pass": true,
+      "detail": false
+    },
+    {
+      "name": "mobile /terms/ 44px targets",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile /terms/ axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile public routes no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile public routes no page errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile designed 404",
+      "pass": true,
+      "detail": 404
+    },
+    {
+      "name": "mobile 404 axe serious/critical",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "cold first-read job, audience, and action",
+      "pass": true,
+      "detail": {
+        "h1": "Send text to nearby devices",
+        "description": "Move one link, address, or note between your phone and computers on the same local network.",
+        "action": "Try it with sample data",
+        "actionVisible": true
+      }
+    },
+    {
+      "name": "mobile 200% text reflow",
+      "pass": true,
+      "detail": {
+        "overflow": false,
+        "clipped": []
+      }
+    },
+    {
+      "name": "mobile requests remain same-origin",
+      "pass": true,
+      "detail": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "mobile no request failures",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile post-404 no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "mobile post-404 no page errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "linux v0.1.6 package selection",
+      "pass": true,
+      "detail": {
+        "text": "Download v0.1.6 for Linux",
+        "href": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.AppImage"
+      }
+    },
+    {
+      "name": "linux package selection no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "windows v0.1.6 package selection",
+      "pass": true,
+      "detail": {
+        "text": "Download v0.1.6 for Windows",
+        "href": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/windows-x86_64-Clipboard.LAN.Bridge_0.1.6_x64_en-US.msi"
+      }
+    },
+    {
+      "name": "windows package selection no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "macos v0.1.6 package selection",
+      "pass": true,
+      "detail": {
+        "text": "Download v0.1.6 for macOS",
+        "href": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/macos-x86_64-Clipboard.LAN.Bridge_0.1.6_x64.dmg"
+      }
+    },
+    {
+      "name": "macos package selection no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "one-click demo route",
+      "pass": true,
+      "detail": "https://clipboard-lan-bridge.sociobot.in/demo/"
+    },
+    {
+      "name": "persistent demo banner",
+      "pass": true,
+      "detail": "visible"
+    },
+    {
+      "name": "realistic sample devices and content",
+      "pass": true,
+      "detail": "visible"
+    },
+    {
+      "name": "blank input recovery",
+      "pass": true,
+      "detail": "Enter or paste something to send."
+    },
+    {
+      "name": "32768-byte boundary accepted",
+      "pass": true,
+      "detail": "ticket created"
+    },
+    {
+      "name": "32769-byte Unicode boundary rejected",
+      "pass": true,
+      "detail": "Text must be 32 KB or less."
+    },
+    {
+      "name": "markup-like input rendered as text",
+      "pass": true,
+      "detail": "no injected element"
+    },
+    {
+      "name": "two-minute expiry applied",
+      "pass": true,
+      "detail": "From Studio laptop2m left<img id=\"qa-injected\" src=x onerror=\"window.qaInjected=true\">Copy sample text"
+    },
+    {
+      "name": "explicit copy feedback",
+      "pass": true,
+      "detail": "Sample text copied"
+    },
+    {
+      "name": "demo storage isolated",
+      "pass": true,
+      "detail": {
+        "session": [
+          "demo:clipboard-lan-bridge:tickets"
+        ],
+        "local": [],
+        "real": null
+      }
+    },
+    {
+      "name": "demo reset removes sent input",
+      "pass": true,
+      "detail": "removed"
+    },
+    {
+      "name": "leaving demo discards sample namespace",
+      "pass": true,
+      "detail": "demo key absent"
+    },
+    {
+      "name": "full demo flow stays same-origin",
+      "pass": true,
+      "detail": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "demo no failed requests",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "demo no console errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "demo no page errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "license URL cleanup and local handoff",
+      "pass": true,
+      "detail": "https://clipboard-lan-bridge.sociobot.in/"
+    },
+    {
+      "name": "license copy feedback",
+      "pass": true,
+      "detail": "License copied. Paste it in the desktop app under Route pass."
+    },
+    {
+      "name": "license handoff no page errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "keyboard skip link is first",
+      "pass": true,
+      "detail": {
+        "text": "Skip to main content",
+        "outline": "rgb(16, 42, 43) none 0px",
+        "shadow": "rgb(246, 239, 220) 0px 0px 0px 3px, rgb(122, 91, 11) 0px 0px 0px 6px"
+      }
+    },
+    {
+      "name": "visible focus style",
+      "pass": true,
+      "detail": {
+        "text": "Skip to main content",
+        "outline": "rgb(16, 42, 43) none 0px",
+        "shadow": "rgb(246, 239, 220) 0px 0px 0px 3px, rgb(122, 91, 11) 0px 0px 0px 6px"
+      }
+    },
+    {
+      "name": "skip link moves focus to main",
+      "pass": true,
+      "detail": "main"
+    },
+    {
+      "name": "keyboard reaches all visible controls without trap",
+      "pass": true,
+      "detail": {
+        "expectedFocusables": 12,
+        "seen": [
+          "A:← Clipboard LAN Bridge",
+          "TEXTAREA:demo-text",
+          "INPUT:",
+          "SELECT:demo-expiry",
+          "BUTTON:Send sample ticket →",
+          "BUTTON:Copy sample text",
+          "A:Clipboard LAN Bridge",
+          "A:Privacy",
+          "A:Terms",
+          "BODY:Skip to main content\n    \n    ",
+          "A:Skip to main content",
+          "BUTTON:reset-demo",
+          "A:start-real"
+        ]
+      }
+    },
+    {
+      "name": "reduced motion disables smooth and running motion",
+      "pass": true,
+      "detail": {
+        "smooth": "auto",
+        "running": 0
+      }
+    },
+    {
+      "name": "service worker update clears old cache",
+      "pass": true,
+      "detail": [
+        "clipboard-lan-bridge-v7"
+      ]
+    },
+    {
+      "name": "offline demo reload",
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "registration": {
+          "scope": "https://clipboard-lan-bridge.sociobot.in/",
+          "unregistered": true
+        },
+        "cacheNames": [
+          "clipboard-lan-bridge-v7"
+        ]
+      }
+    },
+    {
+      "name": "offline reload no console errors",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "observations": {
+    "rootHeaders": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.sociobot.in; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Tue, 01 Sep 2026 23:39:49 GMT",
+      "etag": "\"97786562\"",
+      "last-modified": "Tue, 01 Sep 2026 23:11:19 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=()",
+      "referrer-policy": "no-referrer",
+      "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "scriptHeaders": {
+      "content-type": "text/javascript",
+      "date": "Tue, 01 Sep 2026 23:39:49 GMT",
+      "cache-control": "public, max-age=31536000, immutable",
+      "content-encoding": "br",
+      "etag": "\"97786562\"",
+      "last-modified": "Tue, 01 Sep 2026 23:11:19 GMT",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding",
+      "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
+      "referrer-policy": "no-referrer",
+      "x-content-type-options": "nosniff",
+      "x-xss-protection": "1; mode=block",
+      "x-dns-prefetch-control": "off",
+      "permissions-policy": "camera=(), microphone=(), geolocation=()",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.sociobot.in; frame-ancestors 'none'"
+    }
+  }
+}
