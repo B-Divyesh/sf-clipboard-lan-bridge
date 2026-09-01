@@ -1,0 +1,14 @@
+{
+  "url": "https://clipboard-lan-bridge.sociobot.in/demo/",
+  "loadMs": 802,
+  "errors": [],
+  "a11y": {
+    "title": "Demo — Clipboard LAN Bridge",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 705
+  }
+}

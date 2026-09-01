@@ -1,0 +1,63 @@
+{
+  "version": "v0.1.4",
+  "source_commit": "f0df71ba3d299763e843a6723603125fbcbf03ee",
+  "published_at": "2026-09-01T20:03:29.524Z",
+  "assets": [
+    {
+      "platform": "linux",
+      "arch": "x86_64",
+      "kind": "rpm",
+      "name": "linux-x86_64-Clipboard.LAN.Bridge-0.1.4-1.x86_64.rpm",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/linux-x86_64-Clipboard.LAN.Bridge-0.1.4-1.x86_64.rpm",
+      "sha256": "2049274ac6e27475b596b7cbbd74918044a0098b2396e37159d61a10462dee0a"
+    },
+    {
+      "platform": "linux",
+      "arch": "x86_64",
+      "kind": "appimage",
+      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.AppImage",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.AppImage",
+      "sha256": "5c57c30ce8cf99dceac33957c172d5f8606407df9734a1a8ee0c77ab31a6742c"
+    },
+    {
+      "platform": "linux",
+      "arch": "x86_64",
+      "kind": "deb",
+      "name": "linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.deb",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.deb",
+      "sha256": "af12f63af15e430bd9b503f31bd2563592cfc9a873042342bb03bf8a393e88d4"
+    },
+    {
+      "platform": "macos",
+      "arch": "aarch64",
+      "kind": "dmg",
+      "name": "macos-aarch64-Clipboard.LAN.Bridge_0.1.4_aarch64.dmg",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/macos-aarch64-Clipboard.LAN.Bridge_0.1.4_aarch64.dmg",
+      "sha256": "9ca93d1ace305a404a5004b592eb4f46263227e57ee78840af7eb81bec635d44"
+    },
+    {
+      "platform": "macos",
+      "arch": "x86_64",
+      "kind": "dmg",
+      "name": "macos-x86_64-Clipboard.LAN.Bridge_0.1.4_x64.dmg",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/macos-x86_64-Clipboard.LAN.Bridge_0.1.4_x64.dmg",
+      "sha256": "c6ee438a11ab0c75692d84764fa4454a5b7a2dc99f08beb1bf2a51a78eeb377d"
+    },
+    {
+      "platform": "windows",
+      "arch": "x86_64",
+      "kind": "exe",
+      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.4_x64-setup.exe",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/windows-x86_64-Clipboard.LAN.Bridge_0.1.4_x64-setup.exe",
+      "sha256": "49af09827114282e3c288408866f65eb00ca57ed0395ee5774748ac1c9d0c187"
+    },
+    {
+      "platform": "windows",
+      "arch": "x86_64",
+      "kind": "msi",
+      "name": "windows-x86_64-Clipboard.LAN.Bridge_0.1.4_x64_en-US.msi",
+      "url": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/windows-x86_64-Clipboard.LAN.Bridge_0.1.4_x64_en-US.msi",
+      "sha256": "4f770430962549a26e41172e02481c1c2ef3e1b0fc150c91129ead03ba714e96"
+    }
+  ]
+}

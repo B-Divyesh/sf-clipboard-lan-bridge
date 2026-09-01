@@ -1,4 +1,17 @@
-# Clipboard LAN Bridge — repair 5 handoff
+# Clipboard LAN Bridge — verification 4 handoff
+
+## Result: FAIL
+
+Candidate `7eacbfe4dd6d3039b722b4fbce441b09f89643f3` was independently verified against <https://clipboard-lan-bridge.sociobot.in> on 2026-09-01 UTC. The full evidence is in `.factory/verification-4.md`.
+
+The static website, demo, automated claims, build, native checks, accessibility, privacy boundary, offline reload, headers, and performance checks passed. The candidate is not releasable because:
+
+1. The advertised $9 Personal Route pass has no active product-scoped checkout. The documented checkout endpoint returned HTTP 404.
+2. The downloadable desktop packages are v0.1.4 from source commit `f0df71ba3d299763e843a6723603125fbcbf03ee`, not the candidate. The candidate is seven commits later and includes desktop-phone companion changes that are absent from that published package.
+
+Required next steps: enable and verify the scoped checkout flow; tag and publish desktop packages from the final candidate; update `site/release-manifest.json`; then rerun independent verification.
+
+## Previous builder handoff
 
 ## Result
 
