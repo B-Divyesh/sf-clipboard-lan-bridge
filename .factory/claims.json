@@ -63,6 +63,20 @@
     "sandbox": "fresh app page with a clipboard spy; wait, then select Paste from clipboard"
   },
   {
+    "id": "explicit-clipboard-write",
+    "claim": "The app writes transferred text to the clipboard only after the user chooses Copy text.",
+    "where": "privacy page and README",
+    "test": "npx playwright test --grep @claim:explicit-clipboard-write",
+    "sandbox": "fresh app page with an arrival and a clipboard-write spy; wait, then choose Copy text"
+  },
+  {
+    "id": "app-data-boundary",
+    "claim": "Identity, paired keys, and license data persist locally while active tickets remain only in memory.",
+    "where": "privacy page and README",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features app_data_persists_identity_peers_and_license_but_not_tickets",
+    "sandbox": "fresh native state; save identity, a paired key, a license, and an active ticket; inspect the written app configuration"
+  },
+  {
     "id": "text-32kb",
     "claim": "Only UTF-8 text of 32 KB or less can be sent.",
     "where": "landing, app, README",

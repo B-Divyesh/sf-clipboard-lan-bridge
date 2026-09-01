@@ -45,7 +45,7 @@ Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numb
 | The site selects the current package for your computer. | 9 |
 | Packages are unsigned, so your operating system may ask for confirmation. | 11 |
 | To connect a phone, open the local phone address shown by the desktop app. | 14 |
-| Nothing needs an app store or cloud account. | 8 |
+| Keep that page open: phone browsers may pause background polling. | 10 |
 | Move your pass into the app | 6 |
 | Your purchase is ready. | 4 |
 | Copy this license, then paste it in the desktop app under Route pass. | 13 |

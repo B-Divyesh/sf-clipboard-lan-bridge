@@ -6,7 +6,7 @@ const serious = (results: Awaited<ReturnType<AxeBuilder["analyze"]>>) => results
 test("landing and legal routes meet the accessibility baseline", async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on("console", message => { if (message.type() === "error") consoleErrors.push(message.text()); });
-  for (const route of ["/", "/demo/", "/privacy/", "/terms/"]) {
+  for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
     await page.goto(route);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator("h1")).toHaveCount(1);
@@ -122,14 +122,14 @@ test("@claim:checkout-status does not advertise an operator-gated checkout", asy
   await expect(page.locator('a[href*="/checkout"]')).toHaveCount(0);
 });
 
-test("links and controls retain 44px targets and the hero heading keeps devices whole", async ({ page }, testInfo) => {
+test("links and controls retain 44px targets in both dimensions and the hero heading keeps devices whole", async ({ page }, testInfo) => {
   const viewport = testInfo.project.name.includes("mobile") ? { width: 390, height: 844 } : { width: 1440, height: 900 };
   await page.setViewportSize(viewport);
   for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
     await page.goto(route);
     const undersized = await page.locator("a:visible, button:visible, summary:visible").evaluateAll(elements => elements
-      .filter(element => element.getBoundingClientRect().height < 44)
-      .map(element => ({ name: (element.textContent || "").trim(), height: element.getBoundingClientRect().height })));
+      .filter(element => element.getBoundingClientRect().width < 44 || element.getBoundingClientRect().height < 44)
+      .map(element => ({ name: (element.textContent || "").trim(), width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height })));
     expect(undersized).toEqual([]);
   }
   await page.goto("/");
@@ -150,6 +150,39 @@ test("links and controls retain 44px targets and the hero heading keeps devices 
   });
   expect(headingLines).not.toContain("S");
   expect(headingLines.join(" ")).toContain("devices");
+});
+
+test("skip links move keyboard focus into main content", async ({ page }) => {
+  for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
+    await page.goto(route);
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("link", { name: "Skip to main content" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("main")).toBeFocused();
+  }
+});
+
+test("secondary routes share the site frame, metadata, and clear phone-background guidance", async ({ page }) => {
+  for (const [route, title, canonical] of [
+    ["/demo/", "Demo — Clipboard LAN Bridge", "https://clipboard-lan-bridge.sociobot.in/demo/"],
+    ["/privacy/", "Privacy — Clipboard LAN Bridge", "https://clipboard-lan-bridge.sociobot.in/privacy/"],
+    ["/terms/", "Terms — Clipboard LAN Bridge", "https://clipboard-lan-bridge.sociobot.in/terms/"],
+    ["/404.html", "Page not found — Clipboard LAN Bridge", "https://clipboard-lan-bridge.sociobot.in/404.html"]
+  ]) {
+    await page.goto(route);
+    await expect(page).toHaveTitle(title);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /social-card\.webp/);
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary_large_image");
+    await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
+    await expect(page.locator("header.site-header .wordmark")).toBeVisible();
+    await expect(page.locator("header.site-header nav")).toContainText("Demo");
+    await expect(page.locator("footer.site-footer")).toContainText("Built by Param Factory");
+    await expect(page.locator("footer.site-footer").getByRole("link", { name: "Privacy" })).toBeVisible();
+    await expect(page.locator("footer.site-footer").getByRole("link", { name: "Terms" })).toBeVisible();
+  }
+  await page.goto("/");
+  await expect(page.getByText("Keep that page open: phone browsers may pause background polling.")).toBeVisible();
 });
 
 test("offline reload uses the cached shell without console errors", async ({ browser }) => {

@@ -1,4 +1,5 @@
 import "./styles.css";
+import "./a11y";
 
 type Asset = { platform: string; arch?: string; kind?: string; url: string; sha256?: string };
 type Manifest = { version: string; assets: Asset[] };

@@ -19,7 +19,7 @@
 html,body{min-width:0;max-width:100%;overflow-x:hidden}.wordmark,.hero-copy,.fare-card,.commands>*{min-width:0;overflow-wrap:anywhere}
 
 /* Every link remains comfortably usable by touch, including legal and 404 links. */
-a{display:inline-flex;align-items:center;min-height:44px}
+a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .hero h1{max-width:10ch;overflow-wrap:normal;text-wrap:balance}
 .keep-word{white-space:nowrap}
 .checkout-status{margin:0 0 16px;color:var(--paper);font-weight:800}

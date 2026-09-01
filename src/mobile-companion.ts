@@ -16,6 +16,10 @@ const toB64 = (bytes: Uint8Array) => { let value = ""; bytes.forEach(byte => val
 const fromB64 = (value: string) => Uint8Array.from(atob(value), char => char.charCodeAt(0));
 const randomId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
 const aad = (item: Envelope) => encoder.encode(`clipboard-lan-bridge-v2|${item.sender_id}|${item.transfer_id}|${item.created_at}|${item.expires_at}`);
+const hasValidPhoneName = (value: string) => {
+  const bytes = encoder.encode(value.trim()).length;
+  return bytes >= 2 && bytes <= 48;
+};
 
 function loadIdentity(): Identity {
   const stored = localStorage.getItem(ID_KEY);
@@ -95,7 +99,13 @@ async function inbox() {
 
 $("#pair-phone").addEventListener("click", async () => {
   $("#pair-error").textContent = "";
-  const name = $<HTMLInputElement>("#phone-name").value.trim();
+  const nameInput = $<HTMLInputElement>("#phone-name");
+  const name = nameInput.value.trim();
+  if (!hasValidPhoneName(name)) {
+    $("#pair-error").textContent = "Use a valid phone name and identity.";
+    nameInput.focus();
+    return;
+  }
   try {
     const response = await fetch("/api/pair", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ device_id: identity.deviceId, device_name: name, public_key: identity.publicKey }) });
     if (!response.ok) throw new Error(await responseError(response));

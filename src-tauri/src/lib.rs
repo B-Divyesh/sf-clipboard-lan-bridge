@@ -186,10 +186,12 @@ impl CompanionRateLimiter {
         let now = Instant::now();
         let mut clients = self.clients.lock().expect("companion rate limiter lock");
         clients.retain(|_, entry| now.duration_since(entry.started) < MOBILE_API_WINDOW);
-        let entry = clients.entry(client).or_insert_with(|| CompanionRateWindow {
-            started: now,
-            requests: 0,
-        });
+        let entry = clients
+            .entry(client)
+            .or_insert_with(|| CompanionRateWindow {
+                started: now,
+                requests: 0,
+            });
         if entry.requests >= MOBILE_API_ALLOWANCE {
             let remaining = MOBILE_API_WINDOW.saturating_sub(now.duration_since(entry.started));
             return Some(
@@ -809,7 +811,11 @@ fn companion_router(shared: Arc<RwLock<Inner>>) -> Router {
 async fn run_mobile_server(shared: Arc<RwLock<Inner>>) {
     let app = companion_router(shared);
     if let Ok(listener) = tokio::net::TcpListener::bind(("0.0.0.0", MOBILE_PORT)).await {
-        let _ = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await;
+        let _ = axum::serve(
+            listener,
+            app.into_make_service_with_connect_info::<SocketAddr>(),
+        )
+        .await;
     }
 }
 
@@ -1671,11 +1677,13 @@ mod tests {
         });
 
         let client = reqwest::Client::new();
-        let status_url = format!(
-            "http://{address}/api/status?device_id=allowance-regression-device"
-        );
+        let status_url =
+            format!("http://{address}/api/status?device_id=allowance-regression-device");
         for _ in 0..MOBILE_API_ALLOWANCE {
-            assert_eq!(client.get(&status_url).send().await.unwrap().status(), StatusCode::OK);
+            assert_eq!(
+                client.get(&status_url).send().await.unwrap().status(),
+                StatusCode::OK
+            );
         }
         let limited = client.get(&status_url).send().await.unwrap();
         assert_eq!(limited.status(), StatusCode::TOO_MANY_REQUESTS);
@@ -1686,6 +1694,57 @@ mod tests {
             .and_then(|value| value.parse::<u64>().ok());
         assert!(retry_after.is_some_and(|seconds| seconds > 0));
         server.abort();
+    }
+
+    #[test]
+    // @claim:app-data-boundary
+    fn app_data_persists_identity_peers_and_license_but_not_tickets() {
+        let mut inner = test_inner(fresh_identity());
+        let config_path = inner.config_path.clone();
+        let identity_id = inner.config.identity.device_id.clone();
+        inner.config.peers.push(StoredPeer {
+            id: "paired-phone".into(),
+            name: "Kitchen phone".into(),
+            public_key: "fixture-peer-key".into(),
+            address: "Phone companion".into(),
+            kind: "mobile".into(),
+        });
+        inner.config.license = Some(StoredLicense {
+            token: "fixture-license-token".into(),
+            valid: true,
+            reason: "ok".into(),
+            checked_at: now_ms(),
+        });
+        inner.inbox.push(TransferView {
+            id: "memory-only-inbox-ticket".into(),
+            peer_id: "paired-phone".into(),
+            peer_name: "Kitchen phone".into(),
+            text: "This ticket must not persist".into(),
+            created_at: now_ms(),
+            expires_at: now_ms() + 120_000,
+            status: "received".into(),
+        });
+        inner.sent.push(TransferView {
+            id: "memory-only-sent-ticket".into(),
+            peer_id: "paired-phone".into(),
+            peer_name: "Kitchen phone".into(),
+            text: "This sent ticket must not persist".into(),
+            created_at: now_ms(),
+            expires_at: now_ms() + 120_000,
+            status: "sent".into(),
+        });
+
+        save_config(&inner).unwrap();
+        let written = fs::read_to_string(&config_path).unwrap();
+        let saved: StoredConfig = serde_json::from_str(&written).unwrap();
+        assert_eq!(saved.identity.device_id, identity_id);
+        assert_eq!(saved.peers[0].public_key, "fixture-peer-key");
+        assert_eq!(saved.license.unwrap().token, "fixture-license-token");
+        assert!(!written.contains("memory-only-inbox-ticket"));
+        assert!(!written.contains("memory-only-sent-ticket"));
+        assert!(!written.contains("\"inbox\""));
+        assert!(!written.contains("\"sent\""));
+        fs::remove_file(config_path).unwrap();
     }
 
     #[test]

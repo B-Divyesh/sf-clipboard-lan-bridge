@@ -18,6 +18,7 @@ It is for people who message themselves just to move a URL, address, command, or
 - Only valid UTF-8 text up to 32 KB is accepted. Free items expire after 2 or 10 minutes.
 - Clipboard reads and writes happen only after a button press.
 - Identities, peer keys, and any license token stay in the operating system app-data directory. Active tickets stay in memory.
+- Keep the phone companion page open while sending. Phone browsers may pause background polling, so arrivals can wait until you return.
 - The LAN companion allows 30 HTTP requests per client IP every 10 seconds. It replies with HTTP 429 and a `Retry-After` header until that window resets.
 
 This is a personal LAN tool, not a password manager. Pair only on networks you trust and compare the displayed code.
@@ -47,7 +48,7 @@ npm run build
 
 The test command runs unit, Chromium accessibility, claim, responsive, and native protocol tests. The build writes the desktop webview to `dist/app/` and the deployable site to `dist/site/`.
 
-Build a local desktop package with. On Linux, first install the same GUI toolchain used by the release workflow:
+Build a local desktop package with the following command. On Linux, first install the same GUI toolchain used by the release workflow:
 
 ```sh
 sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm

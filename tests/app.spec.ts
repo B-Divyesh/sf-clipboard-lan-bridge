@@ -67,3 +67,36 @@ test("a received native ticket can be copied deliberately", async ({ page }) => 
   await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
   expect(await page.evaluate(() => (window as unknown as { copiedText: string }).copiedText)).toBe("Board at platform 4");
 });
+
+test("@claim:explicit-clipboard-write writes a received ticket only after Copy text", async ({ page }) => {
+  await page.addInitScript(snapshot => {
+    let writes = 0;
+    let copied = "";
+    Object.defineProperty(navigator, "clipboard", { value: { readText: async () => "", writeText: async (value: string) => { writes += 1; copied = value; } } });
+    Object.defineProperty(window, "clipboardWriteState", { get: () => ({ writes, copied }) });
+    Object.defineProperty(window, "__TAURI_INTERNALS__", { value: { invoke: async (command: string) => command === "get_snapshot" ? snapshot : null } });
+  }, { ...emptySnapshot, inbox: [{ id: "arrival-copy-claim", peer_id: "phone-1", peer_name: "Kitchen phone", text: "Board at platform 4", created_at: Date.now(), expires_at: Date.now() + 120_000, status: "received" }] });
+  await page.goto("http://127.0.0.1:1420/#receive");
+  await page.waitForTimeout(250);
+  expect(await page.evaluate(() => (window as unknown as { clipboardWriteState: { writes: number } }).clipboardWriteState.writes)).toBe(0);
+  await page.getByRole("button", { name: "Copy text" }).click();
+  expect(await page.evaluate(() => (window as unknown as { clipboardWriteState: { writes: number; copied: string } }).clipboardWriteState)).toEqual({ writes: 1, copied: "Board at platform 4" });
+});
+
+test("invalid phone input is handled locally without a 400 console error", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  let pairRequests = 0;
+  page.on("console", message => { if (message.type() === "error") consoleErrors.push(message.text()); });
+  await page.route("**/api/status?*", route => route.fulfill({ contentType: "application/json", body: JSON.stringify({ paired: false, desktop_name: "Bridge", licensed: false }) }));
+  await page.route("**/api/pair", route => { pairRequests += 1; return route.fulfill({ status: 400, body: "Use a valid phone name and identity." }); });
+  await page.goto("http://127.0.0.1:1420/");
+  await page.evaluate(() => {
+    document.body.innerHTML = '<div id="route-state"></div><main><section id="pair-view"><label for="phone-name">Phone name</label><input id="phone-name" value="My phone"><button id="pair-phone" type="button">Show pairing code</button><div id="pair-code" hidden></div><p id="pair-error" role="alert"></p></section><section id="send-view" hidden><p id="paired-with"></p><form id="send-form"><textarea id="phone-text"></textarea><p id="send-error"></p><select id="phone-expiry"><option value="120">2 minutes</option><option id="phone-hour" value="3600">1 hour</option></select><button type="submit">Send to computer</button></form><div id="phone-inbox"></div></section></main>';
+  });
+  await page.addScriptTag({ path: "src-tauri/src/mobile.js", type: "module" });
+  await page.getByLabel("Phone name").fill("x");
+  await page.getByRole("button", { name: "Show pairing code" }).click();
+  await expect(page.getByRole("alert")).toHaveText("Use a valid phone name and identity.");
+  expect(pairRequests).toBe(0);
+  expect(consoleErrors).toEqual([]);
+});

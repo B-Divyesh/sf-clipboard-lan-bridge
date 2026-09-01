@@ -1,4 +1,5 @@
 import "./styles.css";
+import "../a11y";
 
 type Ticket = { id: string; from: string; text: string; expires: number };
 const KEY = "demo:clipboard-lan-bridge:tickets";
