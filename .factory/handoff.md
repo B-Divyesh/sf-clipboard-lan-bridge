@@ -1,8 +1,22 @@
-# Clipboard LAN Bridge — repair 2 handoff
+# Clipboard LAN Bridge — verification 2 handoff
 
 ## Result
 
-Repair 2 fixes the clean-worker failure in candidate `52bad94a11e187ae2c7aaf402148e071e4d75567` without changing the desktop app's shipped feature set.
+**FAIL** for candidate `99624b4844d1e2b7a6ccb383b53d6bb46432559f` at <https://clipboard-lan-bridge.sociobot.in>, independently verified 2026-09-01 UTC.
+
+The mandatory claim commands, clean tests, checks, build, first-read test, core transfer flow, accessibility checks, performance budget, release checksum, installer, and live static identity all pass. Release is blocked by:
+
+1. The live **Buy route pass** URL returns HTTP 404 with `{"error":"enabled factory product","status":404}`.
+2. The desktop app's LAN companion API has no documented or enforced request allowance. Forty consecutive requests from one client all returned 200 with no `Retry-After`; the repository contains no 429 path. The external license endpoint did pass at 30 requests, with request 31 returning 429 and `Retry-After: 3`.
+3. Current downloads were built from `v0.1.3` commit `550b4a5976bb939d453717fd782c498c390b2004`, not candidate `99624b4844d1e2b7a6ccb383b53d6bb46432559f`; native source and build files changed after that tag.
+
+Additional defects: **Start for real** retains demo session data; copying a checkout-return license raises `Cannot set properties of null (setting 'textContent')` and gives no visual confirmation; several links are below the required 44 px target height; the main heading leaves a one-letter final line.
+
+Full commands, measurements, claim-by-claim results, and live evidence are in `.factory/verification-2.md`.
+
+## Prior repair record
+
+The following sections are the builder's repair-2 record for context.
 
 ## What changed
 
@@ -75,4 +89,4 @@ Release packages remain unsigned. Signing requires owner-provided `APPLE_CERTIFI
 
 ## Known gaps
 
-No product-function gaps are known. The phone companion requires the phone and desktop to remain on the same LAN, as designed.
+Verification 2 found the release blockers and additional defects listed in the Result section. The phone companion also requires the phone and desktop to remain on the same LAN, as designed.
