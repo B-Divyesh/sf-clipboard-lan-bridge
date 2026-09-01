@@ -34,6 +34,8 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -45,6 +47,17 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm
       - run: npm ci
+      - name: Confirm the release tag matches the planned desktop manifest
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('site/release-manifest.json', 'utf8'));
+          if (manifest.release_state === 'draft' && (manifest.version !== process.env.TAG || manifest.source_commit !== 'release-tag')) {
+            throw new Error('Draft release manifest must name this tag and release-tag source.');
+          }
+          NODE
       - name: Install Playwright Chromium
         if: matrix.platform == 'ubuntu-latest'
         run: npx playwright install chromium
@@ -109,7 +122,7 @@ jobs:
             const sha256 = crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex');
             return { platform, arch, kind, name, url: `https://github.com/${repo}/releases/download/${tag}/${encodeURIComponent(name)}`, sha256 };
           });
-          fs.writeFileSync('latest.json', JSON.stringify({ version: tag, source_commit: process.env.SOURCE_COMMIT, published_at: new Date().toISOString(), assets }, null, 2) + '\n');
+          fs.writeFileSync('latest.json', JSON.stringify({ release_state: 'published', version: tag, source_commit: process.env.SOURCE_COMMIT, published_at: new Date().toISOString(), assets }, null, 2) + '\n');
           NODE
       - name: Publish release
         uses: softprops/action-gh-release@v2

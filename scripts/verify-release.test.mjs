@@ -1,8 +1,14 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const bundledManifest = JSON.parse(readFileSync(new URL("../site/release-manifest.json", import.meta.url), "utf8"));
+const desktopPackageInputs = ["index.html", "package.json", "package-lock.json", "vite.config.ts", "src", "src-tauri"];
+
+function git(...args) {
+  return execFileSync("git", args, { encoding: "utf8" }).trim();
+}
 
 test("@claim:release-packages workflow publishes every desktop platform with checksums", () => {
   const workflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
@@ -34,13 +40,36 @@ test("release provenance records the exact tagged source commit", () => {
 
 test("bundled landing manifest has release downloads and checksums for every platform", () => {
   assert.match(bundledManifest.version, /^v\d+\.\d+\.\d+$/);
-  assert.match(bundledManifest.source_commit, /^[0-9a-f]{40}$/);
+  const draft = bundledManifest.release_state === "draft";
+  assert.match(bundledManifest.source_commit, draft ? /^release-tag$/ : /^[0-9a-f]{40}$/);
   for (const platform of ["linux", "macos", "windows"]) {
     const assets = bundledManifest.assets.filter(asset => asset.platform === platform);
     assert.ok(assets.length > 0, `${platform} must have at least one package`);
     for (const asset of assets) {
-      assert.match(asset.sha256, /^[0-9a-f]{64}$/);
+      if (draft) assert.equal(asset.sha256, "pending");
+      else assert.match(asset.sha256, /^[0-9a-f]{64}$/);
       assert.equal(asset.url, `https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/${bundledManifest.version}/${encodeURIComponent(asset.name)}`);
     }
   }
+});
+
+test("@regression:release-provenance published packages match the current desktop source", () => {
+  if (bundledManifest.release_state === "draft") {
+    const packageVersion = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
+    assert.equal(bundledManifest.source_commit, "release-tag");
+    assert.equal(bundledManifest.version, `v${packageVersion}`, "the draft must name the tag that will build it");
+    return;
+  }
+  assert.match(bundledManifest.source_commit, /^[0-9a-f]{40}$/);
+  assert.doesNotThrow(() => git("cat-file", "-e", `${bundledManifest.source_commit}^{commit}`));
+  const changedPackageInputs = execFileSync(
+    "git",
+    ["diff", "--name-only", bundledManifest.source_commit, "HEAD", "--", ...desktopPackageInputs],
+    { encoding: "utf8" }
+  ).trim();
+  assert.equal(
+    changedPackageInputs,
+    "",
+    `published packages are stale; desktop package inputs changed after ${bundledManifest.source_commit}: ${changedPackageInputs}`
+  );
 });

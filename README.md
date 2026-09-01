@@ -69,7 +69,7 @@ The installers read `latest.json` and verify SHA-256 before installing. The site
 
 ## Deploy
 
-Run `npm run build` to create the static site in `dist/site/`; the factory's static deployment publishes that directory from `main`. Push a version tag such as `v0.1.4` to build the unsigned macOS, Windows, and Linux installers in GitHub Actions. The release `latest.json` records the tag and exact source commit alongside package checksums. Copy that published file to `site/release-manifest.json` before the next site release.
+Run `npm run build` to create the static site in `dist/site/`; the factory's static deployment publishes that directory from `main`. Push a version tag such as `v0.1.5` to build the unsigned macOS, Windows, and Linux installers in GitHub Actions. The release `latest.json` records the tag and exact source commit alongside package checksums. Copy that published file to `site/release-manifest.json` before the next site release.
 
 ## License and policy
 

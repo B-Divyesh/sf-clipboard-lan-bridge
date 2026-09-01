@@ -35,8 +35,8 @@ test("@claim:platform-download selects the current package for this operating sy
     if (new URL(request.url()).origin !== "http://127.0.0.1:4173") offOriginRequests.push(request.url());
   });
   await page.goto("/");
-  await expect(page.locator("#main-download")).toHaveText("Download v0.1.4 for Linux");
-  await expect(page.locator("#main-download")).toHaveAttribute("href", "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.4/linux-x86_64-Clipboard.LAN.Bridge_0.1.4_amd64.AppImage");
+  await expect(page.locator("#main-download")).toHaveText("Downloads are being published");
+  await expect(page.locator("#main-download")).toHaveAttribute("href", "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest");
   expect(offOriginRequests).toEqual([]);
   await context.close();
 });

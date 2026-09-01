@@ -3,7 +3,7 @@ import "./a11y";
 import releaseManifest from "./release-manifest.json";
 
 type Asset = { platform: string; arch?: string; kind?: string; url: string; sha256?: string };
-type Manifest = { version: string; assets: Asset[] };
+type Manifest = { version: string; assets: Asset[]; release_state?: "draft" | "published" };
 const releaseFallback = "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest";
 
 function platform(): "windows" | "macos" | "linux" {
@@ -32,6 +32,12 @@ function loadRelease() {
   hero.textContent = `Download for ${label} ↓`; note.textContent = `${label} detected · unsigned community build`;
   try {
     const manifest = releaseManifest as Manifest;
+    if (manifest.release_state === "draft") {
+      hero.href = main.href = releaseFallback;
+      main.textContent = "Downloads are being published";
+      status.textContent = `The ${manifest.version} packages are being published. View the current release instead.`;
+      return;
+    }
     const asset = preferredAsset(manifest.assets, os);
     if (!asset) throw new Error(`no ${label} package in the current release`);
     hero.href = main.href = asset.url; main.textContent = `Download ${manifest.version} for ${label}`;
