@@ -48,4 +48,4 @@ Candidate `e0eb2ed7c1c11c1b62b51ae9552e3c78f9089842` was repaired in `996e392` a
 | F-2-9 | Replaced the 404 transit label with “Page not found.” | `landing and legal routes meet the accessibility baseline` |
 | F-2-10 | Demo exit is now **Download the desktop app** and lands at the install step. | `@claim:sample-demo` |
 
-Local screenshots and semantic/console checks are in `.factory/evidence/polish-2/local-root/`, `.factory/evidence/polish-2/local-demo/`, and `.factory/evidence/polish-2/local-privacy/`.
+Local screenshots and semantic/console checks are in `.factory/evidence/polish-2/local-root/`, `.factory/evidence/polish-2/local-demo/`, and `.factory/evidence/polish-2/local-privacy/`. Live deployment `f97e7e0d-c59b-4a6d-9c74-be90e8e786f8` was cold-checked at <https://clipboard-lan-bridge.sociobot.in/>, <https://clipboard-lan-bridge.sociobot.in/demo/>, <https://clipboard-lan-bridge.sociobot.in/privacy/>, and <https://clipboard-lan-bridge.sociobot.in/does-not-exist>. The interactive production screenshot is `.factory/evidence/polish-2/live-demo/interaction-desktop.png`; the 404 screenshot is `.factory/evidence/polish-2/live-404/screenshot-desktop.png`.

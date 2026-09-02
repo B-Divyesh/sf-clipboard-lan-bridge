@@ -4,7 +4,7 @@
 
 Polish round 2 is repaired in commits `996e392dc4fcb2f9449525b6d5afb21cd90e5ee5` and `4fdad73ea02a25b07ac8de1777601cea9dd95234`. Release `v0.1.10` is published from the latter commit with macOS, Windows, and Linux packages, `SHA256SUMS`, and `latest.json`.
 
-The static site is ready for deployment from `dist/site/`. The release workflow succeeded at <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33591447659>.
+The static site is deployed at <https://clipboard-lan-bridge.sociobot.in/> (Static Web Apps deployment `f97e7e0d-c59b-4a6d-9c74-be90e8e786f8`). The release workflow succeeded at <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33591447659>.
 
 ## What changed
 
@@ -30,6 +30,7 @@ Local static checks:
 - `/opt/fleet/lib/verify-url.sh` passed for `/`, `/demo/`, and `/privacy/`: correct title/lang/one h1/main/alt text, no console errors. Evidence is in `.factory/evidence/polish-2/local-{root,demo,privacy}/`.
 - The Playwright Axe integration found no serious or critical violations across landing, demo, privacy, terms, and 404 in both desktop and mobile projects.
 - Production build budgets: site JS 5.31 KB gzip for the landing bundle; site CSS 10.38 KB gzip; desktop JS 15.79 KB gzip.
+- Cold live checks passed for `/`, `/demo/`, and `/privacy/`; live root/demo/privacy screenshots and reports are in `.factory/evidence/polish-2/live-{root,demo,privacy}/`. A live interaction pass confirmed `?demo=1`, complete reset, both focus transitions, the v0.1.10 AppImage selection, and the 404 route. Its screenshots are `live-demo/interaction-desktop.png` and `live-404/screenshot-desktop.png`.
 
 ## Run and deploy
 
