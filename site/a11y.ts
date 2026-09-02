@@ -14,14 +14,19 @@ document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach(link => {
     if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const destination = new URL(link.href, location.href);
     if (destination.origin === location.origin && destination.pathname !== location.pathname) {
-      sessionStorage.setItem(routeFocusKey, link.dataset.focusId || "heading");
+      sessionStorage.setItem(routeFocusKey, JSON.stringify({ path: destination.pathname, target: link.dataset.focusId || "heading" }));
     }
   });
 });
 
 addEventListener("pageshow", () => {
-  const target = sessionStorage.getItem(routeFocusKey);
-  if (!target) return;
+  const stored = sessionStorage.getItem(routeFocusKey);
+  if (!stored) return;
+  let target = "heading";
+  try {
+    const marker = JSON.parse(stored) as { path?: string; target?: string };
+    if (marker.path === location.pathname && marker.target) target = marker.target;
+  } catch { /* Old markers fall back to the route heading. */ }
   // Keep the marker while traversing document history, so Back receives the
   // same orientation cue as the forward navigation.
   requestAnimationFrame(() => (target === "heading" ? document.querySelector<HTMLElement>("main h1") : document.getElementById(target))?.focus());
