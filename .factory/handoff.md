@@ -13,7 +13,7 @@ The local product remains useful: it pairs one nearby device, sends encrypted te
 - Replaced the paid checkout claims with `@claim:no-dead-checkout-action`. Its Playwright regression visits landing, demo, privacy, terms, and 404 on desktop and 390 px; it asserts no purchase control, checkout URL, checkout copy, or scoped-checkout request.
 - Prepared desktop release `v0.1.7` with a draft manifest. Until packages publish, the landing page deliberately shows **Downloads are being published** and links to the current release page.
 
-## Verification before release
+## Verification
 
 Executed from a clean dependency install on 2026-09-02:
 
@@ -30,7 +30,7 @@ All passed. `npm test` covered 3 Vitest tests, 5 release/provenance tests, 44 Pl
 
 Local post-build checks passed for `/`, `/demo/`, `/privacy/`, and `/terms/` with `/opt/fleet/lib/verify-url.sh`; the pages had no console errors, specific titles, `lang="en"`, one h1, a main landmark, and complete image alt text. The Playwright Axe integration found zero serious or critical findings across the public routes in both viewports. Local Lighthouse recorded Performance 100, Accessibility 100, Best Practices 100, SEO 100, LCP 1.4 s, and CLS 0. Evidence is in `.factory/evidence/repair-7/`.
 
-The static build produced 3.94 KB JavaScript (1.28 KB gzip) and 9.45 KB CSS (2.74 KB gzip) for the landing bundle; the 65.81 KB responsive hero remains under budget.
+The static build produced 4.23 KB JavaScript (1.63 KB gzip) and 9.45 KB CSS (2.74 KB gzip) for the landing bundle; the 65.81 KB responsive hero remains under budget.
 
 ## Run locally
 
@@ -44,9 +44,12 @@ npm run tauri dev
 
 Visit `http://127.0.0.1:4173/demo/` after `npm run dev:site` to open the isolated sample flow.
 
-## Release and deployment status
+## Release and deployment
 
-The next action is to commit this repair, push the `v0.1.7` tag for the existing GitHub Actions matrix, replace the draft `site/release-manifest.json` with the workflow-produced `latest.json`, then deploy `dist/site` to the product-scoped static resource. The completion commit records the resulting package checksums, GitHub run, and deployed URL evidence.
+- Release [`v0.1.7`](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/tag/v0.1.7) was built by successful GitHub Actions run `33575551097` from `742a2aaa0f145033c2cd8d9ee3266169074cde22` for Linux, Windows, macOS arm64, and macOS x86_64.
+- The workflow-produced `latest.json`, GitHub asset digests, and bundled `site/release-manifest.json` agree for all seven packages. A freshly streamed Linux DEB hash is `66cbf617812997dbd4b3f743c29ac01d5fccfe961fb297ad19ae499c41d3946c`.
+- `dist/site` was deployed to the product-only Static Web App `sf-clipboard-lan-bridge` production environment. The custom domain <https://clipboard-lan-bridge.sociobot.in> serves the exact local `index.html` (SHA-256 `b0a445750eaa1cc166ff3eea36da40e71ffb4606262a0d696ef05e0b8ba1c0de`).
+- Post-deploy `verify-url.sh` passed root, demo, privacy, and terms. A fresh live desktop and 390 px crawl found no checkout or purchase control, `$9`/checkout copy, overflow, console/page error, or off-origin request. Live Lighthouse: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.1 s and CLS 0.
 
 ## Known gap
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102a2b" />
+    <meta name="description" content="Try a sample local text handoff without saving anything to your devices." />
+    <link rel="canonical" href="https://clipboard-lan-bridge.sociobot.in/demo/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://clipboard-lan-bridge.sociobot.in/demo/" />
+    <meta property="og:title" content="Demo — Clipboard LAN Bridge" />
+    <meta property="og:description" content="Try a sample local text handoff without saving anything to your devices." />
+    <meta property="og:image" content="https://clipboard-lan-bridge.sociobot.in/assets/social-card.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Demo — Clipboard LAN Bridge" />
+    <meta name="twitter:description" content="Try a sample local text handoff without saving anything to your devices." />
+    <meta name="twitter:image" content="https://clipboard-lan-bridge.sociobot.in/assets/social-card.webp" />
+    <title>Demo — Clipboard LAN Bridge</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="module" crossorigin src="/assets/demo-DxHw7cbT.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/a11y-DX6rNsI9.js">
+    <link rel="stylesheet" crossorigin href="/assets/demo-BwyFoE5A.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Clipboard LAN Bridge home"><svg aria-hidden="true" viewBox="0 0 48 48"><path d="M7 38V16h8V8h18v8h8v22H7Z"/><path d="M16 38V20h16v18M20 15h8"/></svg><span>Clipboard <b>LAN Bridge</b></span></a>
+      <nav aria-label="Primary navigation"><a href="/demo/" aria-current="page">Demo</a><a href="/#route">How it works</a><a href="/privacy/">Privacy</a></nav>
+      <a class="small-download" href="/#download">Download</a>
+    </header>
+    <aside class="demo-banner" aria-label="Demo controls"><strong>Demo — sample data, nothing is saved</strong><span><button id="reset-demo" type="button">Reset demo</button><a id="start-real" href="/">Start for real</a></span></aside>
+    <main id="main" tabindex="-1">
+      <div class="demo-head"><a href="/" class="wordmark">← Clipboard LAN Bridge</a><p class="status"><span aria-hidden="true">◆</span> Two sample devices paired</p></div>
+      <section aria-labelledby="demo-title">
+        <p class="eyebrow">Sample local handoff</p>
+        <h1 id="demo-title">Send a sample ticket</h1>
+        <p class="lede">Try the complete handoff between a phone and laptop. This demo uses only temporary sample data.</p>
+        <form id="demo-form" novalidate>
+          <label for="demo-text">Text or link</label>
+          <textarea id="demo-text" rows="5" aria-describedby="demo-help demo-error">Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q</textarea>
+          <div class="field-meta"><span id="demo-help">Text only · 32 KB maximum</span><span id="demo-bytes">82 / 32 KB</span></div>
+          <p id="demo-error" class="error" role="alert"></p>
+          <fieldset><legend>Destination</legend><label class="destination"><input type="radio" name="destination" value="phone" checked><span aria-hidden="true">▣</span><span><strong>Kitchen phone</strong><small>Nearby · encrypted route ready</small></span></label></fieldset>
+          <div class="dispatch"><label for="demo-expiry">Expires after <select id="demo-expiry"><option value="120">2 minutes</option><option value="600" selected>10 minutes</option></select></label><button class="primary" type="submit">Send sample ticket →</button></div>
+        </form>
+      </section>
+      <section aria-labelledby="arrivals-title"><p class="eyebrow">Sample arrivals</p><h2 id="arrivals-title">Received tickets</h2><div id="tickets" class="tickets" aria-live="polite"></div></section>
+    </main>
+    <footer class="site-footer"><a class="wordmark" href="/"><span>Clipboard <b>LAN Bridge</b></span></a><p>Send short text between nearby devices. Built by Param Factory. v0.1.7</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer>
+  </body>
+</html>

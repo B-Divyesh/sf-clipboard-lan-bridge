@@ -7,3 +7,5 @@ src-tauri/gen/
 playwright-report/
 test-results/
 graphify-out/
+
+.env
