@@ -64,8 +64,8 @@ Packages and SHA-256 checksums are in the [latest release](https://github.com/B-
 
 ## License and policy
 
-The free plan connects this computer and one paired device. A $9 one-time license removes the paired-device limit and enables one-hour transfers. You can buy it from the [Sociobot checkout](https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout). Existing license holders can paste a token under **Existing license** in the desktop app.
+The free plan connects this computer and one paired device. Existing licenses remove the paired-device limit and enable one-hour transfers. New licenses are not available.
 
-After checkout, copy the returned token into **Existing license** in the desktop app. Terms and refund information are available at `/terms/`.
+Existing license holders can paste a token under **Existing license** in the desktop app. License terms are available at `/terms/`.
 
 Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and terms are at `/terms/`.

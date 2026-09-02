@@ -1,1 +1,1 @@
-Send short text and links between nearby devices on your local network.
+Move short text and links between your nearby devices without a cloud service.

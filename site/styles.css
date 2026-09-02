@@ -21,3 +21,7 @@ a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .hero h1{max-width:10ch;overflow-wrap:normal;text-wrap:balance}
 .keep-word{white-space:nowrap}
 .price-section{grid-template-columns:minmax(0,700px);justify-content:center}
+.fare.unavailable{font-size:clamp(34px,4vw,48px)}
+.purchase-status{font-weight:900;color:var(--brass)}
+.paid .paid-restore{border-color:var(--brass);color:var(--paper)}
+.paid .paid-restore:hover{background:#173534}

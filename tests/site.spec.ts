@@ -255,7 +255,7 @@ test("offline reload uses the cached shell without console errors", async ({ bro
   await page.evaluate(async () => { await caches.open("clipboard-lan-bridge-old-test"); await (await navigator.serviceWorker.getRegistration())?.unregister(); });
   await page.reload();
   await page.evaluate(() => navigator.serviceWorker.ready);
-  await expect.poll(() => page.evaluate(async () => ({ caches: await caches.keys(), controlled: Boolean(navigator.serviceWorker.controller) }))).toEqual({ caches: ["clipboard-lan-bridge-v9"], controlled: true });
+  await expect.poll(() => page.evaluate(async () => ({ caches: await caches.keys(), controlled: Boolean(navigator.serviceWorker.controller) }))).toEqual({ caches: ["clipboard-lan-bridge-v10"], controlled: true });
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();

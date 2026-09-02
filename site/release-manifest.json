@@ -1,7 +1,7 @@
 {
-  "release_state": "published",
-  "version": "v0.1.10",
-  "source_commit": "4fdad73ea02a25b07ac8de1777601cea9dd95234",
+  "release_state": "draft",
+  "version": "v0.1.11",
+  "source_commit": "release-tag",
   "published_at": "2026-09-02T04:45:11.280Z",
   "assets": [
     {

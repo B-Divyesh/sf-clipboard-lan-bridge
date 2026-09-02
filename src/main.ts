@@ -42,8 +42,6 @@ let refreshTimer = 0;
 let sampleMode = false;
 const isTauri = "__TAURI_INTERNALS__" in window;
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
-const scopedCheckout = "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout";
-const checkoutCopy = `<a href="${scopedCheckout}" target="_blank" rel="noreferrer">Buy a $9 license</a> or paste an existing token below.`;
 const sampleKey = "demo:clipboard-lan-bridge:desktop-sample";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -116,8 +114,8 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         </details>
         <details class="settings-panel">
           <summary>Existing license</summary>
-          <p class="legal-note">A $9 one-time license removes the paired-device limit and enables one-hour transfers.</p>
-          <p class="legal-note">${checkoutCopy}</p>
+          <p class="legal-note">An existing license removes the paired-device limit and enables one-hour transfers.</p>
+          <p class="legal-note">New licenses are not available. Paste an existing token below.</p>
           <strong id="license-state">Free plan active</strong>
           <form id="license-form" class="license-form"><label for="license-token">Existing license token</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
         </details>

@@ -16,6 +16,6 @@ export default defineConfig({
     { name: "mobile-chromium", testIgnore: /paid-unlock\.spec\.ts/, use: { ...devices["Pixel 5"] } },
     // This claim gets a separate worker, browser process, and context. A prior
     // aggregate run lost the shared Chromium process just before this case.
-    { name: "paid-unlock-chromium", testMatch: /paid-unlock\.spec\.ts/, use: { ...devices["Desktop Chrome"] } }
+    { name: "license-recovery-chromium", testMatch: /paid-unlock\.spec\.ts/, use: { ...devices["Desktop Chrome"] } }
   ]
 });
