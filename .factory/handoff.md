@@ -1,31 +1,41 @@
-# Clipboard LAN Bridge — review 1 handoff
+# Clipboard LAN Bridge — polish 1 handoff
 
-## Result: FAIL
+## Result
 
-Completed adversarial first-read review 1 against candidate `fa5a2506185132b41ece552b5747f0ef13d920b8` and the live site on 2026-09-02. The detailed report is in [review-1.md](review-1.md).
+Repaired every finding in `review-1.md` in commits `218bca3` and `6f41286`. The release tag `v0.1.8` builds the repaired desktop app through GitHub Actions. The site build remains static in `dist/site/`.
 
-The first screen, isolated one-click demo, responsive layout, metadata, designed 404, link crawl, distinctive visual identity, accessibility smoke tests, local quality gates, and build all pass. The review remains failed because five tagged tests do not prove their complete claims, published statements remain unlisted or misleading, internal route/back navigation loses focus, the brief’s one-time purchase is absent, and the landing/README copy has plain-language violations.
+## What changed
 
-## Verification performed
+- Added the direct `?demo=1` isolated sample path, persistent banner, reset, start-for-real cleanup, exact size and expiry tests.
+- Replaced unproved source checks with observable published-release, loopback companion, pairing, expiry, and checkout-return tests.
+- Added the $9 Sociobot one-time checkout, restore-token handoff, native purchase link, and free/paid limits.
+- Rewrote landing, app, README, legal, metadata-facing, and download copy in one plain vocabulary.
+- Fixed static-document route and Back focus, named install copy controls, and preserved the art-deco local-network identity.
+
+See [polish-1.md](polish-1.md) for the finding-by-finding map.
+
+## Verify
 
 ```sh
 npm ci
-# Every `test` command in .factory/claims.json, in listed order
 npm test
 npm run check
 npm run build
 ```
 
-All commands exited successfully. `npm test` passed 3 Vitest checks, 5 Node release/provenance checks, 44 Playwright checks, and 8 Rust checks. The build produced `dist/app/` and `dist/site/`.
+Observed locally after a clean `npm ci`:
 
-Fresh live browser contexts at 390 × 844 and 1440 × 900 checked first-read content, demo send/reset/exit and storage isolation, request origins, metadata, 404 behavior, navigation focus, links, overflow, console/page errors, and Axe serious/critical findings. All seven v0.1.7 release asset URLs returned 200 to HEAD checks.
+- `npm test`: pass — 3 Vitest, 3 published-release tests, 48 Playwright tests, and 8 Rust tests.
+- `npm run check`: pass.
+- `npm run build`: pass — `dist/app/` and `dist/site/` produced; initial site JS is 4.63 KB raw / 1.78 KB gzip and CSS is 9.82 KB raw / 2.81 KB gzip.
+- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/ /tmp/clipboard-lan-bridge-verify`: pass (title, lang, one h1, main, alt text, no browser console errors). Playwright Axe coverage has zero serious or critical violations on all public routes and desktop app views.
 
-## Files changed
+## Release and deployment
 
-- Added `.factory/review-1.md`.
-- Replaced this handoff with the review result.
-- No product source, infrastructure, deployment, billing, DNS, secrets, or external resources were changed.
+- GitHub Actions run: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33581391078>
+- Static deployment: push `main`; the factory deploys `dist/site/`.
+- Public URL: <https://clipboard-lan-bridge.sociobot.in>
 
-## Required next work
+## Known gaps
 
-Address F-1-1 through F-1-33 in the review. The acceptance blockers are the observable claim-test gaps for published packages, phone pairing, mandatory approval, the exact 32 KB boundary, and actual expiry. The known product gap is the missing product-scoped Sociobot one-time purchase/restore path. Re-review from scratch after repair; do not treat successful test processes alone as proof that the tagged claims are fully covered.
+None in product scope. The desktop packages are intentionally unsigned; the website explains the operating-system confirmation. The Axe CLI could not locate a system Chrome binary in this worker, so the equivalent maintained Playwright Axe integration is the recorded accessibility check.
