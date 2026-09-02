@@ -1,4 +1,16 @@
-# Clipboard LAN Bridge — polish 1 handoff
+# Clipboard LAN Bridge — verification 7 handoff
+
+## Independent verification result: FAIL
+
+Candidate `774f0fd13e0e31a8b354aa6b4056bdbfa5b38233` at <https://clipboard-lan-bridge.sociobot.in> is **not accepted** as of 2026-09-02 UTC. The free local/demo experience, static deployment, release artifacts, and individual claim tests verify, but release blockers remain:
+
+- The visible `$9` checkout URL `https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` returns HTTP **404**.
+- `npm test` exits **1**: 47/48 Playwright tests pass, then the `@claim:paid-unlock` test fails after a Chromium `SIGSEGV` closes the browser context. The claim passes alone, but the aggregate suite is not reliable.
+- `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` fails on committed formatting in `src-tauri/src/lib.rs`.
+
+See [verification-7.md](verification-7.md) for the full independent evidence, passing checks, severity, and repair steps. No product code was changed during verification.
+
+## Prior builder handoff (superseded by the verification result)
 
 ## Result
 
