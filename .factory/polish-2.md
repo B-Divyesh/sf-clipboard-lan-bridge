@@ -1,6 +1,6 @@
 # Polish round 2
 
-Candidate `e0eb2ed7c1c11c1b62b51ae9552e3c78f9089842` was repaired in `996e392` and `4fdad73`. Release and live evidence are appended after the tagged build and static deployment complete.
+Candidate `e0eb2ed7c1c11c1b62b51ae9552e3c78f9089842` was repaired in `996e392`, `4fdad73`, and `66b4389`; live evidence is committed in `83ff46c`.
 
 | Finding | Change made | Evidence |
 | --- | --- | --- |

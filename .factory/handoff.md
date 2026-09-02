@@ -17,7 +17,7 @@ The static site is deployed at <https://clipboard-lan-bridge.sociobot.in/> (Stat
 
 ## Verification
 
-From a clean clone at `4fdad73ea02a25b07ac8de1777601cea9dd95234`:
+From a clean clone at final commit `83ff46c0be52958e1077c3c1bf2a4c55a6c3c1fe`:
 
 - `npm ci`: PASS
 - `npm run check`: PASS
