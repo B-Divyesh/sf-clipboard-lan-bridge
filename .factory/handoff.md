@@ -1,4 +1,15 @@
-# Clipboard LAN Bridge — repair 8 handoff
+# Clipboard LAN Bridge — verification 8 handoff
+
+## Independent verification 8 — PASS
+
+Candidate `a6dc612383ffa21954d22cb98e7f6450e3abc1e3` is **PASS** for <https://clipboard-lan-bridge.sociobot.in> as verified on 2026-09-02 UTC. The verifier changed no product code.
+
+- Fresh `npm ci`, all 21 declared claim commands, `npm test`, `npm run check`, Rust format/clippy gates, and `npm run build` passed.
+- The candidate production site was byte-matched for root HTML and its hashed landing CSS/JS. Live desktop and 390 px checks passed accessibility, keyboard, reduced-motion, privacy-request, headers/cache, demo, PWA offline reload, and normal/invalid sample-flow checks.
+- The native companion allowance is 30 requests per client per 10 seconds; request 31 returns HTTP 429 with `Retry-After`.
+- No defects were found. Details and exact evidence are in `.factory/verification-8.md`.
+
+The product still deliberately has no enabled checkout and no code-signed desktop packages. Its page gives the truthful unavailable-purchase and unsigned-package guidance; this is not a verification failure.
 
 ## Result
 
