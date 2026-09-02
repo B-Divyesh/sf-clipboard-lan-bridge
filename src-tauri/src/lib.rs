@@ -1652,7 +1652,11 @@ mod tests {
         let page = client.get(format!("{base}/")).send().await.unwrap();
         assert_eq!(page.status(), StatusCode::OK);
         assert!(page.text().await.unwrap().contains("Connect this phone"));
-        let script = client.get(format!("{base}/mobile.js")).send().await.unwrap();
+        let script = client
+            .get(format!("{base}/mobile.js"))
+            .send()
+            .await
+            .unwrap();
         assert_eq!(script.status(), StatusCode::OK);
         assert!(script.text().await.unwrap().contains("/api/pair"));
         let phone_public = mobile_public_key(&phone).unwrap();
@@ -1668,7 +1672,10 @@ mod tests {
             .unwrap();
         assert_eq!(pair.status(), StatusCode::OK);
         let pair: MobilePairResponse = pair.json().await.unwrap();
-        assert_eq!(pair.code, pair_code(&mobile_public_key(&desktop).unwrap(), &phone_public));
+        assert_eq!(
+            pair.code,
+            pair_code(&mobile_public_key(&desktop).unwrap(), &phone_public)
+        );
         {
             let mut inner = state.write().await;
             let pending = inner.pending.remove(&phone.device_id).unwrap();
@@ -1697,20 +1704,50 @@ mod tests {
             &template,
         )
         .unwrap();
-        let sent = client.post(format!("{base}/api/send")).json(&serde_json::json!({
-            "device_id": phone.device_id.clone(),
-            "transfer": encrypted.clone()
-        })).send().await.unwrap();
+        let sent = client
+            .post(format!("{base}/api/send"))
+            .json(&serde_json::json!({
+                "device_id": phone.device_id.clone(),
+                "transfer": encrypted.clone()
+            }))
+            .send()
+            .await
+            .unwrap();
         assert_eq!(sent.status(), StatusCode::OK);
         assert_eq!(state.read().await.inbox[0].text, "Train arrives at 18:20");
 
         let outbound_template = MobileEnvelope {
-            sender_id: desktop.device_id.clone(), transfer_id: "desktop-transfer".into(), nonce: String::new(), ciphertext: String::new(), created_at: created, expires_at: created + 120_000,
+            sender_id: desktop.device_id.clone(),
+            transfer_id: "desktop-transfer".into(),
+            nonce: String::new(),
+            ciphertext: String::new(),
+            created_at: created,
+            expires_at: created + 120_000,
         };
-        let outbound = mobile_encrypt(&desktop, &phone_public, "Meet at the library", &outbound_template).unwrap();
-        state.write().await.mobile_outbox.insert(phone.device_id.clone(), vec![outbound.clone()]);
-        let inbox: Vec<MobileEnvelope> = client.get(format!("{base}/api/inbox?device_id={}", phone.device_id)).send().await.unwrap().json().await.unwrap();
-        assert_eq!(mobile_decrypt(&phone, &pair.desktop_public_key, &inbox[0]).unwrap(), "Meet at the library");
+        let outbound = mobile_encrypt(
+            &desktop,
+            &phone_public,
+            "Meet at the library",
+            &outbound_template,
+        )
+        .unwrap();
+        state
+            .write()
+            .await
+            .mobile_outbox
+            .insert(phone.device_id.clone(), vec![outbound.clone()]);
+        let inbox: Vec<MobileEnvelope> = client
+            .get(format!("{base}/api/inbox?device_id={}", phone.device_id))
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap();
+        assert_eq!(
+            mobile_decrypt(&phone, &pair.desktop_public_key, &inbox[0]).unwrap(),
+            "Meet at the library"
+        );
         let mut tampered = encrypted.clone();
         tampered.expires_at += 60_000;
         assert!(mobile_decrypt(&desktop, &phone_public, &tampered).is_err());

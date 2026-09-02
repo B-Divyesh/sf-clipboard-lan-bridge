@@ -147,16 +147,6 @@ test("@claim:unsigned-packages warns plainly about unsigned packages", async ({ 
   expect(await page.locator("body").innerText()).not.toContain("community build");
 });
 
-test("@claim:paid-unlock uses the scoped checkout and gives the returned token to the desktop restore flow", async ({ page }) => {
-  await page.goto("/");
-  const checkout = page.getByRole("link", { name: "Buy the $9 license" });
-  await expect(checkout).toHaveAttribute("href", "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout");
-  await page.goto("/?license=fixture-license-token");
-  await expect(page.getByRole("heading", { name: "Finish on your desktop app" })).toBeVisible();
-  await expect(page.getByLabel("License token")).toHaveValue("fixture-license-token");
-  await expect(page).toHaveURL(/\/$/);
-});
-
 test("links and controls retain 44px targets in both dimensions and the hero heading keeps devices whole", async ({ page }, testInfo) => {
   const viewport = testInfo.project.name.includes("mobile") ? { width: 390, height: 844 } : { width: 1440, height: 900 };
   await page.setViewportSize(viewport);

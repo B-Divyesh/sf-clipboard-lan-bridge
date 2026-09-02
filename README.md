@@ -62,6 +62,8 @@ Packages and SHA-256 checksums are in the [latest release](https://github.com/B-
 
 ## License and policy
 
-The free plan connects this computer and one paired device. A $9 one-time license adds more paired devices and one-hour transfers. Buy it from the product checkout, then paste the returned token under **Existing license** in the desktop app. Sociobot and Dodo are the merchant of record; refunds revoke the license.
+The free plan connects this computer and one paired device. A $9 one-time license adds more paired devices and one-hour transfers. Purchases are currently unavailable. Existing license holders can paste a token under **Existing license** in the desktop app.
+
+Checkout is disabled by default. After the product operator confirms that the scoped Sociobot checkout works, build with `VITE_CHECKOUT_URL=https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` to show the purchase link.
 
 Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and terms are at `/terms/`.

@@ -12,7 +12,10 @@ export default defineConfig({
     { command: "npm run dev -- --host 127.0.0.1", url: "http://127.0.0.1:1420", reuseExistingServer: true }
   ],
   projects: [
-    { name: "desktop-chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile-chromium", use: { ...devices["Pixel 5"] } }
+    { name: "desktop-chromium", testIgnore: /paid-unlock\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "mobile-chromium", testIgnore: /paid-unlock\.spec\.ts/, use: { ...devices["Pixel 5"] } },
+    // This claim gets a separate worker, browser process, and context. A prior
+    // aggregate run lost the shared Chromium process just before this case.
+    { name: "paid-unlock-chromium", testMatch: /paid-unlock\.spec\.ts/, use: { ...devices["Desktop Chrome"] } }
   ]
 });

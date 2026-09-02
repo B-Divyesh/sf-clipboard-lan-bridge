@@ -41,6 +41,11 @@ let selectedPeer = "";
 let refreshTimer = 0;
 const isTauri = "__TAURI_INTERNALS__" in window;
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
+const scopedCheckout = "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout";
+const buildEnv = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env;
+const checkoutCopy = buildEnv?.VITE_CHECKOUT_URL === scopedCheckout
+  ? `<a href="${scopedCheckout}" target="_blank" rel="noreferrer">Buy a license</a> or paste an existing token below.`
+  : "Purchases are currently unavailable. Paste an existing token below.";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div class="app-shell">
@@ -111,7 +116,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         <details class="settings-panel">
           <summary>Existing license</summary>
           <p class="legal-note">A $9 one-time license adds more paired devices and one-hour transfers.</p>
-          <p class="legal-note"><a href="https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout" target="_blank" rel="noreferrer">Buy a license</a> or paste an existing token below.</p>
+          <p class="legal-note">${checkoutCopy}</p>
           <strong id="license-state">Free plan active</strong>
           <form id="license-form" class="license-form"><label for="license-token">Existing license token</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
         </details>

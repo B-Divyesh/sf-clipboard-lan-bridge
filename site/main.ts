@@ -5,6 +5,19 @@ import releaseManifest from "./release-manifest.json";
 type Asset = { platform: string; arch?: string; kind?: string; url: string; sha256?: string };
 type Manifest = { version: string; assets: Asset[]; release_state?: "draft" | "published" };
 const releaseFallback = "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest";
+const scopedCheckout = "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout";
+
+function enableCheckoutWhenConfigured() {
+  const env = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env;
+  if (env?.VITE_CHECKOUT_URL !== scopedCheckout) return;
+  const slot = document.querySelector<HTMLElement>("#checkout-slot");
+  if (!slot) return;
+  const link = document.createElement("a");
+  link.className = "primary-button";
+  link.href = scopedCheckout;
+  link.textContent = "Buy the $9 license";
+  slot.replaceChildren(link);
+}
 
 function platform(): "windows" | "macos" | "linux" {
   const value = `${navigator.userAgent} ${navigator.platform}`.toLowerCase();
@@ -65,5 +78,5 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach(butt
   catch { button.textContent = "Select command"; }
 }));
 if (new URLSearchParams(location.search).get("demo") === "1") location.replace("/demo/");
-else { loadRelease(); handleCheckoutReturn(); }
+else { loadRelease(); enableCheckoutWhenConfigured(); handleCheckoutReturn(); }
 if ("serviceWorker" in navigator && (location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname))) void navigator.serviceWorker.register("/sw.js");

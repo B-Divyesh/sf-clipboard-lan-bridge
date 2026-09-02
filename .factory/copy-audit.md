@@ -15,6 +15,9 @@ Audited 2026-09-02 after polish round 1. Landing-page sentences are 22 words or 
 | The receiving device must approve before pairing completes. | 8 |
 | The encrypted text arrives over your local network. | 8 |
 | Packages are not code-signed, so your operating system may ask for confirmation. | 12 |
+| Purchases are currently unavailable. | 4 |
+| Existing license holders can still restore a token in the desktop app. | 12 |
+| When sales open, Sociobot will handle payment and refunds. | 9 |
 
 ## Terminology
 
