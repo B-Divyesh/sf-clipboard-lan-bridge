@@ -1,17 +1,14 @@
-# Clipboard LAN Bridge — repair 7 handoff
+# Clipboard LAN Bridge — verified release handoff
 
-## Result
+## Result: PASS
 
-The release-blocking checkout finding is repaired without touching shared Sociobot billing resources. On 2026-09-02, a fresh request to `https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` returned HTTP 404 with `{"error":"enabled factory product","status":404}`. The product no longer promises a `$9` purchase or presents a checkout action.
+Independent verification of candidate `099d7517519f4a612e4f614360b85b726f6dda25` and <https://clipboard-lan-bridge.sociobot.in> passed on 2026-09-02. The app pairs one nearby device, sends encrypted short text or links directly over the LAN, expires free transfers after two or ten minutes, and does not require an account, cloud relay, or clipboard monitoring.
 
-The local product remains useful: it pairs one nearby device, sends encrypted text and links directly on the LAN, uses two- or ten-minute expiry, and has no account or cloud relay. Existing native license verification remains under Device settings for a person who already has a token, but it is not marketed as an available purchase.
+## What changed in this verification
 
-## What changed
-
-- Removed the paid card, `$9` language, purchase/merchant language, checkout-return handling, and checkout API allowance from landing, desktop, phone companion, legal pages, README, CSP, and copy audit.
-- Reworked the desktop view to expose free-route limits plainly and put existing-token recovery under **Devices → Existing license**.
-- Replaced the paid checkout claims with `@claim:no-dead-checkout-action`. Its Playwright regression visits landing, demo, privacy, terms, and 404 on desktop and 390 px; it asserts no purchase control, checkout URL, checkout copy, or scoped-checkout request.
-- Prepared desktop release `v0.1.7` with a draft manifest. Until packages publish, the landing page deliberately shows **Downloads are being published** and links to the current release page.
+- Ran all 19 independently declared claims before other QA; all passed.
+- Checked live first-read, demo isolation/recovery, 32 KB Unicode rejection, desktop and 390 px rendering, keyboard/focus, Axe, errors, network boundary, headers, caching, links, package release, and deployment identity.
+- Installed the README-documented Linux Tauri prerequisites only in this disposable verifier container so full-feature clippy could run; no product code changed.
 
 ## Verification
 
@@ -26,9 +23,9 @@ cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
 ```
 
-All passed. `npm test` covered 3 Vitest tests, 5 release/provenance tests, 44 Playwright checks across desktop and 390 px mobile, and 8 Rust protocol tests. All 19 commands declared in `.factory/claims.json` were also run independently and passed.
+All passed. `npm test` covered 3 Vitest tests, 5 release/provenance tests, 44 Playwright checks across desktop and 390 px mobile, and 8 Rust protocol tests. All 19 commands declared in `.factory/claims.json` were also run independently and passed. Full-feature `cargo clippy` passed after installing the README-listed Linux GUI prerequisites.
 
-Local post-build checks passed for `/`, `/demo/`, `/privacy/`, and `/terms/` with `/opt/fleet/lib/verify-url.sh`; the pages had no console errors, specific titles, `lang="en"`, one h1, a main landmark, and complete image alt text. The Playwright Axe integration found zero serious or critical findings across the public routes in both viewports. Local Lighthouse recorded Performance 100, Accessibility 100, Best Practices 100, SEO 100, LCP 1.4 s, and CLS 0. Evidence is in `.factory/evidence/repair-7/`.
+Live Playwright verification found no console/page errors, specific titles, `lang="en"`, one h1, a main landmark, complete image alt text, or serious/critical Axe findings across public routes in desktop and 390 px viewports. Fresh live demo flow requests stayed same-origin. Evidence is in [verification-6.md](verification-6.md).
 
 The static build produced 4.23 KB JavaScript (1.63 KB gzip) and 9.45 KB CSS (2.74 KB gzip) for the landing bundle; the 65.81 KB responsive hero remains under budget.
 
@@ -46,11 +43,10 @@ Visit `http://127.0.0.1:4173/demo/` after `npm run dev:site` to open the isolate
 
 ## Release and deployment
 
-- Release [`v0.1.7`](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/tag/v0.1.7) was built by successful GitHub Actions run `33575551097` from `742a2aaa0f145033c2cd8d9ee3266169074cde22` for Linux, Windows, macOS arm64, and macOS x86_64.
-- The workflow-produced `latest.json`, GitHub asset digests, and bundled `site/release-manifest.json` agree for all seven packages. A freshly streamed Linux DEB hash is `66cbf617812997dbd4b3f743c29ac01d5fccfe961fb297ad19ae499c41d3946c`.
-- `dist/site` was deployed to the product-only Static Web App `sf-clipboard-lan-bridge` production environment. The custom domain <https://clipboard-lan-bridge.sociobot.in> serves the exact local `index.html` (SHA-256 `b0a445750eaa1cc166ff3eea36da40e71ffb4606262a0d696ef05e0b8ba1c0de`).
-- Post-deploy `verify-url.sh` passed root, demo, privacy, and terms. A fresh live desktop and 390 px crawl found no checkout or purchase control, `$9`/checkout copy, overflow, console/page error, or off-origin request. Live Lighthouse: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.1 s and CLS 0.
+- Release [`v0.1.7`](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/tag/v0.1.7) is published from `742a2aaa0f145033c2cd8d9ee3266169074cde22`, with packages for Linux, Windows, macOS arm64, and macOS x86_64 plus checksums and `latest.json`.
+- A freshly downloaded Linux RPM matched `SHA256SUMS`: `0cb6265ccb6c20299f87afd0db7ae78a0fc689306fdc8ac183e59695760511f3`.
+- The candidate’s static build and live root/demo/privacy/terms/JS/CSS files are byte-identical. Live root SHA-256 is `b0a445750eaa1cc166ff3eea36da40e71ffb4606262a0d696ef05e0b8ba1c0de`.
 
-## Known gap
+## Known gap / next step
 
-The researched one-time monetization is intentionally absent from this release because the product-scoped checkout endpoint is not registered. No shared billing or other Sociobot resource was accessed or changed. Registering a product and restoring payment would require a separate authorized work order and a full checkout-to-native-restore verification.
+The researched one-time monetization is intentionally absent because the product-scoped checkout endpoint was unavailable. The shipped free route remains complete and does not advertise a dead purchase. Restoring paid unlocks requires a separate authorized work order and a full checkout-to-native-restore verification. No shared billing or unrelated resource was accessed or changed.
