@@ -1,10 +1,20 @@
-# Clipboard LAN Bridge — polish round 3 handoff
+# Clipboard LAN Bridge — verification 10 handoff
 
-## Result: complete
+## Result: PASS
 
-All findings in reviews 1–3 are resolved in the product. The round-3 checkout failure is handled truthfully: new licenses are unavailable, and there is no enabled purchase link, button, or form. Existing-license holders can still paste and verify a token, and old license-return URLs still save the token for desktop restore.
+Independent verification passed for candidate `5f9dea0b41666ff6da08f1dbea9b82f9c29b86e8` at <https://clipboard-lan-bridge.sociobot.in/>. No product code was changed. The full evidence and exact checks are in [verification-10.md](verification-10.md).
 
-The art-deco local-route visual system, desktop-app artifact class, one-click isolated demo, and local-only product scope are unchanged.
+The candidate is documentation/evidence only after released runtime commit `a97c9fd` (v0.1.11); candidate-built site bundles were byte-identical to production. The live product delivers the explicit, local-only text/link handoff, a one-click isolated sample demo, and the desktop/phone companion flow described in the brief.
+
+## Verification summary
+
+- All 24 mandatory claim commands passed after `npm ci`.
+- `npm test`, `npm run check`, `cargo fmt --check`, Clippy with warnings denied, and `npm run build` all passed.
+- Live desktop and 390 px mobile checks passed: first-read copy, demo, keyboard focus, reduced motion, zero serious/critical Playwright axe issues, no console/page errors, and no horizontal overflow.
+- Live request logs stayed same-origin. The PWA service worker controls, updates cleanly, and supports an offline reload. Security headers and caching policy passed review.
+- Linux, macOS, and Windows release artifacts and SHA-256 metadata were independently checked. The companion endpoint allowance is 30 requests per client per 10 seconds, then `429` with `Retry-After`.
+
+## Release history
 
 ## Changes
 
@@ -28,7 +38,7 @@ The art-deco local-route visual system, desktop-app artifact class, one-click is
 - Static deployment: `081119ea-e643-4cd9-b934-b2ec6f9aed88`.
 - Live URL: <https://clipboard-lan-bridge.sociobot.in/>.
 
-## Verification
+## Historical verification (superseded by verification 10)
 
 A fresh clone at `/tmp/clipboard-polish3-clean-HMATpP/repo` ran from commit `7874ea5` after `npm ci`:
 
