@@ -79,15 +79,26 @@ test("@claim:sample-demo loads, sends, resets, and isolates realistic sample dat
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
   await expect(page.getByText("Groceries: oat milk, coriander, and AA batteries.")).toBeVisible();
   await page.getByLabel("Text or link").fill("Gate changed to 8. Share this with the laptop.");
+  await page.getByLabel("Expires after").selectOption("120");
   await page.getByRole("button", { name: "Send sample text" }).click();
-  await expect(page.getByText("Gate changed to 8. Share this with the laptop.")).toBeVisible();
+  await page.getByLabel("Text or link").fill("");
+  await page.getByRole("button", { name: "Send sample text" }).click();
+  await expect(page.getByRole("alert")).toHaveText("Enter or paste something to send.");
+  await page.getByLabel("Text or link").fill("Gate changed to 8. Share this with the laptop.");
+  await page.getByRole("button", { name: "Send sample text" }).click();
+  const sentTicket = page.locator(".ticket").filter({ hasText: "Gate changed to 8. Share this with the laptop." });
+  await expect(sentTicket.first()).toBeVisible();
   expect(await page.evaluate(() => ({ demo: sessionStorage.getItem("demo:clipboard-lan-bridge:tickets"), real: localStorage.getItem("clipboard-lan-bridge:tickets") }))).toEqual(expect.objectContaining({ real: null }));
   await page.getByRole("button", { name: "Reset demo" }).click();
-  await expect(page.getByText("Gate changed to 8. Share this with the laptop.")).toHaveCount(0);
+  await expect(sentTicket).toHaveCount(0);
+  await expect(page.getByLabel("Text or link")).toHaveValue("Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q");
+  await expect(page.getByLabel("Expires after")).toHaveValue("600");
+  await expect(page.getByRole("alert")).toBeEmpty();
   await page.getByLabel("Text or link").fill("Should be discarded when leaving the demo.");
   await page.getByRole("button", { name: "Send sample text" }).click();
-  await page.getByRole("link", { name: "Start for real" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await page.getByRole("link", { name: "Download the desktop app" }).click();
+  await expect(page).toHaveURL(/\/#download$/);
+  await expect(page.getByRole("heading", { name: "Install the desktop app" })).toBeFocused();
   expect(await page.evaluate(() => sessionStorage.getItem("demo:clipboard-lan-bridge:tickets"))).toBeNull();
   await page.goto("/demo/");
   await expect(page.getByText("Should be discarded when leaving the demo.")).toHaveCount(0);
@@ -143,8 +154,10 @@ test("@claim:no-account runs the sample handoff without sign-in", async ({ page 
 
 test("@claim:unsigned-packages warns plainly about unsigned packages", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("#platform-note")).toContainText("Packages are not code-signed");
+  await expect(page.locator("#platform-note")).toContainText("unverified-publisher warning");
+  await expect(page.locator("#download").getByText("Your operating system may show an unverified-publisher warning.")).toBeVisible();
   expect(await page.locator("body").innerText()).not.toContain("community build");
+  expect(await page.locator("body").innerText()).not.toContain("not code-signed");
 });
 
 test("links and controls retain 44px targets in both dimensions and the hero heading keeps devices whole", async ({ page }, testInfo) => {
@@ -218,6 +231,16 @@ test("internal navigation and browser Back move focus to the new page heading", 
   await expect(page.locator("h1")).toBeFocused();
 });
 
+test("primary demo navigation and Back move focus to the route heading", async ({ page }, testInfo) => {
+  await page.setViewportSize(testInfo.project.name.includes("mobile") ? { width: 390, height: 844 } : { width: 1440, height: 900 });
+  await page.goto("/");
+  await page.getByRole("link", { name: "Try it with sample data" }).click();
+  await expect(page).toHaveURL(/\/demo\/$/);
+  await expect(page.locator("h1")).toBeFocused();
+  await page.goBack();
+  await expect(page.locator("h1")).toBeFocused();
+});
+
 test("offline reload uses the cached shell without console errors", async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -232,7 +255,7 @@ test("offline reload uses the cached shell without console errors", async ({ bro
   await page.evaluate(async () => { await caches.open("clipboard-lan-bridge-old-test"); await (await navigator.serviceWorker.getRegistration())?.unregister(); });
   await page.reload();
   await page.evaluate(() => navigator.serviceWorker.ready);
-  await expect.poll(() => page.evaluate(async () => ({ caches: await caches.keys(), controlled: Boolean(navigator.serviceWorker.controller) }))).toEqual({ caches: ["clipboard-lan-bridge-v8"], controlled: true });
+  await expect.poll(() => page.evaluate(async () => ({ caches: await caches.keys(), controlled: Boolean(navigator.serviceWorker.controller) }))).toEqual({ caches: ["clipboard-lan-bridge-v9"], controlled: true });
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();

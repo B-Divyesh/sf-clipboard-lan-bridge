@@ -1,6 +1,6 @@
 # Clipboard LAN Bridge
 
-Send short text and links between your own nearby devices. The desktop app runs on Linux, macOS, and Windows. Its phone page works in a phone browser on the same Wi-Fi.
+Send short text and links between your own nearby devices. Packages are available for Linux, macOS, and Windows. Its phone page works in a phone browser on the same Wi-Fi.
 
 Use it when you would otherwise message yourself a link, address, command, or short note.
 
@@ -14,7 +14,7 @@ Use it when you would otherwise message yourself a link, address, command, or sh
 - Keep the phone page open until the transfer arrives.
 - The phone page accepts 30 requests from one network address every 10 seconds. After that, it asks the browser to wait before trying again (`429` with `Retry-After`).
 
-This is a personal local-network tool, not a password manager. Pair only on networks you trust and compare the displayed code.
+This is a personal tool for your local network, not a password manager. Pair only on networks you trust and compare the displayed code.
 
 ## Run locally
 
@@ -30,6 +30,8 @@ Run the product site with `npm run dev:site`.
 ## Try the sample
 
 Open `http://127.0.0.1:4173/?demo=1` after starting the site. The sample saves data only in this browser tab under a separate `demo:` key. It never writes sample transfers to app data.
+
+In the installed app, choose **Load sample transfer**. The sample uses a separate `demo:` browser-session key and does not write app data.
 
 ## Test and build
 
@@ -50,7 +52,7 @@ CI=true npm run tauri build
 
 ## Install and release
 
-GitHub Actions builds packages for macOS, Windows, and Linux. Packages are not code-signed. On macOS, right-click the app and choose **Open**. On Windows, confirm the publisher warning.
+GitHub Actions builds packages for macOS, Windows, and Linux. Your operating system may show an unverified-publisher warning. On macOS, right-click the app and choose **Open**. On Windows, confirm the publisher warning.
 
 ```sh
 curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh
@@ -62,8 +64,8 @@ Packages and SHA-256 checksums are in the [latest release](https://github.com/B-
 
 ## License and policy
 
-The free plan connects this computer and one paired device. A $9 one-time license adds more paired devices and one-hour transfers. Purchases are currently unavailable. Existing license holders can paste a token under **Existing license** in the desktop app.
+The free plan connects this computer and one paired device. A $9 one-time license removes the paired-device limit and enables one-hour transfers. You can buy it from the [Sociobot checkout](https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout). Existing license holders can paste a token under **Existing license** in the desktop app.
 
-Checkout is disabled by default. After the product operator confirms that the scoped Sociobot checkout works, build with `VITE_CHECKOUT_URL=https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` to show the purchase link.
+After checkout, copy the returned token into **Existing license** in the desktop app. Terms and refund information are available at `/terms/`.
 
 Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and terms are at `/terms/`.

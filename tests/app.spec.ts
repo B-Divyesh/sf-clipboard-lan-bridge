@@ -16,6 +16,20 @@ test("desktop interface has accessible empty, phone, and device settings states"
   expect(errors).toEqual([]);
 });
 
+test("@claim:desktop-sample loads and discards an isolated sample transfer", async ({ page }) => {
+  await page.goto("http://127.0.0.1:1420/");
+  await page.getByRole("button", { name: "Load sample transfer" }).click();
+  await expect(page.getByText("Sample — nothing is saved")).toBeVisible();
+  await expect(page.getByRole("radio", { name: /Kitchen phone/ })).toBeChecked();
+  await page.getByRole("link", { name: "Receive" }).click();
+  await expect(page.getByText("Groceries: oat milk, coriander, and AA batteries.")).toBeVisible();
+  expect(await page.evaluate(() => ({ demo: sessionStorage.getItem("demo:clipboard-lan-bridge:desktop-sample"), real: localStorage.getItem("clipboard-lan-bridge:tickets") }))).toEqual({ demo: "1", real: null });
+  await page.getByRole("button", { name: "Start for real" }).click();
+  expect(await page.evaluate(() => ({ key: sessionStorage.getItem("demo:clipboard-lan-bridge:desktop-sample"), hidden: (document.querySelector("#sample-banner") as HTMLElement).hidden }))).toEqual({ key: null, hidden: true });
+  await expect(page.getByText("Sample — nothing is saved")).not.toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem("demo:clipboard-lan-bridge:desktop-sample"))).toBeNull();
+});
+
 test("@claim:native-license-verification uses native verification, not writable local storage", async ({ page }) => {
   await page.addInitScript(snapshot => {
     let licensed = false;

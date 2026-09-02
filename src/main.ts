@@ -39,13 +39,12 @@ const empty: Snapshot = {
 let state: Snapshot = empty;
 let selectedPeer = "";
 let refreshTimer = 0;
+let sampleMode = false;
 const isTauri = "__TAURI_INTERNALS__" in window;
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const scopedCheckout = "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout";
-const buildEnv = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env;
-const checkoutCopy = buildEnv?.VITE_CHECKOUT_URL === scopedCheckout
-  ? `<a href="${scopedCheckout}" target="_blank" rel="noreferrer">Buy a license</a> or paste an existing token below.`
-  : "Purchases are currently unavailable. Paste an existing token below.";
+const checkoutCopy = `<a href="${scopedCheckout}" target="_blank" rel="noreferrer">Buy a $9 license</a> or paste an existing token below.`;
+const sampleKey = "demo:clipboard-lan-bridge:desktop-sample";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div class="app-shell">
@@ -57,6 +56,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <div class="network-state" id="network-state" role="status"><span class="status-dot"></span><span>Starting local connection…</span></div>
       <div class="sr-only" id="route-announcer" aria-live="polite"></div>
     </header>
+    <aside id="sample-banner" class="sample-banner" aria-label="Sample controls" hidden><strong>Sample — nothing is saved</strong><span><button id="reset-sample" type="button">Reset sample</button><button id="start-real" type="button">Start for real</button></span></aside>
 
     <nav class="rail-nav" aria-label="Main navigation">
       <a href="#send" data-view="send" aria-current="page"><span aria-hidden="true">↗</span> Send</a>
@@ -69,6 +69,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         <div class="eyebrow">Send text</div>
         <h1 id="send-title" tabindex="-1">Send text to a paired device</h1>
         <p class="lede">Move one short piece of text to one nearby device. Nothing is watched or synced in the background.</p>
+        <button id="load-sample" class="secondary-button" type="button">Load sample transfer</button>
 
         <form id="send-form" novalidate>
           <div class="field-head"><label for="payload">Text or link</label><button class="text-button" id="read-clipboard" type="button">Paste from clipboard</button></div>
@@ -115,7 +116,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         </details>
         <details class="settings-panel">
           <summary>Existing license</summary>
-          <p class="legal-note">A $9 one-time license adds more paired devices and one-hour transfers.</p>
+          <p class="legal-note">A $9 one-time license removes the paired-device limit and enables one-hour transfers.</p>
           <p class="legal-note">${checkoutCopy}</p>
           <strong id="license-state">Free plan active</strong>
           <form id="license-form" class="license-form"><label for="license-token">Existing license token</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
@@ -123,11 +124,46 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       </section>
     </main>
 
-    <footer class="app-footer"><span>LAN only · end-to-end encrypted</span><span>Clipboard access is always deliberate</span></footer>
+    <footer class="app-footer"><span>Local network only · end-to-end encrypted</span><span>Clipboard access is always deliberate</span></footer>
   </div>`;
 
 function paid(): boolean {
   return state.licensed;
+}
+
+function sampleSnapshot(): Snapshot {
+  const created = Date.now();
+  return {
+    ...empty,
+    device_id: "demo:studio-laptop",
+    device_name: "Studio laptop",
+    network_ready: true,
+    network_error: null,
+    peers: [{ id: "demo:kitchen-phone", name: "Kitchen phone", address: "Sample device", online: true, paired: true, last_seen: created }],
+    inbox: [{ id: "demo:grocery-arrival", peer_id: "demo:kitchen-phone", peer_name: "Kitchen phone", text: "Groceries: oat milk, coriander, and AA batteries.", created_at: created, expires_at: created + 600_000, status: "received" }],
+    sent: [],
+    companion_urls: []
+  };
+}
+
+function loadSample() {
+  sampleMode = true;
+  sessionStorage.setItem(sampleKey, "1");
+  state = sampleSnapshot();
+  selectedPeer = "demo:kitchen-phone";
+  render();
+  showNotice("Sample loaded. Send text to the Kitchen phone.");
+}
+
+function leaveSample() {
+  sampleMode = false;
+  selectedPeer = "";
+  sessionStorage.removeItem(sampleKey);
+  state = empty;
+  render();
+  $("#sample-banner").hidden = true;
+  $("#load-sample").hidden = false;
+  void refresh();
 }
 
 function escapeHtml(value: string): string {
@@ -135,6 +171,8 @@ function escapeHtml(value: string): string {
 }
 
 function render() {
+  $("#sample-banner").hidden = !sampleMode;
+  $("#load-sample").hidden = sampleMode;
   const status = $("#network-state");
   status.classList.toggle("online", state.network_ready);
   const statusText = state.network_ready ? "Local connection ready" : state.network_error || "Local connection unavailable";
@@ -170,6 +208,7 @@ async function call<T>(command: string, args: Record<string, unknown> = {}): Pro
 }
 
 async function refresh() {
+  if (sampleMode) { render(); return; }
   if (!isTauri) { render(); return; }
   try { state = await call<Snapshot>("get_snapshot"); } catch (error) { state = { ...empty, network_error: String(error) }; }
   render();
@@ -207,7 +246,12 @@ $("#send-form").addEventListener("submit", async event => {
   event.preventDefault(); const text = $<HTMLTextAreaElement>("#payload").value; const error = validateTransfer(text);
   if (error) { $("#payload-error").textContent = error; $("#payload").focus(); return; }
   if (!selectedPeer) { $("#payload-error").textContent = "Choose an online destination."; return; }
-  try { await call("send_text", { peerId: selectedPeer, text, ttlSeconds: Number($<HTMLSelectElement>("#expiry").value) }); showNotice(`Ticket sent: ${summarize(text, 52)}`); $<HTMLTextAreaElement>("#payload").value = ""; $("#payload").dispatchEvent(new Event("input")); await refresh(); }
+  try {
+    if (sampleMode) {
+      state.sent.unshift({ id: crypto.randomUUID(), peer_id: selectedPeer, peer_name: "Kitchen phone", text, created_at: Date.now(), expires_at: Date.now() + Number($<HTMLSelectElement>("#expiry").value) * 1000, status: "sent" });
+    } else await call("send_text", { peerId: selectedPeer, text, ttlSeconds: Number($<HTMLSelectElement>("#expiry").value) });
+    showNotice(`Text sent: ${summarize(text, 52)}`); $<HTMLTextAreaElement>("#payload").value = ""; $("#payload").dispatchEvent(new Event("input")); await refresh();
+  }
   catch (error) { showNotice(String(error), "error"); }
 });
 
@@ -215,6 +259,8 @@ document.body.addEventListener("click", async event => {
   const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button"); if (!button) return;
   try {
     let refreshNeeded = false;
+    if (button.id === "load-sample" || button.id === "reset-sample") { loadSample(); return; }
+    if (button.id === "start-real") { leaveSample(); return; }
     if (button.dataset.pair) { await call("request_pairing", { peerId: button.dataset.pair }); refreshNeeded = true; }
     if (button.dataset.approve) { await call("approve_pairing", { peerId: button.dataset.approve }); refreshNeeded = true; }
     if (button.dataset.reject) { await call("reject_pairing", { peerId: button.dataset.reject }); refreshNeeded = true; }
@@ -228,6 +274,10 @@ document.body.addEventListener("click", async event => {
 $("#name-form").addEventListener("submit", async event => { event.preventDefault(); try { await call("set_device_name", { name: $<HTMLInputElement>("#device-name").value }); await refresh(); } catch (error) { alert(String(error)); } });
 $("#license-form").addEventListener("submit", event => { event.preventDefault(); const token = $<HTMLInputElement>("#license-token").value.trim(); void verifyLicense(token); });
 $("#remove-license").addEventListener("click", async () => { try { await call("remove_license"); $("#license-result").textContent = "License removed from this device."; await refresh(); } catch (error) { $("#license-result").textContent = String(error); } });
+$("#load-sample").addEventListener("click", loadSample);
+$("#reset-sample").addEventListener("click", loadSample);
+$("#start-real").addEventListener("click", leaveSample);
 
+if (sessionStorage.getItem(sampleKey) === "1") loadSample();
 activateView(); void refresh(); refreshTimer = window.setInterval(refresh, 2500);
 window.addEventListener("beforeunload", () => clearInterval(refreshTimer));

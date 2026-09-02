@@ -3,6 +3,8 @@ import "../a11y";
 
 type Ticket = { id: string; from: string; text: string; expires: number };
 const KEY = "demo:clipboard-lan-bridge:tickets";
+const SAMPLE_TEXT = "Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q";
+const SAMPLE_EXPIRY = "600";
 const now = () => Number(sessionStorage.getItem("demo:clipboard-lan-bridge:now")) || (window as Window & { __clipboardDemoNow?: number }).__clipboardDemoNow || Date.now();
 const sample = (): Ticket[] => [{ id: "sample-arrival", from: "Kitchen phone", text: "Groceries: oat milk, coriander, and AA batteries.", expires: now() + 600_000 }];
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
@@ -50,7 +52,18 @@ $("#tickets").addEventListener("click", async event => {
   catch { button.textContent = "Select the text above"; }
 });
 
-$("#reset-demo").addEventListener("click", () => { save(sample()); render(); $("#demo-text").focus(); });
+function resetDemo() {
+  save(sample());
+  const input = $<HTMLTextAreaElement>("#demo-text");
+  input.value = SAMPLE_TEXT;
+  $<HTMLSelectElement>("#demo-expiry").value = SAMPLE_EXPIRY;
+  $("#demo-bytes").textContent = `${new TextEncoder().encode(SAMPLE_TEXT).length} / 32 KB`;
+  $("#demo-error").textContent = "";
+  render();
+  input.focus();
+}
+
+$("#reset-demo").addEventListener("click", resetDemo);
 $("#start-real").addEventListener("click", () => { sessionStorage.removeItem(KEY); });
 if (!sessionStorage.getItem(KEY)) save(sample());
 render();

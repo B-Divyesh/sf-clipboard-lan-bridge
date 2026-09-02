@@ -1,6 +1,6 @@
 const skipLink = document.querySelector<HTMLAnchorElement>(".skip-link");
 const main = document.querySelector<HTMLElement>("main#main");
-const routeFocusKey = "clipboard-lan-bridge:focus-route-heading";
+const routeFocusKey = "clipboard-lan-bridge:focus-route-target";
 
 skipLink?.addEventListener("click", () => {
   requestAnimationFrame(() => main?.focus());
@@ -14,14 +14,15 @@ document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach(link => {
     if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const destination = new URL(link.href, location.href);
     if (destination.origin === location.origin && destination.pathname !== location.pathname) {
-      sessionStorage.setItem(routeFocusKey, "1");
+      sessionStorage.setItem(routeFocusKey, link.dataset.focusId || "heading");
     }
   });
 });
 
 addEventListener("pageshow", () => {
-  if (sessionStorage.getItem(routeFocusKey) !== "1") return;
+  const target = sessionStorage.getItem(routeFocusKey);
+  if (!target) return;
   // Keep the marker while traversing document history, so Back receives the
   // same orientation cue as the forward navigation.
-  requestAnimationFrame(() => document.querySelector<HTMLElement>("main h1")?.focus());
+  requestAnimationFrame(() => (target === "heading" ? document.querySelector<HTMLElement>("main h1") : document.getElementById(target))?.focus());
 });

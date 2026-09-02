@@ -1,1 +1,1 @@
-Send text between nearby devices on your local network.
+Send short text and links between nearby devices on your local network.

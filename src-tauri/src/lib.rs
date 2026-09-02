@@ -1861,6 +1861,22 @@ mod tests {
             checked_at: now_ms(),
         });
         assert!(can_add_peer(&inner, "second"));
+        inner.config.peers.push(StoredPeer {
+            id: "second".into(),
+            name: "Laptop".into(),
+            public_key: "key-two".into(),
+            address: "laptop".into(),
+            kind: "desktop".into(),
+        });
+        assert!(can_add_peer(&inner, "third"));
+        inner.config.peers.push(StoredPeer {
+            id: "third".into(),
+            name: "Tablet".into(),
+            public_key: "key-three".into(),
+            address: "tablet".into(),
+            kind: "desktop".into(),
+        });
+        assert!(can_add_peer(&inner, "fourth"));
         assert!(can_use_ttl(&inner, 3600));
         inner.config.license.as_mut().unwrap().valid = false;
         assert!(!can_add_peer(&inner, "second"));

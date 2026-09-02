@@ -33,8 +33,8 @@
           <div class="line-label">For your own nearby devices</div>
           <h1 tabindex="-1">Send text to nearby <span class="keep-word">devices</span></h1>
           <p>Move one link, address, or note between your phone and computers on the same local network.</p>
-          <div class="hero-actions"><a class="primary-button" href="/?demo=1">Try it with sample data</a><a id="hero-download" class="quiet-link" href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest">Download the desktop app</a></div>
-          <ul class="hero-facts"><li>No cloud relay</li><li>No clipboard monitoring</li><li>Free for one paired device</li></ul>
+          <div class="hero-actions"><a class="primary-button" href="/demo/">Try it with sample data</a><a id="hero-download" class="quiet-link" href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest">Download the desktop app</a></div>
+          <ul class="hero-facts"><li>No cloud service</li><li>No clipboard monitoring</li><li>Free for one paired device</li></ul>
           <p class="platform-note" id="platform-note" role="status">Detecting your platform…</p>
         </div>
         <figure class="poster-frame">
@@ -56,26 +56,28 @@
 
       <section class="safety-section" id="safety" aria-labelledby="safety-title">
         <div><div class="section-kicker">Privacy limits</div><h2 id="safety-title">Only the text you choose</h2><p>Clipboard LAN Bridge handles UTF-8 text and web links only. It does not read clipboard changes, images, or files.</p></div>
-        <dl class="signal-board"><div><dt>Transport</dt><dd>End-to-end encrypted</dd></div><div><dt>Relay</dt><dd>None · LAN only</dd></div><div><dt>Approval</dt><dd>Visible on receiver</dd></div><div><dt>Telemetry</dt><dd>None</dd></div></dl>
+        <dl class="signal-board"><div><dt>Transport</dt><dd>End-to-end encrypted</dd></div><div><dt>Cloud service</dt><dd>None · local network only</dd></div><div><dt>Approval</dt><dd>Required on the receiving device</dd></div><div><dt>Telemetry</dt><dd>None</dd></div></dl>
       </section>
 
       <section class="price-section" id="price" aria-labelledby="price-title">
         <div class="fare-card free"><span class="ticket-notch"></span><div class="section-kicker">Free plan</div><h2 id="price-title">One paired device. No account.</h2><p class="fare">Free</p><ul><li>One paired device</li><li>Transfers expire after 2 or 10 minutes</li><li>End-to-end encrypted transfers</li></ul><a class="secondary-button" href="#download">Download the app</a></div>
-        <div class="fare-card paid"><span class="ticket-notch"></span><div class="section-kicker">One-time purchase</div><h2>More devices and longer transfers</h2><p class="fare">$9 <small>once</small></p><ul><li>More paired devices</li><li>One-hour transfers</li><li>Restore your license in the desktop app</li></ul><div id="checkout-slot"><p class="checkout-status" role="status">Purchases are currently unavailable. Existing license holders can still restore a token in the desktop app.</p></div><p class="merchant">When sales open, Sociobot will handle payment and refunds.</p></div>
+        <div class="fare-card paid"><span class="ticket-notch"></span><div class="section-kicker">One-time purchase</div><h2>No paired-device limit</h2><p class="fare">$9 <small>once</small></p><ul><li>No paired-device limit</li><li>One-hour transfers</li><li>Restore your license in the desktop app</li></ul><div id="checkout-slot"><a class="primary-button" href="https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout">Buy the $9 license</a></div><p class="merchant">Sociobot is the merchant of record. See <a href="/terms/">terms and refunds</a>.</p></div>
       </section>
 
       <section class="download-section" id="download" aria-labelledby="download-title">
-        <div class="section-kicker">Download</div><h2 id="download-title">Install the desktop app</h2><p>The site selects the current package for your computer. Packages are not code-signed, so your operating system may ask for confirmation.</p>
+        <div class="section-kicker">Download</div><h2 id="download-title" tabindex="-1">Install the desktop app</h2><p>The site selects the current package for your computer. Your operating system may show an unverified-publisher warning.</p>
         <div class="download-panel">
           <a id="main-download" class="primary-button" href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest">View latest downloads</a>
           <p id="download-status" role="status">Loading the latest release manifest…</p>
+          <details id="verify-download"><summary>Verify this download</summary><p>Compare the file’s SHA-256 value with the value in the release page before opening it.</p><p>On macOS or Linux, run <code>shasum -a 256 FILE</code>. On Windows, run <code>Get-FileHash FILE -Algorithm SHA256</code>.</p></details>
           <details><summary>Terminal install</summary><div class="commands"><div><strong>macOS / Linux</strong><code>curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh</code><button aria-label="Copy macOS and Linux install command" data-copy-command="curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh">Copy install command</button></div><div><strong>Windows PowerShell</strong><code>irm https://clipboard-lan-bridge.sociobot.in/install.ps1 | iex</code><button aria-label="Copy Windows install command" data-copy-command="irm https://clipboard-lan-bridge.sociobot.in/install.ps1 | iex">Copy install command</button></div></div></details>
         </div>
         <p class="mobile-truth">To connect a phone, open the local phone address shown by the desktop app. Keep the phone page open until the transfer arrives.</p>
+        <section class="walkthrough" aria-labelledby="walkthrough-title"><div class="section-kicker">Desktop walkthrough</div><h3 id="walkthrough-title">What the installed app looks like</h3><div class="walkthrough-grid"><figure><img src="/walkthrough/pair.png" width="1200" height="800" alt="Desktop app showing the paired Kitchen phone"><figcaption>1. Pair a nearby device.</figcaption></figure><figure><img src="/walkthrough/send.png" width="1200" height="800" alt="Desktop app with sample text ready to send"><figcaption>2. Choose text and send it.</figcaption></figure><figure><img src="/walkthrough/receive.png" width="1200" height="800" alt="Desktop app showing a received grocery list"><figcaption>3. Copy the received text.</figcaption></figure></div></section>
         <section id="license-return" class="license-return" hidden aria-labelledby="license-return-title"><h3 id="license-return-title">Finish on your desktop app</h3><p>Copy this license token, then paste it under Existing license in Devices.</p><label for="license-token">License token</label><textarea id="license-token" readonly rows="3"></textarea></section>
       </section>
     </main>
-    <footer class="site-footer"><a class="wordmark" href="/"><span>Clipboard <b>LAN Bridge</b></span></a><p>Send short text between nearby devices. Built by Param Factory. v0.1.9</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge">Source</a></nav></footer>
+    <footer class="site-footer"><a class="wordmark" href="/"><span>Clipboard <b>LAN Bridge</b></span></a><p>Send short text between nearby devices. Built by Param Factory. v0.1.10</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-clipboard-lan-bridge">Source</a></nav></footer>
     <script type="module" src="/main.ts"></script>
   </body>
 </html>
