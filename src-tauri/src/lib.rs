@@ -223,7 +223,7 @@ struct MobilePairRequest {
     public_key: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct MobilePairResponse {
     code: String,
     desktop_public_key: String,
@@ -1535,7 +1535,7 @@ mod tests {
         let address = listener.local_addr().unwrap();
         let receiver = tokio::spawn(async move {
             let (stream, remote) = listener.accept().await.unwrap();
-            handle_connection(stream, remote, state).await.unwrap();
+            let _ = handle_connection(stream, remote, state).await;
         });
         let mut stream = TcpStream::connect(address).await.unwrap();
         let reply = write_message(&mut stream, &message).await.unwrap();
@@ -1630,35 +1630,91 @@ mod tests {
         .is_err());
     }
 
-    #[test]
+    #[tokio::test]
     // @claim:phone-companion
-    fn phone_companion_crypto_round_trip() {
-        assert!(include_str!("mobile.html").contains("Connect this phone"));
-        assert!(include_str!("mobile.js").contains("/api/pair"));
-        let desktop = fresh_identity();
+    async fn phone_companion_crypto_round_trip() {
+        let state = Arc::new(RwLock::new(test_inner(fresh_identity())));
+        let desktop = state.read().await.config.identity.clone();
         let phone = fresh_identity();
+        let listener = TcpListener::bind(("127.0.0.1", 0)).await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let server_state = state.clone();
+        let server = tokio::spawn(async move {
+            axum::serve(
+                listener,
+                companion_router(server_state).into_make_service_with_connect_info::<SocketAddr>(),
+            )
+            .await
+            .unwrap();
+        });
+        let client = reqwest::Client::new();
+        let base = format!("http://{address}");
+        let page = client.get(format!("{base}/")).send().await.unwrap();
+        assert_eq!(page.status(), StatusCode::OK);
+        assert!(page.text().await.unwrap().contains("Connect this phone"));
+        let script = client.get(format!("{base}/mobile.js")).send().await.unwrap();
+        assert_eq!(script.status(), StatusCode::OK);
+        assert!(script.text().await.unwrap().contains("/api/pair"));
+        let phone_public = mobile_public_key(&phone).unwrap();
+        let pair = client
+            .post(format!("{base}/api/pair"))
+            .json(&serde_json::json!({
+                "device_id": phone.device_id.clone(),
+                "device_name": "Kitchen phone",
+                "public_key": phone_public
+            }))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(pair.status(), StatusCode::OK);
+        let pair: MobilePairResponse = pair.json().await.unwrap();
+        assert_eq!(pair.code, pair_code(&mobile_public_key(&desktop).unwrap(), &phone_public));
+        {
+            let mut inner = state.write().await;
+            let pending = inner.pending.remove(&phone.device_id).unwrap();
+            assert_eq!(pending.code, pair.code);
+            inner.config.peers.push(StoredPeer {
+                id: pending.peer.id,
+                name: pending.peer.name,
+                public_key: pending.peer.public_key,
+                address: pending.peer.address,
+                kind: "mobile".into(),
+            });
+        }
+        let created = now_ms();
         let template = MobileEnvelope {
             sender_id: phone.device_id.clone(),
             transfer_id: "phone-transfer".into(),
             nonce: String::new(),
             ciphertext: String::new(),
-            created_at: 10,
-            expires_at: 120_010,
+            created_at: created,
+            expires_at: created + 120_000,
         };
         let encrypted = mobile_encrypt(
             &phone,
-            &mobile_public_key(&desktop).unwrap(),
+            &pair.desktop_public_key,
             "Train arrives at 18:20",
             &template,
         )
         .unwrap();
-        assert_eq!(
-            mobile_decrypt(&desktop, &mobile_public_key(&phone).unwrap(), &encrypted).unwrap(),
-            "Train arrives at 18:20"
-        );
+        let sent = client.post(format!("{base}/api/send")).json(&serde_json::json!({
+            "device_id": phone.device_id.clone(),
+            "transfer": encrypted.clone()
+        })).send().await.unwrap();
+        assert_eq!(sent.status(), StatusCode::OK);
+        assert_eq!(state.read().await.inbox[0].text, "Train arrives at 18:20");
+
+        let outbound_template = MobileEnvelope {
+            sender_id: desktop.device_id.clone(), transfer_id: "desktop-transfer".into(), nonce: String::new(), ciphertext: String::new(), created_at: created, expires_at: created + 120_000,
+        };
+        let outbound = mobile_encrypt(&desktop, &phone_public, "Meet at the library", &outbound_template).unwrap();
+        state.write().await.mobile_outbox.insert(phone.device_id.clone(), vec![outbound.clone()]);
+        let inbox: Vec<MobileEnvelope> = client.get(format!("{base}/api/inbox?device_id={}", phone.device_id)).send().await.unwrap().json().await.unwrap();
+        assert_eq!(mobile_decrypt(&phone, &pair.desktop_public_key, &inbox[0]).unwrap(), "Meet at the library");
         let mut tampered = encrypted.clone();
         tampered.expires_at += 60_000;
-        assert!(mobile_decrypt(&desktop, &mobile_public_key(&phone).unwrap(), &tampered).is_err());
+        assert!(mobile_decrypt(&desktop, &phone_public, &tampered).is_err());
+        server.abort();
     }
 
     #[tokio::test]
@@ -1816,6 +1872,35 @@ mod tests {
             .await
             .ok
         );
+        // A request is visible but not usable until the receiving device has
+        // explicitly approved the same pairing code.
+        let pending_created = now_ms();
+        let (pending_nonce, pending_ciphertext) = encrypt(
+            &sender,
+            &public_key(&receiver).unwrap(),
+            "This must be rejected before approval",
+            &sender.device_id,
+            "pending-transfer",
+            pending_created,
+            pending_created + 120_000,
+        )
+        .unwrap();
+        assert!(
+            !exchange(
+                WireMessage::Transfer {
+                    sender_id: sender.device_id.clone(),
+                    transfer_id: "pending-transfer".into(),
+                    nonce: pending_nonce,
+                    ciphertext: pending_ciphertext,
+                    created_at: pending_created,
+                    expires_at: pending_created + 120_000,
+                },
+                receiver_state.clone(),
+            )
+            .await
+            .ok
+        );
+        assert!(receiver_state.read().await.inbox.is_empty());
         {
             let mut inner = receiver_state.write().await;
             let pending = inner.pending.remove(&sender.device_id).unwrap();

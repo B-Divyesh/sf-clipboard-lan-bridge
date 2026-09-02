@@ -1,135 +1,23 @@
 [
-  {
-    "id": "release-packages",
-    "claim": "Release automation publishes macOS, Windows, and Linux packages with SHA-256 checksums.",
-    "where": "download section and README",
-    "test": "node --test --test-name-pattern @claim:release-packages scripts/verify-release.test.mjs",
-    "sandbox": "inspect the release matrix, release publisher, manifest generation, and both checksum-verifying installers"
-  },
-  {
-    "id": "platform-download",
-    "claim": "The site selects a package for the visitor's operating system or shows a safe publishing state.",
-    "where": "download section",
-    "test": "npx playwright test --grep @claim:platform-download",
-    "sandbox": "fresh Linux landing page; assert the bundled manifest selects a Linux AppImage, or a draft manifest shows the release publishing state"
-  },
-  {
-    "id": "public-page-network-boundary",
-    "claim": "Public page loads do not make off-origin requests, including GitHub API requests.",
-    "where": "privacy page and README",
-    "test": "npx playwright test --grep @claim:public-page-network-boundary",
-    "sandbox": "fresh desktop and mobile pages for landing, demo, privacy, terms, and 404; make GitHub API return 403 if requested; assert no request, HTTP failure, console error, or page error"
-  },
-  {
-    "id": "sample-demo",
-    "claim": "The one-click demo uses realistic sample data and never writes to the real-data namespace.",
-    "where": "landing primary action and demo banner",
-    "test": "npx playwright test --grep @claim:sample-demo",
-    "sandbox": "fresh browser context at /demo/; send and reset; inspect sessionStorage and localStorage"
-  },
-  {
-    "id": "lan-only",
-    "claim": "Transfers go directly between paired devices on the local network without a cloud relay.",
-    "where": "landing, app, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features pair_send_receive_replay_and_expire_lifecycle",
-    "sandbox": "two fresh native identities; pair and process an authenticated transfer directly"
-  },
-  {
-    "id": "end-to-end-encryption",
-    "claim": "Transfer text and authenticated metadata are encrypted between paired devices.",
-    "where": "landing, app, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features transfer_metadata_is_authenticated",
-    "sandbox": "fresh keys; decrypt valid transfer; reject changed ciphertext, transfer ID, and expiry"
-  },
-  {
-    "id": "explicit-pairing",
-    "claim": "A receiving device must approve the matching pairing code before transfer.",
-    "where": "How it works and app Devices view",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features pair_send_receive_replay_and_expire_lifecycle",
-    "sandbox": "fresh native identities; assert pending matching code before adding the peer"
-  },
-  {
-    "id": "phone-companion",
-    "claim": "A nearby phone can pair through the desktop app's local companion page and exchange encrypted text.",
-    "where": "landing download section, app Devices view, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features phone_companion_crypto_round_trip",
-    "sandbox": "fresh desktop and phone P-256 identities; encrypt, decrypt, and reject changed expiry"
-  },
-  {
-    "id": "companion-api-allowance",
-    "claim": "The LAN companion allows 30 requests per client IP every 10 seconds and replies 429 with Retry-After after that allowance.",
-    "where": "README LAN companion allowance",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features phone_companion_enforces_a_documented_per_client_allowance",
-    "sandbox": "isolated companion server; make 30 status requests from one loopback client, then assert 429 and a positive Retry-After header"
-  },
-  {
-    "id": "no-clipboard-monitoring",
-    "claim": "The app reads the clipboard only after the Paste from clipboard action.",
-    "where": "landing, app, README",
-    "test": "npx playwright test --grep @claim:no-clipboard-monitoring",
-    "sandbox": "fresh app page with a clipboard spy; wait, then select Paste from clipboard"
-  },
-  {
-    "id": "explicit-clipboard-write",
-    "claim": "The app writes transferred text to the clipboard only after the user chooses Copy text.",
-    "where": "privacy page and README",
-    "test": "npx playwright test --grep @claim:explicit-clipboard-write",
-    "sandbox": "fresh app page with an arrival and a clipboard-write spy; wait, then choose Copy text"
-  },
-  {
-    "id": "app-data-boundary",
-    "claim": "Identity, paired keys, and license data persist locally while active tickets remain only in memory.",
-    "where": "privacy page and README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features app_data_persists_identity_peers_and_license_but_not_tickets",
-    "sandbox": "fresh native state; save identity, a paired key, a license, and an active ticket; inspect the written app configuration"
-  },
-  {
-    "id": "text-32kb",
-    "claim": "Only UTF-8 text of 32 KB or less can be sent.",
-    "where": "landing, app, README",
-    "test": "npx playwright test --grep @claim:text-32kb",
-    "sandbox": "fresh demo; submit 8,193 four-byte Unicode characters and observe rejection"
-  },
-  {
-    "id": "expiry",
-    "claim": "Free transfers expire after 2 or 10 minutes.",
-    "where": "landing, app, README",
-    "test": "npx playwright test --grep @claim:expiry",
-    "sandbox": "fresh demo; choose two minutes, send, and inspect the resulting expiry"
-  },
-  {
-    "id": "no-telemetry",
-    "claim": "The product includes no analytics, advertising, or telemetry.",
-    "where": "landing, privacy, README",
-    "test": "npx playwright test --grep @claim:no-telemetry",
-    "sandbox": "fresh demo and app flow with every outgoing request recorded"
-  },
-  {
-    "id": "no-account",
-    "claim": "The free sample and local transfer flow require no account.",
-    "where": "pricing and README",
-    "test": "npx playwright test --grep @claim:no-account",
-    "sandbox": "fresh demo; assert there is no sign-in field and complete a send"
-  },
-  {
-    "id": "two-device-free-tier",
-    "claim": "The free route supports the local device plus one paired device.",
-    "where": "pricing, app, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features free_and_paid_limits_are_enforced_in_native_state",
-    "sandbox": "fresh native state; add one peer and assert a second peer is rejected"
-  },
-  {
-    "id": "native-license-verification",
-    "claim": "The installed app verifies a pasted license through its native core and ignores browser-written verdicts.",
-    "where": "app Device settings",
-    "test": "npx playwright test --grep @claim:native-license-verification",
-    "sandbox": "Tauri invoke fixture; seed a forged localStorage verdict, then verify a recorded valid native response"
-  },
-  {
-    "id": "no-dead-checkout-action",
-    "claim": "The public product offers a free local route without a checkout action.",
-    "where": "landing, privacy, terms, README",
-    "test": "npx playwright test --grep @claim:no-dead-checkout-action",
-    "sandbox": "fresh desktop and mobile public routes; assert no purchase control, scoped checkout link, or request"
-  }
+  {"id":"release-packages","claim":"The current published release has macOS, Windows, and Linux packages with SHA-256 checksums.","where":"download section and README","test":"node --test --test-name-pattern @claim:release-packages scripts/verify-release.test.mjs","sandbox":"fetch the public GitHub release and manifest; download each package and compare its SHA-256"},
+  {"id":"release-provenance","claim":"The published release manifest records its tag and source commit.","where":"README","test":"node --test --test-name-pattern @claim:release-provenance scripts/verify-release.test.mjs","sandbox":"fetch the public release manifest and assert its tag and forty-character commit"},
+  {"id":"unsigned-packages","claim":"The download page warns that packages are not code-signed.","where":"download section and README","test":"npx playwright test --grep @claim:unsigned-packages","sandbox":"fresh desktop and mobile landing pages; assert the visible warning and no signature promise"},
+  {"id":"paid-unlock","claim":"A $9 one-time license adds more paired devices and one-hour transfers.","where":"pricing, terms, desktop app","test":"npx playwright test --grep @claim:paid-unlock","sandbox":"record the scoped checkout URL without visiting it; simulate its return and assert the token can be copied for native restore"},
+  {"id":"platform-download","claim":"The site selects a package for the visitor's operating system or shows a safe publishing state.","where":"download section","test":"npx playwright test --grep @claim:platform-download","sandbox":"fresh Linux landing page; assert the bundled manifest selects a Linux AppImage, or a draft manifest shows the release publishing state"},
+  {"id":"public-page-network-boundary","claim":"Public pages contact only this product website.","where":"privacy page and README","test":"npx playwright test --grep @claim:public-page-network-boundary","sandbox":"fresh desktop and mobile pages for landing, demo, privacy, terms, and 404; assert every request stays on the product origin"},
+  {"id":"sample-demo","claim":"The one-click demo uses realistic sample data and never writes to the real-data namespace.","where":"landing primary action and demo banner","test":"npx playwright test --grep @claim:sample-demo","sandbox":"fresh browser context at ?demo=1; send and reset; inspect sessionStorage and localStorage"},
+  {"id":"lan-only","claim":"Transfers go directly between paired devices on the local network without a cloud relay.","where":"landing, app, README","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features pair_send_receive_replay_and_expire_lifecycle","sandbox":"two fresh native identities; pair and process an authenticated transfer directly"},
+  {"id":"end-to-end-encryption","claim":"Transfer text and transfer ID and expiry are encrypted between paired devices.","where":"landing, app, README","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features transfer_metadata_is_authenticated","sandbox":"fresh keys; decrypt valid transfer; reject changed ciphertext, transfer ID, and expiry"},
+  {"id":"explicit-pairing","claim":"A receiving device must approve the matching pairing code before transfer.","where":"How it works and app Devices view","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features pair_send_receive_replay_and_expire_lifecycle","sandbox":"fresh native identities; attempt a transfer while pending, then approve and send"},
+  {"id":"phone-companion","claim":"A nearby phone can pair through the desktop app's local companion page and exchange encrypted text.","where":"landing download section, app Devices view, README","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features phone_companion_crypto_round_trip","sandbox":"loopback companion page and API; pair, approve, send in both directions, and reject changed encrypted metadata"},
+  {"id":"companion-api-allowance","claim":"The phone page accepts 30 requests from one network address every 10 seconds.","where":"README","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features phone_companion_enforces_a_documented_per_client_allowance","sandbox":"isolated companion server; make 30 status requests, then assert 429 and Retry-After"},
+  {"id":"no-clipboard-monitoring","claim":"The app reads the clipboard only after the Paste from clipboard action.","where":"landing, app, README","test":"npx playwright test --grep @claim:no-clipboard-monitoring","sandbox":"fresh app page with a clipboard spy; wait, then select Paste from clipboard"},
+  {"id":"explicit-clipboard-write","claim":"The app writes transferred text to the clipboard only after the user chooses Copy text.","where":"privacy page and README","test":"npx playwright test --grep @claim:explicit-clipboard-write","sandbox":"fresh app page with an arrival and a clipboard-write spy; wait, then choose Copy text"},
+  {"id":"app-data-boundary","claim":"Identity, paired keys, and license data persist locally while active transfers remain only in memory.","where":"privacy page and README","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features app_data_persists_identity_peers_and_license_but_not_tickets","sandbox":"fresh native state; save identity, paired key, license, and active transfer; inspect written configuration"},
+  {"id":"text-32kb","claim":"Only UTF-8 text of 32 KB or less can be sent.","where":"landing, app, README","test":"npx playwright test --grep @claim:text-32kb","sandbox":"fresh demo; send exactly 32,768 bytes; reject 32,769 bytes and 8,193 four-byte characters"},
+  {"id":"expiry","claim":"Free transfers expire after 2 or 10 minutes.","where":"landing, app, README","test":"npx playwright test --grep @claim:expiry","sandbox":"fresh demo with controllable time; assert each transfer exists before expiry and is removed after expiry"},
+  {"id":"no-telemetry","claim":"The product includes no analytics, advertising, or telemetry.","where":"landing, privacy, README","test":"npx playwright test --grep @claim:no-telemetry","sandbox":"fresh demo and app flow with every outgoing request recorded"},
+  {"id":"no-account","claim":"The free sample and local transfer flow require no account.","where":"pricing and README","test":"npx playwright test --grep @claim:no-account","sandbox":"fresh demo; assert there is no sign-in field and complete a send"},
+  {"id":"two-device-free-tier","claim":"The free plan supports the local device plus one paired device.","where":"pricing, app, README","test":"cargo test --manifest-path src-tauri/Cargo.toml --no-default-features free_and_paid_limits_are_enforced_in_native_state","sandbox":"fresh native state; add one peer and assert a second peer is rejected"},
+  {"id":"native-license-verification","claim":"The installed app verifies a pasted license through its native core and ignores browser-written verdicts.","where":"app Device settings","test":"npx playwright test --grep @claim:native-license-verification","sandbox":"Tauri invoke fixture; seed a forged localStorage verdict, then verify a recorded valid native response"}
 ]

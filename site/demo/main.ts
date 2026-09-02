@@ -3,7 +3,8 @@ import "../a11y";
 
 type Ticket = { id: string; from: string; text: string; expires: number };
 const KEY = "demo:clipboard-lan-bridge:tickets";
-const sample = (): Ticket[] => [{ id: "sample-arrival", from: "Kitchen phone", text: "Groceries: oat milk, coriander, and AA batteries.", expires: Date.now() + 600_000 }];
+const now = () => Number(sessionStorage.getItem("demo:clipboard-lan-bridge:now")) || (window as Window & { __clipboardDemoNow?: number }).__clipboardDemoNow || Date.now();
+const sample = (): Ticket[] => [{ id: "sample-arrival", from: "Kitchen phone", text: "Groceries: oat milk, coriander, and AA batteries.", expires: now() + 600_000 }];
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 
 function load(): Ticket[] {
@@ -15,9 +16,9 @@ function save(tickets: Ticket[]) { sessionStorage.setItem(KEY, JSON.stringify(ti
 function escapeHtml(value: string) { return value.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]!)); }
 
 function render() {
-  const tickets = load().filter(ticket => ticket.expires > Date.now());
+  const tickets = load().filter(ticket => ticket.expires > now());
   save(tickets);
-  $("#tickets").innerHTML = tickets.map(ticket => `<article class="ticket"><div><strong>From ${escapeHtml(ticket.from)}</strong><span>${Math.max(1, Math.ceil((ticket.expires - Date.now()) / 60_000))}m left</span></div><p>${escapeHtml(ticket.text)}</p><button type="button" data-copy="${ticket.id}">Copy sample text</button></article>`).join("") || `<p class="empty">No sample arrivals. Reset the demo to load the sample again.</p>`;
+  $("#tickets").innerHTML = tickets.map(ticket => `<article class="ticket"><div><strong>From ${escapeHtml(ticket.from)}</strong><span>${Math.max(1, Math.ceil((ticket.expires - now()) / 60_000))}m left</span></div><p>${escapeHtml(ticket.text)}</p><button type="button" data-copy="${ticket.id}">Copy sample text</button></article>`).join("") || `<p class="empty">No sample arrivals. Reset the demo to load the sample again.</p>`;
 }
 
 $("#demo-text").addEventListener("input", event => {
@@ -34,7 +35,7 @@ $("#demo-form").addEventListener("submit", event => {
   if (bytes > 32_768) { $("#demo-error").textContent = "Text must be 32 KB or less."; input.focus(); return; }
   const ttl = Number($<HTMLSelectElement>("#demo-expiry").value) * 1000;
   const tickets = load();
-  tickets.unshift({ id: crypto.randomUUID(), from: "Studio laptop", text: input.value, expires: Date.now() + ttl });
+  tickets.unshift({ id: crypto.randomUUID(), from: "Studio laptop", text: input.value, expires: now() + ttl });
   save(tickets);
   render();
   $("#arrivals-title").focus();

@@ -1,6 +1,6 @@
 [package]
 name = "clipboard-lan-bridge"
-version = "0.1.7"
+version = "0.1.8"
 description = "Deliberate encrypted text handoffs over a local network"
 authors = ["Sociobot"]
 license = "MIT"

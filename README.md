@@ -1,27 +1,20 @@
 # Clipboard LAN Bridge
 
-Clipboard LAN Bridge sends short text and links between your own nearby devices. The desktop app supports Linux, macOS, and Windows. Its built-in phone companion works in a phone browser on the same Wi-Fi.
+Send short text and links between your own nearby devices. The desktop app runs on Linux, macOS, and Windows. Its phone page works in a phone browser on the same Wi-Fi.
 
-Transfers use explicit code approval and authenticated device-to-device encryption. There is no cloud relay, account, clipboard watcher, file transfer, or telemetry.
+Use it when you would otherwise message yourself a link, address, command, or short note.
 
-## Who it is for
+## How pairing and encryption protect transfers
 
-It is for people who message themselves just to move a URL, address, command, or short note between nearby devices.
+- Both devices display the same six-character pairing code. The receiving device must approve it before transfers can start.
+- Transfers are encrypted after pairing. The app rejects a transfer if its ID or expiry time changes. It also rejects the same transfer a second time.
+- Only valid UTF-8 text up to 32 KB is accepted. Free transfers expire after 2 or 10 minutes.
+- Clipboard reads and writes happen only after you choose a button.
+- The desktop app stores its identity, paired-device keys, and license on this computer. Active transfers stay in memory. Uninstall the app and remove its data to clear them.
+- Keep the phone page open until the transfer arrives.
+- The phone page accepts 30 requests from one network address every 10 seconds. After that, it asks the browser to wait before trying again (`429` with `Retry-After`).
 
-## Safety model
-
-- Discovery broadcasts a random device ID, chosen device name, public key, and local port.
-- Both devices display the same six-character fingerprint. The receiving device must approve.
-- Desktop peers use X25519 key agreement and XChaCha20-Poly1305 encryption.
-- The phone companion uses P-256 key agreement and AES-256-GCM encryption.
-- Transfer identity and expiry are authenticated. Replayed or changed metadata is rejected.
-- Only valid UTF-8 text up to 32 KB is accepted. Free items expire after 2 or 10 minutes.
-- Clipboard reads and writes happen only after a button press.
-- Identities, peer keys, and any license token stay in the operating system app-data directory. Active tickets stay in memory.
-- Keep the phone companion page open while sending. Phone browsers may pause background polling, so arrivals can wait until you return.
-- The LAN companion allows 30 HTTP requests per client IP every 10 seconds. It replies with HTTP 429 and a `Retry-After` header until that window resets.
-
-This is a personal LAN tool, not a password manager. Pair only on networks you trust and compare the displayed code.
+This is a personal local-network tool, not a password manager. Pair only on networks you trust and compare the displayed code.
 
 ## Run locally
 
@@ -36,7 +29,7 @@ Run the product site with `npm run dev:site`.
 
 ## Try the sample
 
-Open `http://127.0.0.1:4173/demo/` after starting the site. The sample uses a separate `demo:` session-storage namespace. It never writes sample transfers to app data.
+Open `http://127.0.0.1:4173/?demo=1` after starting the site. The sample saves data only in this browser tab under a separate `demo:` key. It never writes sample transfers to app data.
 
 ## Test and build
 
@@ -46,18 +39,18 @@ npm run check
 npm run build
 ```
 
-The test command runs unit, Chromium accessibility, claim, responsive, and native protocol tests. The build writes the desktop webview to `dist/app/` and the deployable site to `dist/site/`.
+Run `npm test` to check unit logic, browser accessibility, product claims, screen sizes, and local transfer behavior. Run `npm run build`; it creates the desktop app files in `dist/app/` and the website in `dist/site/`.
 
-Build a local desktop package with the following command. On Linux, first install the same GUI toolchain used by the release workflow:
+Build a local desktop package with the following command. On Linux, install these desktop build packages first:
 
 ```sh
 sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf rpm
-CI=1 npm run tauri build
+CI=true npm run tauri build
 ```
 
 ## Install and release
 
-GitHub Actions builds packages for macOS, Windows, and Linux. All packages are unsigned. On macOS, right-click the app and choose **Open**. On Windows, confirm the publisher warning.
+GitHub Actions builds packages for macOS, Windows, and Linux. Packages are not code-signed. On macOS, right-click the app and choose **Open**. On Windows, confirm the publisher warning.
 
 ```sh
 curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh
@@ -65,14 +58,10 @@ curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh
 
 Windows PowerShell: `irm https://clipboard-lan-bridge.sociobot.in/install.ps1 | iex`
 
-The installers read `latest.json` and verify SHA-256 before installing. The site bundles the current signed release manifest. Public page loads make no off-origin requests. Packages are also available from the [latest release](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest).
-
-## Deploy
-
-Run `npm run build` to create the static site in `dist/site/`; the factory's static deployment publishes that directory from `main`. Push a version tag such as `v0.1.7` to build the unsigned macOS, Windows, and Linux installers in GitHub Actions. The release `latest.json` records the tag and exact source commit alongside package checksums. Copy that published file to `site/release-manifest.json` before the next site release.
+Packages and SHA-256 checksums are in the [latest release](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest). The site bundles the current release manifest. Public pages contact only this product website.
 
 ## License and policy
 
-Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and terms are at `/terms/`.
+The free plan connects this computer and one paired device. A $9 one-time license adds more paired devices and one-hour transfers. Buy it from the product checkout, then paste the returned token under **Existing license** in the desktop app. Sociobot and Dodo are the merchant of record; refunds revoke the license.
 
-The current release is free and local. It connects this device and one paired device. Transfers expire after two or ten minutes.
+Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and terms are at `/terms/`.

@@ -29,7 +29,7 @@ function loadRelease() {
   const main = document.querySelector<HTMLAnchorElement>("#main-download")!;
   const note = document.querySelector<HTMLElement>("#platform-note")!;
   const status = document.querySelector<HTMLElement>("#download-status")!;
-  hero.textContent = `Download for ${label} ↓`; note.textContent = `${label} detected · unsigned community build`;
+  hero.textContent = `Download for ${label} ↓`; note.textContent = `${label} detected. Packages are not code-signed.`;
   try {
     const manifest = releaseManifest as Manifest;
     if (manifest.release_state === "draft") {
@@ -41,16 +41,29 @@ function loadRelease() {
     const asset = preferredAsset(manifest.assets, os);
     if (!asset) throw new Error(`no ${label} package in the current release`);
     hero.href = main.href = asset.url; main.textContent = `Download ${manifest.version} for ${label}`;
-    status.textContent = `${asset.kind?.toUpperCase() || "Package"} · checksum published in SHA256SUMS`;
+    const kind = asset.kind === "appimage" ? "Linux AppImage" : `${asset.kind || "Package"}`;
+    status.textContent = `${kind} · checksum available in the release`;
   } catch (error) {
     hero.href = main.href = releaseFallback; main.textContent = "View release downloads";
     status.textContent = `Automatic selection is unavailable (${String(error).replace("Error: ", "")}). Choose a package on GitHub Releases.`;
   }
 }
 
+function handleCheckoutReturn() {
+  const token = new URLSearchParams(location.search).get("license");
+  if (!token) return;
+  const notice = document.querySelector<HTMLElement>("#license-return");
+  const output = document.querySelector<HTMLTextAreaElement>("#license-token");
+  if (!notice || !output) return;
+  output.value = token;
+  notice.hidden = false;
+  history.replaceState({}, "", location.pathname + location.hash);
+}
+
 document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach(button => button.addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(button.dataset.copyCommand || ""); button.textContent = "Copied"; }
   catch { button.textContent = "Select command"; }
 }));
-loadRelease();
+if (new URLSearchParams(location.search).get("demo") === "1") location.replace("/demo/");
+else { loadRelease(); handleCheckoutReturn(); }
 if ("serviceWorker" in navigator && (location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname))) void navigator.serviceWorker.register("/sw.js");

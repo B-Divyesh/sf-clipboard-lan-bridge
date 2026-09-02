@@ -49,7 +49,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         <svg class="brand-mark" aria-hidden="true" viewBox="0 0 48 48"><path d="M7 38V16h8V8h18v8h8v22H7Z"/><path d="M16 38V20h16v18M20 15h8"/></svg>
         <span>Clipboard <b>LAN Bridge</b></span>
       </a>
-      <div class="network-state" id="network-state" role="status"><span class="status-dot"></span><span>Starting route…</span></div>
+      <div class="network-state" id="network-state" role="status"><span class="status-dot"></span><span>Starting local connection…</span></div>
       <div class="sr-only" id="route-announcer" aria-live="polite"></div>
     </header>
 
@@ -61,8 +61,8 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 
     <main id="main" tabindex="-1">
       <section class="view active" id="view-send" aria-labelledby="send-title">
-        <div class="eyebrow">Platform 01 · dispatch</div>
-        <h1 id="send-title" tabindex="-1">Send a ticket</h1>
+        <div class="eyebrow">Send text</div>
+        <h1 id="send-title" tabindex="-1">Send text to a paired device</h1>
         <p class="lede">Move one short piece of text to one nearby device. Nothing is watched or synced in the background.</p>
 
         <form id="send-form" novalidate>
@@ -84,21 +84,21 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
                 <option value="3600" data-paid>1 hour</option>
               </select>
             </label>
-            <button class="primary-button" type="submit">Send securely <span aria-hidden="true">→</span></button>
+            <button class="primary-button" type="submit">Send text <span aria-hidden="true">→</span></button>
           </div>
           <div id="send-result" class="notice" role="status" aria-live="polite" hidden></div>
         </form>
       </section>
 
       <section class="view" id="view-receive" aria-labelledby="receive-title" hidden>
-        <div class="eyebrow">Platform 02 · arrivals</div>
-        <h2 id="receive-title" tabindex="-1">Received tickets</h2>
-        <p class="lede">Items disappear when their sender’s expiry time arrives.</p>
+        <div class="eyebrow">Received text</div>
+        <h2 id="receive-title" tabindex="-1">Received transfers</h2>
+        <p class="lede">Transfers disappear when their sender’s expiry time arrives.</p>
         <div id="inbox-list" class="ticket-list"></div>
       </section>
 
       <section class="view" id="view-devices" aria-labelledby="devices-title" hidden>
-        <div class="eyebrow">Local route board</div>
+        <div class="eyebrow">Local devices</div>
         <h2 id="devices-title" tabindex="-1">Nearby devices</h2>
         <p class="lede">Both devices must be on the same LAN. Compare the code, then approve on the receiving device.</p>
         <section class="phone-connect" aria-labelledby="phone-title"><h3 id="phone-title">Connect a phone</h3><p>Open one of these local addresses on a phone connected to the same Wi-Fi:</p><div id="companion-links"></div></section>
@@ -110,8 +110,9 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         </details>
         <details class="settings-panel">
           <summary>Existing license</summary>
-          <p class="legal-note">If you already have a license token, verify it on this device.</p>
-          <strong id="license-state">Free route active</strong>
+          <p class="legal-note">A $9 one-time license adds more paired devices and one-hour transfers.</p>
+          <p class="legal-note"><a href="https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout" target="_blank" rel="noreferrer">Buy a license</a> or paste an existing token below.</p>
+          <strong id="license-state">Free plan active</strong>
           <form id="license-form" class="license-form"><label for="license-token">Existing license token</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
         </details>
       </section>
@@ -131,7 +132,7 @@ function escapeHtml(value: string): string {
 function render() {
   const status = $("#network-state");
   status.classList.toggle("online", state.network_ready);
-  const statusText = state.network_ready ? "Local route open" : state.network_error || "Route offline";
+  const statusText = state.network_ready ? "Local connection ready" : state.network_error || "Local connection unavailable";
   status.setAttribute("aria-label", statusText);
   status.innerHTML = `<span class="status-dot" aria-hidden="true"></span><span>${escapeHtml(statusText)}</span>`;
   $("#device-name").setAttribute("value", state.device_name);
@@ -142,18 +143,18 @@ function render() {
   $("#destination-list").innerHTML = destinations.length ? destinations.map(peer => `
     <label class="destination ${peer.online ? "" : "offline"}">
       <input type="radio" name="destination" value="${escapeHtml(peer.id)}" ${selectedPeer === peer.id ? "checked" : ""} ${peer.online ? "" : "disabled"}>
-      <span class="device-symbol" aria-hidden="true">▣</span><span><strong>${escapeHtml(peer.name)}</strong><small>${peer.online ? "Nearby · encrypted route ready" : "Offline · last route unavailable"}</small></span>
+      <span class="device-symbol" aria-hidden="true">▣</span><span><strong>${escapeHtml(peer.name)}</strong><small>${peer.online ? "Nearby · encrypted transfer ready" : "Offline · local connection unavailable"}</small></span>
     </label>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">◇</span><strong>No paired destination yet</strong><p>Open Devices to pair with another Clipboard LAN Bridge on this Wi-Fi or Ethernet network.</p><a href="#devices" class="secondary-button">Find a device</a></div>`;
 
   $("#pairing-list").innerHTML = state.pairings.map(pairing => `<article class="pair-card"><div><span class="stamp">${pairing.direction === "incoming" ? "Approval requested" : "Waiting for approval"}</span><h3>${escapeHtml(pairing.peer_name)}</h3><p>Compare this code on both screens:</p><strong class="pair-code">${escapeHtml(pairing.code)}</strong></div>${pairing.direction === "incoming" ? `<div class="pair-actions"><button class="primary-button" data-approve="${escapeHtml(pairing.peer_id)}">Approve device</button><button class="text-button" data-reject="${escapeHtml(pairing.peer_id)}">Reject</button></div>` : ""}</article>`).join("");
 
   const canAdd = paid() || state.peers.filter(p => p.paired).length < FREE_DEVICE_LIMIT;
-  $("#device-list").innerHTML = state.peers.length ? state.peers.map(peer => `<article class="device-row"><span class="device-symbol" aria-hidden="true">▣</span><div><h3>${escapeHtml(peer.name)}</h3><p>${peer.paired ? "Paired" : "Found on this LAN"} · ${peer.online ? "Online" : "Offline"}</p></div>${peer.paired ? `<button class="text-button danger" data-forget="${escapeHtml(peer.id)}">Forget</button>` : `<button class="secondary-button" data-pair="${escapeHtml(peer.id)}" ${canAdd ? "" : "disabled"}>${canAdd ? "Pair device" : "Free route limit"}</button>`}</article>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">⌁</span><strong>No other bridges found</strong><p>Keep the other app open on the same LAN. Guest Wi-Fi and VPNs can block discovery.</p></div>`;
+  $("#device-list").innerHTML = state.peers.length ? state.peers.map(peer => `<article class="device-row"><span class="device-symbol" aria-hidden="true">▣</span><div><h3>${escapeHtml(peer.name)}</h3><p>${peer.paired ? "Paired" : "Found on this LAN"} · ${peer.online ? "Online" : "Offline"}</p></div>${peer.paired ? `<button class="text-button danger" data-forget="${escapeHtml(peer.id)}">Forget</button>` : `<button class="secondary-button" data-pair="${escapeHtml(peer.id)}" ${canAdd ? "" : "disabled"}>${canAdd ? "Pair device" : "Free plan limit"}</button>`}</article>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">⌁</span><strong>No other bridges found</strong><p>Keep the other app open on the same LAN. Guest Wi-Fi and VPNs can block discovery.</p></div>`;
 
   $("#inbox-list").innerHTML = state.inbox.length ? state.inbox.map(item => `<article class="clip-ticket"><div class="ticket-top"><span>From ${escapeHtml(item.peer_name)}</span><time>${remainingLabel(item.expires_at)}</time></div><p>${escapeHtml(item.text)}</p><div class="ticket-actions"><button class="secondary-button" data-copy="${escapeHtml(item.id)}">Copy text</button><button class="text-button danger" data-delete="${escapeHtml(item.id)}">Delete</button></div></article>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">↓</span><strong>No arrivals</strong><p>Received text appears here only after a paired device deliberately sends it.</p></div>`;
 
   const unlocked = paid();
-  $("#license-state").textContent = unlocked ? "Existing license active" : "Free route active";
+  $("#license-state").textContent = unlocked ? "Existing license active" : "Free plan active";
   const hour = document.querySelector<HTMLOptionElement>("option[data-paid]")!;
   hour.disabled = !unlocked;
 }
@@ -179,8 +180,8 @@ async function verifyLicense(token: string) {
   try {
     result.textContent = "Checking license…";
     const verdict = await call<{ valid: boolean; reason: string }>("verify_license", { token: token.trim() });
-    result.textContent = verdict.valid ? "License verified on this device." : "License no longer active. You can continue on the free route.";
-  } catch { result.textContent = "Could not verify right now. Your current route remains available."; }
+    result.textContent = verdict.valid ? "License verified on this device." : "License no longer active. You can continue on the free plan.";
+  } catch { result.textContent = "Could not verify right now. Your free plan remains available."; }
   await refresh();
 }
 

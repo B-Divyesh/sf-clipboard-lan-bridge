@@ -74,17 +74,18 @@ test("@claim:public-page-network-boundary cold public routes do not request GitH
 });
 
 test("@claim:sample-demo loads, sends, resets, and isolates realistic sample data", async ({ page }) => {
-  await page.goto("/demo/");
+  await page.goto("/?demo=1");
+  await expect(page).toHaveURL(/\/demo\/$/);
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
   await expect(page.getByText("Groceries: oat milk, coriander, and AA batteries.")).toBeVisible();
   await page.getByLabel("Text or link").fill("Gate changed to 8. Share this with the laptop.");
-  await page.getByRole("button", { name: "Send sample ticket" }).click();
+  await page.getByRole("button", { name: "Send sample text" }).click();
   await expect(page.getByText("Gate changed to 8. Share this with the laptop.")).toBeVisible();
   expect(await page.evaluate(() => ({ demo: sessionStorage.getItem("demo:clipboard-lan-bridge:tickets"), real: localStorage.getItem("clipboard-lan-bridge:tickets") }))).toEqual(expect.objectContaining({ real: null }));
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByText("Gate changed to 8. Share this with the laptop.")).toHaveCount(0);
   await page.getByLabel("Text or link").fill("Should be discarded when leaving the demo.");
-  await page.getByRole("button", { name: "Send sample ticket" }).click();
+  await page.getByRole("button", { name: "Send sample text" }).click();
   await page.getByRole("link", { name: "Start for real" }).click();
   await expect(page).toHaveURL(/\/$/);
   expect(await page.evaluate(() => sessionStorage.getItem("demo:clipboard-lan-bridge:tickets"))).toBeNull();
@@ -95,24 +96,40 @@ test("@claim:sample-demo loads, sends, resets, and isolates realistic sample dat
 test("@claim:text-32kb enforces the UTF-8 transfer limit", async ({ page }) => {
   await page.goto("/demo/");
   const input = page.getByLabel("Text or link");
+  await input.fill("a".repeat(32_768));
+  await page.getByRole("button", { name: "Send sample text" }).click();
+  await expect(page.locator(".ticket").filter({ hasText: "a".repeat(80) })).toBeVisible();
+  await input.fill("a".repeat(32_769));
+  await page.getByRole("button", { name: "Send sample text" }).click();
+  await expect(page.getByRole("alert")).toHaveText("Text must be 32 KB or less.");
   await input.fill("🚂".repeat(8193));
-  await page.getByRole("button", { name: "Send sample ticket" }).click();
+  await page.getByRole("button", { name: "Send sample text" }).click();
   await expect(page.getByRole("alert")).toHaveText("Text must be 32 KB or less.");
 });
 
 test("@claim:expiry offers and applies two and ten minute expiry", async ({ page }) => {
+  await page.addInitScript(() => { (window as Window & { __clipboardDemoNow?: number }).__clipboardDemoNow = 1_000_000; });
   await page.goto("/demo/");
-  await page.getByLabel("Expires after").selectOption("120");
-  await page.getByLabel("Text or link").fill("Short-lived sample");
-  await page.getByRole("button", { name: "Send sample ticket" }).click();
-  await expect(page.locator(".ticket").filter({ hasText: "Short-lived sample" })).toContainText("2m left");
+  for (const [seconds, text] of [[120, "Two minute sample"], [600, "Ten minute sample"]] as const) {
+    const start = await page.evaluate(() => Number(sessionStorage.getItem("demo:clipboard-lan-bridge:now")) || (window as Window & { __clipboardDemoNow?: number }).__clipboardDemoNow!);
+    await page.getByLabel("Expires after").selectOption(String(seconds));
+    await page.getByLabel("Text or link").fill(text);
+    await page.getByRole("button", { name: "Send sample text" }).click();
+    await expect(page.locator(".ticket").filter({ hasText: text })).toBeVisible();
+    await page.evaluate(value => sessionStorage.setItem("demo:clipboard-lan-bridge:now", String(value)), start + seconds * 1000 - 1);
+    await page.reload();
+    await expect(page.locator(".ticket").filter({ hasText: text })).toBeVisible();
+    await page.evaluate(value => sessionStorage.setItem("demo:clipboard-lan-bridge:now", String(value)), start + seconds * 1000 + 1);
+    await page.reload();
+    await expect(page.locator(".ticket").filter({ hasText: text })).toHaveCount(0);
+  }
 });
 
 test("@claim:no-telemetry keeps the complete demo flow on the product origin", async ({ page }) => {
   const origins = new Set<string>();
   page.on("request", request => origins.add(new URL(request.url()).origin));
   await page.goto("/demo/");
-  await page.getByRole("button", { name: "Send sample ticket" }).click();
+  await page.getByRole("button", { name: "Send sample text" }).click();
   await page.goto("http://127.0.0.1:1420/");
   expect([...origins].every(origin => ["http://127.0.0.1:4173", "http://127.0.0.1:1420"].includes(origin))).toBe(true);
 });
@@ -120,24 +137,24 @@ test("@claim:no-telemetry keeps the complete demo flow on the product origin", a
 test("@claim:no-account runs the sample handoff without sign-in", async ({ page }) => {
   await page.goto("/demo/");
   await expect(page.locator('input[type="email"], input[type="password"]')).toHaveCount(0);
-  await page.getByRole("button", { name: "Send sample ticket" }).click();
+  await page.getByRole("button", { name: "Send sample text" }).click();
   await expect(page.locator(".ticket").first()).toBeVisible();
 });
 
-test("@claim:no-dead-checkout-action public routes expose only the free local route", async ({ page }) => {
-  const checkoutRequests: string[] = [];
-  page.on("request", request => {
-    if (request.url().includes("/api/v1/products/clipboard-lan-bridge/checkout")) checkoutRequests.push(request.url());
-  });
+test("@claim:unsigned-packages warns plainly about unsigned packages", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#platform-note")).toContainText("Packages are not code-signed");
+  expect(await page.locator("body").innerText()).not.toContain("community build");
+});
 
-  for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
-    await page.goto(route);
-    await expect(page.locator('a[href*="checkout"], form[action*="checkout"], [data-checkout]')).toHaveCount(0);
-    await expect(page.locator("a:visible, button:visible").filter({ hasText: /buy|purchase|checkout/i })).toHaveCount(0);
-    expect(await page.locator("body").innerText()).not.toMatch(/\$9|one-time|checkout/i);
-  }
-
-  expect(checkoutRequests).toEqual([]);
+test("@claim:paid-unlock uses the scoped checkout and gives the returned token to the desktop restore flow", async ({ page }) => {
+  await page.goto("/");
+  const checkout = page.getByRole("link", { name: "Buy the $9 license" });
+  await expect(checkout).toHaveAttribute("href", "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout");
+  await page.goto("/?license=fixture-license-token");
+  await expect(page.getByRole("heading", { name: "Finish on your desktop app" })).toBeVisible();
+  await expect(page.getByLabel("License token")).toHaveValue("fixture-license-token");
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test("links and controls retain 44px targets in both dimensions and the hero heading keeps devices whole", async ({ page }, testInfo) => {
@@ -200,7 +217,15 @@ test("secondary routes share the site frame, metadata, and clear phone-backgroun
     await expect(page.locator("footer.site-footer").getByRole("link", { name: "Terms" })).toBeVisible();
   }
   await page.goto("/");
-  await expect(page.getByText("Keep that page open: phone browsers may pause background polling.")).toBeVisible();
+  await expect(page.getByText("Keep the phone page open until the transfer arrives.")).toBeVisible();
+});
+
+test("internal navigation and browser Back move focus to the new page heading", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Privacy" }).first().click();
+  await expect(page.locator("h1")).toBeFocused();
+  await page.goBack();
+  await expect(page.locator("h1")).toBeFocused();
 });
 
 test("offline reload uses the cached shell without console errors", async ({ browser }) => {
