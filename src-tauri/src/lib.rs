@@ -1879,7 +1879,7 @@ mod tests {
         assert!(can_add_peer(&inner, "fourth"));
         assert!(can_use_ttl(&inner, 3600));
         inner.config.license.as_mut().unwrap().valid = false;
-        assert!(!can_add_peer(&inner, "second"));
+        assert!(!can_add_peer(&inner, "fourth"));
     }
 
     #[tokio::test]
