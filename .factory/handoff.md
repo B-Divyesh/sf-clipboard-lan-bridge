@@ -30,12 +30,14 @@ Observed locally after a clean `npm ci`:
 - `npm run build`: pass — `dist/app/` and `dist/site/` produced; initial site JS is 4.63 KB raw / 1.78 KB gzip and CSS is 9.82 KB raw / 2.81 KB gzip.
 - `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/ /tmp/clipboard-lan-bridge-verify`: pass (title, lang, one h1, main, alt text, no browser console errors). Playwright Axe coverage has zero serious or critical violations on all public routes and desktop app views.
 - `scripts/verify-release.test.mjs`: pass against the public v0.1.8 `latest.json`, `SHA256SUMS`, and one downloaded package for each desktop platform.
+- Clean clone `/tmp/clipboard-lan-bridge-clean.GztQlh` at `9b8f183`: `npm ci && npm test && npm run check && npm run build` all passed.
 
 ## Release and deployment
 
 - GitHub Actions run: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33581391078>
-- Static deployment: `0eda8851-517a-4d81-8566-7ede84542249` uploaded `dist/site/` to the product's static resource and domain.
+- Static deployment: `43f0fe26-051b-43a0-8a61-c894392e0d90` uploaded `dist/site/` to the product's static resource and domain.
 - Public URL: <https://clipboard-lan-bridge.sociobot.in>
+- Cold live check: `verify-url.sh` passed on the root; a 390 px Playwright session confirmed `?demo=1` redirects to `/demo/`, has no horizontal overflow or console errors, keeps real storage empty, and links to the v0.1.8 AppImage.
 
 ## Known gaps
 
