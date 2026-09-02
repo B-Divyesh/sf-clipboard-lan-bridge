@@ -1,6 +1,6 @@
 # Polish round 1
 
-Candidate `fa5a2506185132b41ece552b5747f0ef13d920b8` was repaired in commits `218bca3` and `6f41286`.
+Candidate `fa5a2506185132b41ece552b5747f0ef13d920b8` was repaired in commits `218bca3` and `6f41286`. Published release evidence is v0.1.8 (`6f4128643a227c5da837dde8e2a97d92f78fe864`).
 
 | Finding | Change | Evidence |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Candidate `fa5a2506185132b41ece552b5747f0ef13d920b8` was repaired in commits `21
 | F-1-4 | Demo test sends 32,768 bytes and rejects 32,769 bytes and 8,193 emoji. | `@claim:text-32kb` |
 | F-1-5 | Demo uses a controlled clock; tests verify 2- and 10-minute transfers before and after expiry. | `@claim:expiry` |
 | F-1-6 | Removed the unsupported “signed” description. | README review |
-| F-1-7 | Added product-scoped $9 checkout, return-token copy handoff, native buy link, restore UI, and claim test. | `@claim:paid-unlock` |
+| F-1-7 | Added product-scoped $9 checkout, return-token copy handoff, native buy link, restore UI, and claim test. | `@claim:paid-unlock`; live link wire check (gateway enrollment is recorded below) |
 | F-1-8 | Added a clear not-code-signed warning and matching claim test. | `@claim:unsigned-packages` |
 | F-1-9 | Removed password-autofill language. | landing copy audit |
 | F-1-10 | Removed detailed discovery-payload promise. | privacy/README copy audit |
@@ -30,4 +30,6 @@ Candidate `fa5a2506185132b41ece552b5747f0ef13d920b8` was repaired in commits `21
 | F-1-32 | Added a release-provenance claim that checks the published manifest. | `@claim:release-provenance` |
 | F-1-33 | Removed the public generated-artwork slogan; provenance remains in design.md. | landing copy audit |
 
-Local evidence: `npm test`, `npm run check`, `npm run build`, `/opt/fleet/lib/verify-url.sh` against the local site, and Playwright Axe checks all passed. Screenshots are in `/tmp/clipboard-lan-bridge-verify/`.
+Local evidence: `npm test`, `npm run check`, `npm run build`, `/opt/fleet/lib/verify-url.sh` against the local site, and Playwright Axe checks all passed. Screenshots are in `/tmp/clipboard-lan-bridge-verify/`. The deployed site was also checked cold at <https://clipboard-lan-bridge.sociobot.in/?demo=1>: it redirected to `/demo/`, showed the isolated banner and sample, sent sample text without writing the real key, and had no 390 px horizontal overflow. Live `verify-url.sh` passed on the public root.
+
+External enrollment note: the app's checkout URL is correct and tested, but the factory billing gateway returned `404 {"error":"enabled factory product","status":404}` when checked on 2026-09-02T02:12Z. The documented product-enrollment command is absent from this worker, so enabling that external product record needs factory control-plane action.

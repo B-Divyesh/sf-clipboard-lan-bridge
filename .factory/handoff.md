@@ -2,7 +2,7 @@
 
 ## Result
 
-Repaired every finding in `review-1.md` in commits `218bca3` and `6f41286`. The release tag `v0.1.8` builds the repaired desktop app through GitHub Actions. The site build remains static in `dist/site/`.
+Repaired every finding in `review-1.md` in commits `218bca3` and `6f41286`. Release `v0.1.8` is published with macOS (arm64 and x64), Windows (MSI and EXE), and Linux (AppImage, DEB, and RPM) packages. The site uses that release's checked manifest and remains static in `dist/site/`.
 
 ## What changed
 
@@ -29,13 +29,16 @@ Observed locally after a clean `npm ci`:
 - `npm run check`: pass.
 - `npm run build`: pass — `dist/app/` and `dist/site/` produced; initial site JS is 4.63 KB raw / 1.78 KB gzip and CSS is 9.82 KB raw / 2.81 KB gzip.
 - `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/ /tmp/clipboard-lan-bridge-verify`: pass (title, lang, one h1, main, alt text, no browser console errors). Playwright Axe coverage has zero serious or critical violations on all public routes and desktop app views.
+- `scripts/verify-release.test.mjs`: pass against the public v0.1.8 `latest.json`, `SHA256SUMS`, and one downloaded package for each desktop platform.
 
 ## Release and deployment
 
 - GitHub Actions run: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33581391078>
-- Static deployment: push `main`; the factory deploys `dist/site/`.
+- Static deployment: `0eda8851-517a-4d81-8566-7ede84542249` uploaded `dist/site/` to the product's static resource and domain.
 - Public URL: <https://clipboard-lan-bridge.sociobot.in>
 
 ## Known gaps
 
-None in product scope. The desktop packages are intentionally unsigned; the website explains the operating-system confirmation. The Axe CLI could not locate a system Chrome binary in this worker, so the equivalent maintained Playwright Axe integration is the recorded accessibility check.
+The desktop packages are intentionally unsigned; the website explains the operating-system confirmation. The Axe CLI could not locate a system Chrome binary in this worker, so the equivalent maintained Playwright Axe integration is the recorded accessibility check.
+
+The product's checkout and license-return integration is in place, but the external factory billing gateway returned `404 {"error":"enabled factory product","status":404}` for `GET https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` at 2026-09-02T02:12Z. The documented `fleet/new-paid-product.sh` enrollment command is not installed in this worker. This cannot be corrected from the product repository or its allowed static resource; factory billing enrollment is required before the live $9 checkout can complete.
