@@ -1,34 +1,70 @@
-# Clipboard LAN Bridge — review 3 handoff
+# Clipboard LAN Bridge — polish round 3 handoff
 
-## Result: FAIL
+## Result: complete
 
-No product code, deployment, billing configuration, infrastructure, DNS,
-secrets, or external resources were changed. The review report is in
-`.factory/review-3.md`.
+All findings in reviews 1–3 are resolved in the product. The round-3 checkout failure is handled truthfully: new licenses are unavailable, and there is no enabled purchase link, button, or form. Existing-license holders can still paste and verify a token, and old license-return URLs still save the token for desktop restore.
 
-The sole blocking result is F-1-7: the live **Buy the $9 license** link opens
-`https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout`, which
-returns `404 {"error":"enabled factory product","status":404}`. The test
-that declares the purchase claim only asserts the href, so it does not catch
-the unusable action.
+The art-deco local-route visual system, desktop-app artifact class, one-click isolated demo, and local-only product scope are unchanged.
 
-## Verification performed
+## Changes
 
-- Fresh desktop and 390px production checks for the landing page, demo, legal
-  routes, and 404; no normal console errors or horizontal overflow.
-- One-click demo checked for seeded realistic data, banner, full Reset,
-  session-only `demo:` storage, and same-origin request log.
-- All 23 commands declared in `.factory/claims.json` were run individually in
-  a fresh clone after `npm ci`; all exit 0.
-- `npm run check` and `npm run build` completed in that fresh clone and
-  produced `dist/app/` and `dist/site/`.
-- `npm test` passed in the same clean clone: 3 Vitest tests, 3 release tests,
-  51 Playwright tests, and 8 Rust tests. Playwright recorded
-  `{"status":"passed","failedTests":[]}`.
+- Replaced the broken $9 checkout action and sale copy on the landing page, desktop app, README, and terms.
+- Added a clear **New licenses are not available** state plus **Download to restore a license**.
+- Preserved returned-token capture, native token verification, paid entitlements for existing holders, and token removal.
+- Replaced the prior payment/refund claims with separate `purchase-unavailable` and `license-recovery` claims.
+- Added an end-to-end test that requests the scoped checkout, observes its current error response, and proves no enabled product control points to it.
+- Bumped the desktop and site to v0.1.11 and the offline cache to `clipboard-lan-bridge-v10`.
+- Updated the catalog sentence and the complete copy audit.
+- Recorded every earlier finding and its current evidence in `.factory/polish-3.md`.
 
-## Next step
+## Release and deployment
 
-Provision or correct only the product-scoped Sociobot checkout route, then add
-an end-to-end test that follows the live checkout action and rejects error
-responses. If that route cannot be made public and usable, remove the paid
-offer until it can.
+- Repair source: `a97c9fdb3fb3e58640a16c17228b2db0081056ea`.
+- Published manifest commit: `7874ea5`.
+- Release: [v0.1.11](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/tag/v0.1.11).
+- GitHub Actions run: `33596532179`, successful.
+- Release contents: Linux AppImage/deb/rpm, Windows exe/msi, macOS arm64/x64 dmg, `SHA256SUMS`, and `latest.json`.
+- Release manifest source commit: `a97c9fdb3fb3e58640a16c17228b2db0081056ea`.
+- Static deployment: `081119ea-e643-4cd9-b934-b2ec6f9aed88`.
+- Live URL: <https://clipboard-lan-bridge.sociobot.in/>.
+
+## Verification
+
+A fresh clone at `/tmp/clipboard-polish3-clean-HMATpP/repo` ran from commit `7874ea5` after `npm ci`:
+
+- Every command in `.factory/claims.json` ran separately: 23/23 passed.
+- `npm test`: passed 3 Vitest, 3 release, 52 Playwright, and 8 Rust tests.
+- `npm run check`: passed TypeScript and Rust core checks.
+- `npm run build`: passed and produced `dist/app/` plus `dist/site/`.
+- Landing bundles: 2.05 KB gzip JS and 2.96 KB gzip CSS; desktop bundle: 5.59 KB gzip JS and 3.21 KB gzip CSS.
+
+Live cold verification after deployment:
+
+- `/`, `/demo/`, `/privacy/`, and `/terms/` return 200; an unknown path returns the designed 404 response.
+- Every public route has its route-specific title, `lang=en`, one h1, a main landmark, complete image alt text, and no normal-load console errors.
+- Axe found zero serious or critical issues at 390 px across every public route; no route overflowed horizontally.
+- Landing and demo requests stayed on the product origin. Offline demo reload passed from `clipboard-lan-bridge-v10`.
+- The demo entered in one click, wrote only its `demo:` session key, preserved a real-data sentinel, fully reset, cleared on exit, and moved focus correctly.
+- The scoped checkout returned 404, while the live site exposed zero checkout targets and zero enabled Buy/Purchase controls.
+- The Linux download selected the v0.1.11 AppImage; every crawled public link returned below 400.
+- Live Lighthouse: performance 99, accessibility 100, best practices 100, SEO 100; LCP 2,135 ms, CLS 0.002, total blocking time 27 ms.
+
+Evidence is under `.factory/evidence/polish-3/`, including root/demo/legal/404 screenshots, worker URL reports, the interactive live demo capture, `live-check.json`, and Lighthouse JSON.
+
+## Run and verify
+
+```sh
+npm ci
+npm test
+npm run check
+npm run build
+npm run dev:site
+```
+
+Open `http://127.0.0.1:4173/?demo=1` for an isolated sample. Run the desktop app with `npm run tauri dev` after installing the Tauri system prerequisites.
+
+## Needs operator action
+
+New-license sales must remain disabled until `clipboard-lan-bridge` is registered and enabled in the Sociobot billing service. After registration, reintroduce a product-scoped checkout control only with an end-to-end non-error checkout assertion. No product or deployment work remains for the current unavailable-sales state.
+
+The v0.1.11 packages are unsigned. Signing a later release requires operator-provided `APPLE_CERTIFICATE` and `WINDOWS_CERT_PFX` secrets; the current site gives only the tested unverified-publisher warning.

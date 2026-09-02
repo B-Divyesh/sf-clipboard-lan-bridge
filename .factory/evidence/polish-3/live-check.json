@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-09-02T06:10:00Z",
+  "deployment_id": "081119ea-e643-4cd9-b934-b2ec6f9aed88",
+  "release": "v0.1.11",
+  "download_href": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.11/linux-x86_64-Clipboard.LAN.Bridge_0.1.11_amd64.AppImage",
+  "checkout_status": 404,
+  "checkout_linked": false,
+  "demo": {
+    "one_click": true,
+    "banner_visible": true,
+    "reset_restored_seed": true,
+    "demo_session_key_present_during_demo": true,
+    "real_sentinel_preserved": true,
+    "real_app_key": null,
+    "demo_key_removed_on_exit": true,
+    "offline_reload": true
+  },
+  "routes": {
+    "/": { "status": 200, "title": "Clipboard LAN Bridge — send text to nearby devices", "h1": 1, "serious_or_critical_axe": 0, "mobile_overflow": false },
+    "/demo/": { "status": 200, "title": "Demo — Clipboard LAN Bridge", "h1": 1, "serious_or_critical_axe": 0, "mobile_overflow": false },
+    "/privacy/": { "status": 200, "title": "Privacy — Clipboard LAN Bridge", "h1": 1, "serious_or_critical_axe": 0, "mobile_overflow": false },
+    "/terms/": { "status": 200, "title": "Terms — Clipboard LAN Bridge", "h1": 1, "serious_or_critical_axe": 0, "mobile_overflow": false },
+    "/round-3-missing-page": { "status": 404, "title": "Page not found — Clipboard LAN Bridge" }
+  },
+  "normal_route_request_origins": ["https://clipboard-lan-bridge.sociobot.in"],
+  "normal_route_console_errors": [],
+  "page_errors": [],
+  "lighthouse": {
+    "performance": 99,
+    "accessibility": 100,
+    "best_practices": 100,
+    "seo": 100,
+    "lcp_ms": 2134.707,
+    "cls": 0.0018874017683673738,
+    "total_blocking_time_ms": 27
+  }
+}
