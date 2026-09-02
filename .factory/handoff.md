@@ -31,6 +31,7 @@ npm run build
 
 Observed on 2026-09-02 UTC:
 
+- Baseline reproduction: `cargo fmt --check` failed with the verifier's five hunks. The unchanged aggregate browser command passed once, confirming the reported Chromium crash was intermittent; the verifier's captured `SIGSEGV_MAPERR` remains the failing evidence that motivated process isolation.
 - Clean `npm ci`: 67 packages audited, 0 vulnerabilities.
 - Four consecutive corrected `npm test` runs passed. Each completed 3 Vitest tests, 3 release tests, 47 Playwright tests, and 8 Rust tests.
 - Every one of the 21 commands in `.factory/claims.json` passed exactly as recorded.
@@ -39,7 +40,7 @@ Observed on 2026-09-02 UTC:
 - Local Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.4 s, CLS 0, TBT 60 ms. See `evidence/repair-8/lighthouse-local.json`.
 - Live Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.1 s, CLS 0, TBT 0 ms. See `evidence/repair-8/lighthouse-live.json`.
 - `verify-url.sh` passed root, demo, privacy, and terms locally and live at desktop and 390 px, with correct title/lang/h1/main/alt checks and no console errors. Screenshots and reports are under `evidence/repair-8/`.
-- The live QA script passed 68 checks across desktop and 390 px, including Axe serious/critical = 0, 44 px targets, keyboard focus, 200% text reflow, reduced motion, no horizontal overflow, same-origin requests, demo isolation, gated checkout, v0.1.9 links, existing-token return, cache replacement, and offline demo reload. See `evidence/repair-8/live-qa.json`.
+- The live QA script passed 71 checks across desktop and 390 px, including Axe serious/critical = 0, 44 px targets, keyboard focus, 200% text reflow, reduced motion, no horizontal overflow, same-origin requests, demo isolation, gated checkout, Linux/Windows/macOS v0.1.9 selection, existing-token return, cache replacement, and offline demo reload. See `evidence/repair-8/live-qa.json`.
 - The live link crawl checked 16 unique destinations with no HTTP failures and no checkout URL exposed. See `evidence/repair-8/link-qa.json`.
 - All 22 public files in `dist/site/` byte-match production. `staticwebapp.config.json` correctly returns 404.
 - Production headers include HSTS, `nosniff`, `Referrer-Policy: no-referrer`, restrictive Permissions-Policy, and CSP with `frame-ancestors 'none'`. Hashed assets are one-year immutable; `sw.js` is no-cache; HTML revalidates after 30 seconds.

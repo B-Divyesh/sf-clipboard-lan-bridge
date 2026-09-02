@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-09-02T03:11:54.163Z",
+  "checked_at": "2026-09-02T03:13:52.317Z",
   "results": [
     {
       "name": "desktop / status",
@@ -165,7 +165,7 @@
       "name": "desktop demo isolation",
       "pass": true,
       "evidence": {
-        "demo": "[{\"id\":\"a297dfdc-2046-418a-b745-c1ab0b041cf0\",\"from\":\"Studio laptop\",\"text\":\"Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q\",\"expires\":1788319305619},{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788319300568}]",
+        "demo": "[{\"id\":\"cebd7d1b-08de-44e7-8fa4-47ae9f2f98f4\",\"from\":\"Studio laptop\",\"text\":\"Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q\",\"expires\":1788319421564},{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788319416541}]",
         "real": null
       }
     },
@@ -353,7 +353,7 @@
       "name": "mobile-390 demo isolation",
       "pass": true,
       "evidence": {
-        "demo": "[{\"id\":\"49efe446-a7ee-4c8a-aba4-844b2049b7d1\",\"from\":\"Studio laptop\",\"text\":\"Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q\",\"expires\":1788319311952},{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788319307003}]",
+        "demo": "[{\"id\":\"790284a3-8227-4216-a6ae-b74387bd5ba0\",\"from\":\"Studio laptop\",\"text\":\"Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q\",\"expires\":1788319428113},{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788319423153}]",
         "real": null
       }
     },
@@ -368,6 +368,21 @@
       "name": "mobile-390 no console errors",
       "pass": true,
       "evidence": []
+    },
+    {
+      "name": "Linux package selection",
+      "pass": true,
+      "evidence": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.9/linux-x86_64-Clipboard.LAN.Bridge_0.1.9_amd64.AppImage"
+    },
+    {
+      "name": "Windows package selection",
+      "pass": true,
+      "evidence": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.9/windows-x86_64-Clipboard.LAN.Bridge_0.1.9_x64_en-US.msi"
+    },
+    {
+      "name": "macOS package selection",
+      "pass": true,
+      "evidence": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.9/macos-x86_64-Clipboard.LAN.Bridge_0.1.9_x64.dmg"
     },
     {
       "name": "existing-token return",

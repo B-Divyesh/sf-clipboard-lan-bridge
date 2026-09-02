@@ -56,6 +56,19 @@ for (const [name, options] of [
   await context.close();
 }
 
+for (const selection of [
+  { name: "Linux", userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36", suffix: ".AppImage" },
+  { name: "Windows", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36", suffix: ".msi" },
+  { name: "macOS", userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140 Safari/537.36", suffix: ".dmg" }
+]) {
+  const context = await browser.newContext({ userAgent: selection.userAgent });
+  const page = await context.newPage();
+  await page.goto(`${base}/`, { waitUntil: "networkidle" });
+  const href = await page.locator("#main-download").getAttribute("href") || "";
+  check(`${selection.name} package selection`, href.includes("/v0.1.9/") && href.endsWith(selection.suffix), href);
+  await context.close();
+}
+
 const returnContext = await browser.newContext();
 const returnPage = await returnContext.newPage();
 await returnPage.goto(`${base}/?license=repair-8-existing-token`, { waitUntil: "networkidle" });
