@@ -69,10 +69,10 @@ The installers read `latest.json` and verify SHA-256 before installing. The site
 
 ## Deploy
 
-Run `npm run build` to create the static site in `dist/site/`; the factory's static deployment publishes that directory from `main`. Push a version tag such as `v0.1.6` to build the unsigned macOS, Windows, and Linux installers in GitHub Actions. The release `latest.json` records the tag and exact source commit alongside package checksums. Copy that published file to `site/release-manifest.json` before the next site release.
+Run `npm run build` to create the static site in `dist/site/`; the factory's static deployment publishes that directory from `main`. Push a version tag such as `v0.1.7` to build the unsigned macOS, Windows, and Linux installers in GitHub Actions. The release `latest.json` records the tag and exact source commit alongside package checksums. Copy that published file to `site/release-manifest.json` before the next site release.
 
 ## License and policy
 
-Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and purchase terms are at `/terms/`.
+Code is MIT licensed; see [LICENSE](LICENSE). Product data practices are at `/privacy/`, and terms are at `/terms/`.
 
-The free route connects the local device plus one peer. A $9 one-time Personal Route pass adds more peers and one-hour expiry. The shared checkout is temporarily unavailable, so the site does not offer a purchase action; existing licenses can still be restored in the app. Verification runs in the Rust core through the Sociobot billing API, so the installed app does not depend on browser CORS.
+The current release is free and local. It connects this device and one paired device. Transfers expire after two or ten minutes.

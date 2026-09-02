@@ -1,6 +1,6 @@
 # Landing-page copy audit
 
-Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numbers as one word. No sentence exceeds 22 words. No banned marketing word appears.
+Audited 2026-09-02. Word counts treat hyphenated terms and version numbers as one word. No sentence exceeds 22 words. No banned marketing word appears.
 
 | Copy | Words |
 | --- | ---: |
@@ -14,7 +14,7 @@ Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numb
 | A phone and computers connected by one local route. | 9 |
 | Text and links only | 4 |
 | 32 KB maximum | 3 |
-| 2–60 minute expiry | 3 |
+| 2–10 minute expiry | 3 |
 | No clipboard history | 3 |
 | Pair, send, and copy | 4 |
 | Pair with a code | 4 |
@@ -29,28 +29,17 @@ Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numb
 | Only the text you choose | 5 |
 | Clipboard LAN Bridge handles UTF-8 text and web links only. | 9 |
 | It does not read clipboard changes, images, files, or password autofill data. | 12 |
-| Two devices. | 2 |
-| No account. | 2 |
+| Two devices. No account. | 4 |
+| Free | 1 |
 | One paired route | 3 |
+| 2 and 10 minute expiry | 5 |
 | Full encryption and safety | 4 |
-| Use every device you own | 5 |
-| Unlimited paired devices | 3 |
-| Optional 1 hour expiry | 4 |
-| Restore the pass on your devices | 6 |
-| Checkout is temporarily unavailable. | 4 |
-| If you already have a license, paste it in the desktop app. | 12 |
-| One-time purchase. | 2 |
-| Sociobot/Dodo is merchant of record. | 5 |
+| Download the app | 3 |
 | Install the desktop app | 4 |
 | The site selects the current package for your computer. | 9 |
 | Packages are unsigned, so your operating system may ask for confirmation. | 11 |
 | To connect a phone, open the local phone address shown by the desktop app. | 14 |
 | Keep that page open: phone browsers may pause background polling. | 10 |
-| Move your pass into the app | 6 |
-| Your purchase is ready. | 4 |
-| Copy this license, then paste it in the desktop app under Route pass. | 13 |
-| License copied. Paste it in the desktop app under Route pass. | 10 |
-| Clipboard access was unavailable. Select the license above and copy it manually. | 12 |
 | Send short text between nearby devices. | 6 |
 | Original generated artwork. | 3 |
 | Built by Param Factory. | 4 |
@@ -63,5 +52,4 @@ Audited 2026-08-30. Word counts treat hyphenated terms, prices, and version numb
 | A connected machine or phone | device |
 | Device authorization | pairing |
 | Removal time | expiry |
-| Paid license | Route pass |
 | Browser trial | demo |

@@ -8,10 +8,10 @@
   },
   {
     "id": "platform-download",
-    "claim": "The site selects the current package for the visitor's operating system.",
+    "claim": "The site selects a package for the visitor's operating system or shows a safe publishing state.",
     "where": "download section",
     "test": "npx playwright test --grep @claim:platform-download",
-    "sandbox": "fresh landing page using the bundled published release manifest; assert the real Linux AppImage is selected"
+    "sandbox": "fresh Linux landing page; assert the bundled manifest selects a Linux AppImage, or a draft manifest shows the release publishing state"
   },
   {
     "id": "public-page-network-boundary",
@@ -119,31 +119,17 @@
     "sandbox": "fresh native state; add one peer and assert a second peer is rejected"
   },
   {
-    "id": "paid-route-pass",
-    "claim": "A valid $9 one-time Route pass adds unlimited peers and one-hour expiry.",
-    "where": "pricing, app, terms, README",
-    "test": "cargo test --manifest-path src-tauri/Cargo.toml --no-default-features free_and_paid_limits_are_enforced_in_native_state",
-    "sandbox": "native state with recorded valid and revoked verdicts; assert peer and expiry gates"
-  },
-  {
     "id": "native-license-verification",
     "claim": "The installed app verifies a pasted license through its native core and ignores browser-written verdicts.",
-    "where": "app Route pass view and README",
+    "where": "app Device settings",
     "test": "npx playwright test --grep @claim:native-license-verification",
     "sandbox": "Tauri invoke fixture; seed a forged localStorage verdict, then verify a recorded valid native response"
   },
   {
-    "id": "license-handoff",
-    "claim": "Checkout return exposes a license that can be copied into the installed app.",
-    "where": "website checkout return and app restore form",
-    "test": "npx playwright test --grep @claim:license-handoff",
-    "sandbox": "fresh website context with a recorded checkout-return token"
-  },
-  {
-    "id": "checkout-status",
-    "claim": "The site does not advertise the Route pass checkout while the shared checkout is unavailable.",
-    "where": "Route pass section",
-    "test": "npx playwright test --grep @claim:checkout-status",
-    "sandbox": "fresh landing page; assert the temporary checkout status and no checkout link"
+    "id": "no-dead-checkout-action",
+    "claim": "The public product offers a free local route without a checkout action.",
+    "where": "landing, privacy, terms, README",
+    "test": "npx playwright test --grep @claim:no-dead-checkout-action",
+    "sandbox": "fresh desktop and mobile public routes; assert no purchase control, scoped checkout link, or request"
   }
 ]

@@ -3,7 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 const emptySnapshot = { device_id: "browser-preview", device_name: "This device", network_ready: false, network_error: "Open the installed app to discover devices on your LAN.", peers: [], pairings: [], inbox: [], sent: [], licensed: false, license_reason: "not_checked", companion_urls: [] };
 
-test("desktop interface has accessible empty, phone, and pass states", async ({ page }) => {
+test("desktop interface has accessible empty, phone, and device settings states", async ({ page }) => {
   const errors: string[] = [];
   page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto("http://127.0.0.1:1420/");
@@ -11,7 +11,7 @@ test("desktop interface has accessible empty, phone, and pass states", async ({ 
   await expect(page.getByText("No paired destination yet")).toBeVisible();
   await page.getByRole("link", { name: "Devices" }).click();
   await expect(page.getByRole("heading", { name: "Connect a phone" })).toBeVisible();
-  await page.getByRole("link", { name: /Route pass/ }).click();
+  await expect(page.locator("summary", { hasText: "Existing license" })).toBeVisible();
   expect((await new AxeBuilder({ page: page as never }).analyze()).violations.filter(v => ["serious", "critical"].includes(v.impact || ""))).toEqual([]);
   expect(errors).toEqual([]);
 });
@@ -26,11 +26,12 @@ test("@claim:native-license-verification uses native verification, not writable 
       return null;
     } } });
   }, emptySnapshot);
-  await page.goto("http://127.0.0.1:1420/#pass");
+  await page.goto("http://127.0.0.1:1420/#devices");
   expect(await page.locator('option[value="3600"]').evaluate(option => (option as HTMLOptionElement).disabled)).toBe(true);
-  await page.getByLabel("Have a license? Paste it here").fill("fixture-license-token");
+  await page.locator("summary", { hasText: "Existing license" }).click();
+  await page.getByLabel("Existing license token").fill("fixture-license-token");
   await page.getByRole("button", { name: "Verify license" }).click();
-  await expect(page.getByText("Route pass restored on this device.")).toBeVisible();
+  await expect(page.getByText("License verified on this device.")).toBeVisible();
   expect(await page.locator('option[value="3600"]').evaluate(option => (option as HTMLOptionElement).disabled)).toBe(false);
 });
 

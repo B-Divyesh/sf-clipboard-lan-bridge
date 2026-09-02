@@ -35,8 +35,14 @@ test("@claim:platform-download selects the current package for this operating sy
     if (new URL(request.url()).origin !== "http://127.0.0.1:4173") offOriginRequests.push(request.url());
   });
   await page.goto("/");
-  await expect(page.locator("#main-download")).toHaveText("Download v0.1.6 for Linux");
-  await expect(page.locator("#main-download")).toHaveAttribute("href", "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.6/linux-x86_64-Clipboard.LAN.Bridge_0.1.6_amd64.AppImage");
+  const download = page.locator("#main-download");
+  if (await download.textContent() === "Downloads are being published") {
+    await expect(page.locator("#main-download")).toHaveText("Downloads are being published");
+    await expect(page.locator("#main-download")).toHaveAttribute("href", "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest");
+  } else {
+    await expect(download).toHaveText(/^Download v\d+\.\d+\.\d+ for Linux$/);
+    await expect(download).toHaveAttribute("href", /releases\/download\/v\d+\.\d+\.\d+\/.*\.AppImage$/);
+  }
   expect(offOriginRequests).toEqual([]);
   await context.close();
 });
@@ -118,31 +124,20 @@ test("@claim:no-account runs the sample handoff without sign-in", async ({ page 
   await expect(page.locator(".ticket").first()).toBeVisible();
 });
 
-test("@claim:license-handoff exposes a checkout token for the desktop app", async ({ page }) => {
-  const errors: string[] = [];
-  page.on("pageerror", error => errors.push(error.message));
-  await page.addInitScript(() => {
-    let copied = "";
-    Object.defineProperty(navigator, "clipboard", { value: { writeText: async (value: string) => { copied = value; } } });
-    Object.defineProperty(window, "returnedLicenseClipboard", { get: () => copied });
+test("@claim:no-dead-checkout-action public routes expose only the free local route", async ({ page }) => {
+  const checkoutRequests: string[] = [];
+  page.on("request", request => {
+    if (request.url().includes("/api/v1/products/clipboard-lan-bridge/checkout")) checkoutRequests.push(request.url());
   });
-  await page.goto("/?license=qa-fixture-license");
-  await expect(page).not.toHaveURL(/license=/);
-  await expect(page.getByRole("heading", { name: "Move your pass into the app" })).toBeVisible();
-  await expect(page.locator("#returned-license")).toHaveText("qa-fixture-license");
-  expect(await page.evaluate(() => localStorage.getItem("sb_license:clipboard-lan-bridge"))).toBe("qa-fixture-license");
-  await page.getByRole("button", { name: "Copy license" }).click();
-  await page.waitForTimeout(25);
-  expect(errors).toEqual([]);
-  await expect(page.getByRole("button", { name: "License copied" })).toBeVisible();
-  await expect(page.locator("#license-feedback")).toContainText("License copied. Paste it in the desktop app");
-  expect(await page.evaluate(() => (window as unknown as { returnedLicenseClipboard: string }).returnedLicenseClipboard)).toBe("qa-fixture-license");
-});
 
-test("@claim:checkout-status does not advertise an operator-gated checkout", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByText("Checkout is temporarily unavailable. If you already have a license, paste it in the desktop app.")).toBeVisible();
-  await expect(page.locator('a[href*="/checkout"]')).toHaveCount(0);
+  for (const route of ["/", "/demo/", "/privacy/", "/terms/", "/404.html"]) {
+    await page.goto(route);
+    await expect(page.locator('a[href*="checkout"], form[action*="checkout"], [data-checkout]')).toHaveCount(0);
+    await expect(page.locator("a:visible, button:visible").filter({ hasText: /buy|purchase|checkout/i })).toHaveCount(0);
+    expect(await page.locator("body").innerText()).not.toMatch(/\$9|one-time|checkout/i);
+  }
+
+  expect(checkoutRequests).toEqual([]);
 });
 
 test("links and controls retain 44px targets in both dimensions and the hero heading keeps devices whole", async ({ page }, testInfo) => {

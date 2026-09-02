@@ -712,7 +712,7 @@ async fn mobile_send(
     {
         return Err((
             StatusCode::PAYMENT_REQUIRED,
-            "A Route pass is required for one-hour tickets.".into(),
+            "One-hour tickets are not available on the free route.".into(),
         ));
     }
     let text = mobile_decrypt(&inner.config.identity, &peer.public_key, &request.transfer)
@@ -903,7 +903,7 @@ async fn process_message(
                 return Err("Pairing keys did not match".into());
             }
             if !can_add_peer(&inner, &device_id) {
-                return Err("The free route connects this device to one other device. Add a Route pass for more.".into());
+                return Err("The free route connects this device to one other device.".into());
             }
             let stored = StoredPeer {
                 id: device_id.clone(),
@@ -934,7 +934,7 @@ async fn process_message(
             }
             let mut inner = shared.write().await;
             if expires_at > created_at + 600_000 && !has_valid_license(&inner) {
-                return Err("A Route pass is required for one-hour tickets".into());
+                return Err("One-hour tickets are not available on the free route".into());
             }
             let peer = inner
                 .config
@@ -1210,7 +1210,7 @@ async fn request_pairing(peer_id: String, state: State<'_, AppState>) -> Result<
             return Err("Approve phone requests from the incoming pairing card.".into());
         }
         if !can_add_peer(&inner, &peer_id) {
-            return Err("The free route connects this device to one other device. Add a Route pass for more.".into());
+            return Err("The free route connects this device to one other device.".into());
         }
         let own_pk = public_key(&inner.config.identity)?;
         let code = pair_code(&own_pk, &p.public_key);
@@ -1253,7 +1253,7 @@ async fn approve_pairing(peer_id: String, state: State<'_, AppState>) -> Result<
             .cloned()
             .ok_or("Pairing request expired")?;
         if !can_add_peer(&inner, &peer_id) {
-            return Err("The free route connects this device to one other device. Add a Route pass for more.".into());
+            return Err("The free route connects this device to one other device.".into());
         }
         let own_pk = public_key(&inner.config.identity)?;
         (
@@ -1336,7 +1336,7 @@ async fn send_text(
     let (message, address, name, mobile) = {
         let inner = state.0.read().await;
         if !can_use_ttl(&inner, ttl_seconds) {
-            return Err("A Route pass is required for one-hour tickets".into());
+            return Err("One-hour tickets are not available on the free route".into());
         }
         let peer = inner
             .config
@@ -1749,7 +1749,6 @@ mod tests {
 
     #[test]
     // @claim:two-device-free-tier
-    // @claim:paid-route-pass
     fn free_and_paid_limits_are_enforced_in_native_state() {
         let mut inner = test_inner(fresh_identity());
         assert!(can_add_peer(&inner, "first"));

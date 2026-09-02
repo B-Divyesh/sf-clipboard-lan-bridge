@@ -52,30 +52,5 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach(butt
   try { await navigator.clipboard.writeText(button.dataset.copyCommand || ""); button.textContent = "Copied"; }
   catch { button.textContent = "Select command"; }
 }));
-
-const url = new URL(location.href); const license = url.searchParams.get("license");
-if (license) {
-  localStorage.setItem("sb_license:clipboard-lan-bridge", license);
-  url.searchParams.delete("license");
-  history.replaceState({}, "", url);
-  const panel = document.querySelector<HTMLElement>("#license-return")!;
-  const value = document.querySelector<HTMLElement>("#returned-license")!;
-  const feedback = document.querySelector<HTMLElement>("#license-feedback")!;
-  const copyLicense = document.querySelector<HTMLButtonElement>("#copy-license")!;
-  value.textContent = license;
-  panel.hidden = false;
-  copyLicense.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(license);
-      copyLicense.textContent = "License copied";
-      feedback.textContent = "License copied. Paste it in the desktop app under Route pass.";
-    }
-    catch {
-      copyLicense.textContent = "Select the license above";
-      feedback.textContent = "Clipboard access was unavailable. Select the license above and copy it manually.";
-    }
-  });
-  document.querySelector<HTMLButtonElement>("#dismiss-license")!.addEventListener("click", () => { localStorage.removeItem("sb_license:clipboard-lan-bridge"); panel.hidden = true; });
-}
 loadRelease();
 if ("serviceWorker" in navigator && (location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname))) void navigator.serviceWorker.register("/sw.js");

@@ -57,7 +57,6 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <a href="#send" data-view="send" aria-current="page"><span aria-hidden="true">↗</span> Send</a>
       <a href="#receive" data-view="receive"><span aria-hidden="true">↓</span> Receive <span class="count" id="inbox-count">0</span></a>
       <a href="#devices" data-view="devices"><span aria-hidden="true">◇</span> Devices</a>
-      <a href="#pass" data-view="pass"><span aria-hidden="true">✦</span> Route pass</a>
     </nav>
 
     <main id="main" tabindex="-1">
@@ -82,7 +81,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
               <select id="expiry">
                 <option value="120">2 minutes</option>
                 <option value="600" selected>10 minutes</option>
-                <option value="3600" data-paid>1 hour · Route pass</option>
+                <option value="3600" data-paid>1 hour</option>
               </select>
             </label>
             <button class="primary-button" type="submit">Send securely <span aria-hidden="true">→</span></button>
@@ -109,18 +108,12 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
           <summary>Device identity</summary>
           <form id="name-form"><label for="device-name">Name visible on your LAN</label><div class="inline-form"><input id="device-name" required maxlength="48"><button type="submit" class="secondary-button">Save name</button></div></form>
         </details>
-      </section>
-
-      <section class="view" id="view-pass" aria-labelledby="pass-title" hidden>
-        <div class="eyebrow">Optional one-time pass</div>
-        <h2 id="pass-title" tabindex="-1">Route pass</h2>
-        <p class="lede">The free route connects two devices with ten-minute expiry. A $9 one-time pass adds unlimited paired devices and one-hour tickets.</p>
-        <div class="pass-ticket">
-          <div><span class="stamp">Personal route pass</span><strong id="license-state">Free route active</strong><p>No subscription. Safety controls and accessibility are always included.</p></div>
-          <p class="checkout-status" role="status">Checkout is temporarily unavailable. Paste an existing license below.</p>
-        </div>
-        <form id="license-form" class="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
-        <p class="legal-note">Sociobot/Dodo is the merchant of record. <a href="https://clipboard-lan-bridge.sociobot.in/privacy">Privacy</a> · <a href="https://clipboard-lan-bridge.sociobot.in/terms">Terms</a></p>
+        <details class="settings-panel">
+          <summary>Existing license</summary>
+          <p class="legal-note">If you already have a license token, verify it on this device.</p>
+          <strong id="license-state">Free route active</strong>
+          <form id="license-form" class="license-form"><label for="license-token">Existing license token</label><div class="inline-form"><input id="license-token" type="password" autocomplete="off"><button class="secondary-button" type="submit">Verify license</button></div><p id="license-result" role="status"></p></form><button id="remove-license" class="text-button" type="button">Remove license from this device</button>
+        </details>
       </section>
     </main>
 
@@ -155,12 +148,12 @@ function render() {
   $("#pairing-list").innerHTML = state.pairings.map(pairing => `<article class="pair-card"><div><span class="stamp">${pairing.direction === "incoming" ? "Approval requested" : "Waiting for approval"}</span><h3>${escapeHtml(pairing.peer_name)}</h3><p>Compare this code on both screens:</p><strong class="pair-code">${escapeHtml(pairing.code)}</strong></div>${pairing.direction === "incoming" ? `<div class="pair-actions"><button class="primary-button" data-approve="${escapeHtml(pairing.peer_id)}">Approve device</button><button class="text-button" data-reject="${escapeHtml(pairing.peer_id)}">Reject</button></div>` : ""}</article>`).join("");
 
   const canAdd = paid() || state.peers.filter(p => p.paired).length < FREE_DEVICE_LIMIT;
-  $("#device-list").innerHTML = state.peers.length ? state.peers.map(peer => `<article class="device-row"><span class="device-symbol" aria-hidden="true">▣</span><div><h3>${escapeHtml(peer.name)}</h3><p>${peer.paired ? "Paired" : "Found on this LAN"} · ${peer.online ? "Online" : "Offline"}</p></div>${peer.paired ? `<button class="text-button danger" data-forget="${escapeHtml(peer.id)}">Forget</button>` : `<button class="secondary-button" data-pair="${escapeHtml(peer.id)}" ${canAdd ? "" : "disabled"}>${canAdd ? "Pair device" : "Pass required"}</button>`}</article>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">⌁</span><strong>No other bridges found</strong><p>Keep the other app open on the same LAN. Guest Wi-Fi and VPNs can block discovery.</p></div>`;
+  $("#device-list").innerHTML = state.peers.length ? state.peers.map(peer => `<article class="device-row"><span class="device-symbol" aria-hidden="true">▣</span><div><h3>${escapeHtml(peer.name)}</h3><p>${peer.paired ? "Paired" : "Found on this LAN"} · ${peer.online ? "Online" : "Offline"}</p></div>${peer.paired ? `<button class="text-button danger" data-forget="${escapeHtml(peer.id)}">Forget</button>` : `<button class="secondary-button" data-pair="${escapeHtml(peer.id)}" ${canAdd ? "" : "disabled"}>${canAdd ? "Pair device" : "Free route limit"}</button>`}</article>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">⌁</span><strong>No other bridges found</strong><p>Keep the other app open on the same LAN. Guest Wi-Fi and VPNs can block discovery.</p></div>`;
 
   $("#inbox-list").innerHTML = state.inbox.length ? state.inbox.map(item => `<article class="clip-ticket"><div class="ticket-top"><span>From ${escapeHtml(item.peer_name)}</span><time>${remainingLabel(item.expires_at)}</time></div><p>${escapeHtml(item.text)}</p><div class="ticket-actions"><button class="secondary-button" data-copy="${escapeHtml(item.id)}">Copy text</button><button class="text-button danger" data-delete="${escapeHtml(item.id)}">Delete</button></div></article>`).join("") : `<div class="empty-state"><span class="empty-mark" aria-hidden="true">↓</span><strong>No arrivals</strong><p>Received text appears here only after a paired device deliberately sends it.</p></div>`;
 
   const unlocked = paid();
-  $("#license-state").textContent = unlocked ? "Route pass active" : "Free route active";
+  $("#license-state").textContent = unlocked ? "Existing license active" : "Free route active";
   const hour = document.querySelector<HTMLOptionElement>("option[data-paid]")!;
   hour.disabled = !unlocked;
 }
@@ -186,19 +179,15 @@ async function verifyLicense(token: string) {
   try {
     result.textContent = "Checking license…";
     const verdict = await call<{ valid: boolean; reason: string }>("verify_license", { token: token.trim() });
-    result.textContent = verdict.valid ? "Route pass restored on this device." : "License no longer active. You can continue on the free route.";
+    result.textContent = verdict.valid ? "License verified on this device." : "License no longer active. You can continue on the free route.";
   } catch { result.textContent = "Could not verify right now. Your current route remains available."; }
   await refresh();
 }
 
-function installLicenseReturn() {
-  const url = new URL(location.href); const token = url.searchParams.get("license");
-  if (token) { url.searchParams.delete("license"); history.replaceState({}, "", url); void verifyLicense(token); }
-}
-
 window.addEventListener("hashchange", activateView);
 function activateView() {
-  const view = location.hash.slice(1) || "send";
+  const requested = location.hash.slice(1);
+  const view = ["send", "receive", "devices"].includes(requested) ? requested : "send";
   document.querySelectorAll<HTMLElement>(".view").forEach(el => { const active = el.id === `view-${view}`; el.hidden = !active; el.classList.toggle("active", active); });
   document.querySelectorAll<HTMLAnchorElement>("[data-view]").forEach(a => a.setAttribute("aria-current", a.dataset.view === view ? "page" : "false"));
   const heading = document.querySelector<HTMLElement>(`#view-${view} h1, #view-${view} h2`);
@@ -234,5 +223,5 @@ $("#name-form").addEventListener("submit", async event => { event.preventDefault
 $("#license-form").addEventListener("submit", event => { event.preventDefault(); const token = $<HTMLInputElement>("#license-token").value.trim(); void verifyLicense(token); });
 $("#remove-license").addEventListener("click", async () => { try { await call("remove_license"); $("#license-result").textContent = "License removed from this device."; await refresh(); } catch (error) { $("#license-result").textContent = String(error); } });
 
-installLicenseReturn(); activateView(); void refresh(); refreshTimer = window.setInterval(refresh, 2500);
+activateView(); void refresh(); refreshTimer = window.setInterval(refresh, 2500);
 window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
