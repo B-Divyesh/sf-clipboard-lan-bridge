@@ -13,26 +13,22 @@ async function get(url) {
 }
 
 async function publishedRelease() {
-  const release = await (await get(`https://api.github.com/repos/${repo}/releases/tags/${bundledManifest.version}`)).json();
-  const byName = new Map(release.assets.map(asset => [asset.name, asset]));
-  const manifestAsset = byName.get("latest.json");
-  const sumsAsset = byName.get("SHA256SUMS");
-  assert.ok(manifestAsset, "published release needs latest.json");
-  assert.ok(sumsAsset, "published release needs SHA256SUMS");
-  const manifest = await (await get(manifestAsset.browser_download_url)).json();
-  const sums = await (await get(sumsAsset.browser_download_url)).text();
-  return { release, byName, manifest, sums };
+  const base = `https://github.com/${repo}/releases/download/${bundledManifest.version}`;
+  // Release-download URLs are the public artifact boundary. Unlike the
+  // unauthenticated GitHub API, this stays reliable on shared CI egress.
+  const manifest = await (await get(`${base}/latest.json`)).json();
+  const sums = await (await get(`${base}/SHA256SUMS`)).text();
+  return { manifest, sums };
 }
 
 test("@claim:release-packages current published release has verified packages for every desktop platform", async () => {
-  const { byName, manifest, sums } = await publishedRelease();
+  const { manifest, sums } = await publishedRelease();
   assert.equal(manifest.version, bundledManifest.version);
   const required = { linux: ["appimage", "deb", "rpm"], windows: ["msi", "exe"], macos: ["dmg"] };
   for (const [platform, kinds] of Object.entries(required)) {
     const assets = manifest.assets.filter(asset => asset.platform === platform);
     for (const kind of kinds) assert.ok(assets.some(asset => asset.kind === kind), `${platform} needs a ${kind} package`);
     const asset = assets[0];
-    assert.ok(byName.has(asset.name), `${asset.name} is missing from the GitHub release`);
     assert.match(sums, new RegExp(`^${asset.sha256}\\s+\\*?${asset.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"));
     const bytes = new Uint8Array(await (await get(asset.url)).arrayBuffer());
     const actual = createHash("sha256").update(bytes).digest("hex");
