@@ -1,58 +1,61 @@
-# Clipboard LAN Bridge — verification 7 handoff
-
-## Independent verification result: FAIL
-
-Candidate `774f0fd13e0e31a8b354aa6b4056bdbfa5b38233` at <https://clipboard-lan-bridge.sociobot.in> is **not accepted** as of 2026-09-02 UTC. The free local/demo experience, static deployment, release artifacts, and individual claim tests verify, but release blockers remain:
-
-- The visible `$9` checkout URL `https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` returns HTTP **404**.
-- `npm test` exits **1**: 47/48 Playwright tests pass, then the `@claim:paid-unlock` test fails after a Chromium `SIGSEGV` closes the browser context. The claim passes alone, but the aggregate suite is not reliable.
-- `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` fails on committed formatting in `src-tauri/src/lib.rs`.
-
-See [verification-7.md](verification-7.md) for the full independent evidence, passing checks, severity, and repair steps. No product code was changed during verification.
-
-## Prior builder handoff (superseded by the verification result)
+# Clipboard LAN Bridge — repair 8 handoff
 
 ## Result
 
-Repaired every finding in `review-1.md` in commits `218bca3` and `6f41286`. Release `v0.1.8` is published with macOS (arm64 and x64), Windows (MSI and EXE), and Linux (AppImage, DEB, and RPM) packages. The site uses that release's checked manifest and remains static in `dist/site/`.
+All release-blocking findings from independent verification commit `b458f2a` are repaired. The repaired static site is live at <https://clipboard-lan-bridge.sociobot.in>, and desktop release `v0.1.9` is published for Linux, macOS, and Windows.
 
-## What changed
+## Repairs
 
-- Added the direct `?demo=1` isolated sample path, persistent banner, reset, start-for-real cleanup, exact size and expiry tests.
-- Replaced unproved source checks with observable published-release, loopback companion, pairing, expiry, and checkout-return tests.
-- Added the $9 Sociobot one-time checkout, restore-token handoff, native purchase link, and free/paid limits.
-- Rewrote landing, app, README, legal, metadata-facing, and download copy in one plain vocabulary.
-- Fixed static-document route and Back focus, named install copy controls, and preserved the art-deco local-network identity.
+- Ran `cargo fmt` and committed every reported formatting hunk in `src-tauri/src/lib.rs`.
+- Moved `@claim:paid-unlock` into its own Playwright project. It now receives a separate worker, Chromium process, and fresh browser context instead of depending on the aggregate suite's long-lived browser.
+- Added a regression that checks the landing site and desktop app expose no dead checkout action, make no checkout request, and still pass an existing return token to desktop restore.
+- Made checkout default-off. The exact scoped URL is rendered only when an operator explicitly builds with `VITE_CHECKOUT_URL=https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout`.
+- Replaced purchase-success copy across the site, desktop app, README, privacy page, terms, claims, and copy audit with the truthful current state: purchases are unavailable; existing license tokens can still be restored.
+- Added service-worker update coverage that seeds an obsolete cache, confirms `clipboard-lan-bridge-v8` replaces it, and then reloads the demo offline.
+- Bumped the app and site to `0.1.9`.
 
-See [polish-1.md](polish-1.md) for the finding-by-finding map.
+No shared Sociobot resource, billing registration, database, secret, staging slot, or other product resource was read or changed. A read-only policy check still returns HTTP 404 for the scoped checkout. The site therefore does not show a purchase action or claim that checkout succeeds.
 
-## Verify
+## Verification
+
+Run locally:
 
 ```sh
 npm ci
 npm test
 npm run check
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --no-default-features -- -D warnings
+cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 npm run build
 ```
 
-Observed locally after a clean `npm ci`:
+Observed on 2026-09-02 UTC:
 
-- `npm test`: pass — 3 Vitest, 3 published-release tests, 48 Playwright tests, and 8 Rust tests.
-- `npm run check`: pass.
-- `npm run build`: pass — `dist/app/` and `dist/site/` produced; initial site JS is 4.63 KB raw / 1.78 KB gzip and CSS is 9.82 KB raw / 2.81 KB gzip.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/ /tmp/clipboard-lan-bridge-verify`: pass (title, lang, one h1, main, alt text, no browser console errors). Playwright Axe coverage has zero serious or critical violations on all public routes and desktop app views.
-- `scripts/verify-release.test.mjs`: pass against the public v0.1.8 `latest.json`, `SHA256SUMS`, and one downloaded package for each desktop platform.
-- Clean clone `/tmp/clipboard-lan-bridge-clean.GztQlh` at `9b8f183`: `npm ci && npm test && npm run check && npm run build` all passed.
+- Clean `npm ci`: 67 packages audited, 0 vulnerabilities.
+- Four consecutive corrected `npm test` runs passed. Each completed 3 Vitest tests, 3 release tests, 47 Playwright tests, and 8 Rust tests.
+- Every one of the 21 commands in `.factory/claims.json` passed exactly as recorded.
+- `npm run check`, Clippy with `-D warnings`, and `cargo fmt --check` passed.
+- `npm run build` produced `dist/app/` and `dist/site/`. Landing JS is 4.96 KB raw / 1.93 KB gzip; CSS is 9.82 KB raw / 2.81 KB gzip; the mobile hero is 32,472 bytes.
+- Local Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.4 s, CLS 0, TBT 60 ms. See `evidence/repair-8/lighthouse-local.json`.
+- Live Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.1 s, CLS 0, TBT 0 ms. See `evidence/repair-8/lighthouse-live.json`.
+- `verify-url.sh` passed root, demo, privacy, and terms locally and live at desktop and 390 px, with correct title/lang/h1/main/alt checks and no console errors. Screenshots and reports are under `evidence/repair-8/`.
+- The live QA script passed 68 checks across desktop and 390 px, including Axe serious/critical = 0, 44 px targets, keyboard focus, 200% text reflow, reduced motion, no horizontal overflow, same-origin requests, demo isolation, gated checkout, v0.1.9 links, existing-token return, cache replacement, and offline demo reload. See `evidence/repair-8/live-qa.json`.
+- The live link crawl checked 16 unique destinations with no HTTP failures and no checkout URL exposed. See `evidence/repair-8/link-qa.json`.
+- All 22 public files in `dist/site/` byte-match production. `staticwebapp.config.json` correctly returns 404.
+- Production headers include HSTS, `nosniff`, `Referrer-Policy: no-referrer`, restrictive Permissions-Policy, and CSP with `frame-ancestors 'none'`. Hashed assets are one-year immutable; `sw.js` is no-cache; HTML revalidates after 30 seconds.
+- Billing response policy: checkout returned 404 `{"error":"enabled factory product","status":404}`; an invalid verification token returned HTTP 200 with `valid:false`, `reason:"invalid"`, and the expected production-origin CORS header.
 
 ## Release and deployment
 
-- GitHub Actions run: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33581391078>
-- Static deployment: `43f0fe26-051b-43a0-8a61-c894392e0d90` uploaded `dist/site/` to the product's static resource and domain.
-- Public URL: <https://clipboard-lan-bridge.sociobot.in>
-- Cold live check: `verify-url.sh` passed on the root; a 390 px Playwright session confirmed `?demo=1` redirects to `/demo/`, has no horizontal overflow or console errors, keeps real storage empty, and links to the v0.1.8 AppImage.
+- Release: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/tag/v0.1.9>
+- Release workflow: <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33584936018> — success.
+- Tagged source: `e15a40fe746244e962c4a0df9c713d1b915b4a5a`.
+- Published assets: AppImage, DEB, RPM, MSI, EXE, macOS arm64 DMG, and macOS x86_64 DMG, plus `SHA256SUMS` and `latest.json`.
+- The release verification downloaded one package from each desktop platform and matched its SHA-256. The one-line Linux installer also downloaded and verified the v0.1.9 AppImage, whose runtime metadata loaded successfully.
+- Static deployment: `981ca77c-3000-4766-a4a3-6db61edd859f` to the existing `sf-clipboard-lan-bridge` resource.
+- Live identity: 22/22 served static artifacts match the final local production build byte for byte.
 
-## Known gaps
+## Needs operator action
 
-The desktop packages are intentionally unsigned; the website explains the operating-system confirmation. The Axe CLI could not locate a system Chrome binary in this worker, so the equivalent maintained Playwright Axe integration is the recorded accessibility check.
-
-The product's checkout and license-return integration is in place, but the external factory billing gateway returned `404 {"error":"enabled factory product","status":404}` for `GET https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/checkout` at 2026-09-02T02:12Z. The documented `fleet/new-paid-product.sh` enrollment command is not installed in this worker. This cannot be corrected from the product repository or its allowed static resource; factory billing enrollment is required before the live $9 checkout can complete.
+- Checkout remains intentionally unavailable. After product-scoped billing enrollment is complete and the exact checkout URL returns a working hosted checkout, rebuild with the documented `VITE_CHECKOUT_URL` value and independently verify checkout, return, restore, and revocation before advertising sales.
+- Desktop packages are unsigned. macOS notarization and Windows Authenticode require the owner's signing credentials (`APPLE_CERTIFICATE` and `WINDOWS_CERT_PFX`, plus their associated passwords) in the release workflow.

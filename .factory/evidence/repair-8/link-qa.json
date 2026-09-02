@@ -1,0 +1,79 @@
+{
+  "checked_at": "2026-09-02T03:11:59.304Z",
+  "total": 16,
+  "checkout_links": [],
+  "failures": [],
+  "results": [
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/",
+      "status": 200,
+      "location": null
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/#download",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/#main",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/#route",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/404.html#main",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/?demo=1",
+      "status": 200,
+      "location": null
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/demo/",
+      "status": 200,
+      "location": null
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/demo/#main",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/privacy/",
+      "status": 200,
+      "location": null
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/privacy/#main",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/terms/",
+      "status": 200,
+      "location": null
+    },
+    {
+      "href": "https://clipboard-lan-bridge.sociobot.in/terms/#main",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge",
+      "status": 200,
+      "location": null
+    },
+    {
+      "href": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.9/linux-x86_64-Clipboard.LAN.Bridge_0.1.9_amd64.AppImage",
+      "status": 302,
+      "location": "https://release-assets.githubusercontent.com/github-production-release-asset/1349365351/0a8f49c4-d3cb-4ad9-ae3f-4137a9464589?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-02T03%3A53%3A47Z&rscd=attachment%3B+filename%3Dlinux-x86_64-Clipboard.LAN.Bridge_0.1.9_amd64.AppImage&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-02T02%3A53%3A22Z&ske=2026-09-02T03%3A53%3A47Z&sks=b&skv=2018-11-09&sig=Hpp6U7Be7EX0hHMAV14H9D1TXrM5WnPNOVdqJtEqySw%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODMyMDUxOSwibmJmIjoxNzg4MzE4NzE5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.dFyRktz_NaidTV0e_XyWtplioQ0eJHHEMAY82B45S_U&response-content-disposition=attachment%3B%20filename%3Dlinux-x86_64-Clipboard.LAN.Bridge_0.1.9_amd64.AppImage&response-content-type=application%2Foctet-stream"
+    },
+    {
+      "href": "mailto:privacy@sociobot.in",
+      "result": "explicit navigation"
+    },
+    {
+      "href": "mailto:support@sociobot.in",
+      "result": "explicit navigation"
+    }
+  ]
+}

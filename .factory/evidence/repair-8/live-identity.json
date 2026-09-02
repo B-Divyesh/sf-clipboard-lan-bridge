@@ -1,0 +1,161 @@
+{
+  "checked_at": "2026-09-02T03:10:35.054Z",
+  "count": 22,
+  "all_match": true,
+  "results": [
+    {
+      "file": "404.html",
+      "status": 200,
+      "local_sha256": "4f46f5ae01507d720d84683bec7f4d9a0c15dc24aea885c256b9375cde2f8b12",
+      "remote_sha256": "4f46f5ae01507d720d84683bec7f4d9a0c15dc24aea885c256b9375cde2f8b12",
+      "match": true
+    },
+    {
+      "file": "apple-touch-icon.png",
+      "status": 200,
+      "local_sha256": "d48e4cad871b06ab3fa83ae0c7143ab08002d911ae4e3567885f3f9dd29d3c54",
+      "remote_sha256": "d48e4cad871b06ab3fa83ae0c7143ab08002d911ae4e3567885f3f9dd29d3c54",
+      "match": true
+    },
+    {
+      "file": "assets/a11y-DD9v_Xuf.js",
+      "status": 200,
+      "local_sha256": "e5f8909b74588552cbeb29d478f83f3b27bf8682c8124b1620a9f04b1d3fb2db",
+      "remote_sha256": "e5f8909b74588552cbeb29d478f83f3b27bf8682c8124b1620a9f04b1d3fb2db",
+      "match": true
+    },
+    {
+      "file": "assets/bridge-poster-1200.webp",
+      "status": 200,
+      "local_sha256": "811b64d458384e0aa8996cc759d05e2e5b7e0583685b9182bf7ef872b88f956b",
+      "remote_sha256": "811b64d458384e0aa8996cc759d05e2e5b7e0583685b9182bf7ef872b88f956b",
+      "match": true
+    },
+    {
+      "file": "assets/bridge-poster-768.webp",
+      "status": 200,
+      "local_sha256": "2376172aa4d023b7106ae29375c601bf4db36cebfdda6ee50d1438587b229596",
+      "remote_sha256": "2376172aa4d023b7106ae29375c601bf4db36cebfdda6ee50d1438587b229596",
+      "match": true
+    },
+    {
+      "file": "assets/demo-BwyFoE5A.css",
+      "status": 200,
+      "local_sha256": "9599928ac497a511fe002d4e9f85a47b6c1845537bd54ed9af244790d3a28578",
+      "remote_sha256": "9599928ac497a511fe002d4e9f85a47b6c1845537bd54ed9af244790d3a28578",
+      "match": true
+    },
+    {
+      "file": "assets/demo-D0FWg83l.js",
+      "status": 200,
+      "local_sha256": "4fb9d187c02f746bddc1999390b81b7a78720afb235d9a0130ffad210f657226",
+      "remote_sha256": "4fb9d187c02f746bddc1999390b81b7a78720afb235d9a0130ffad210f657226",
+      "match": true
+    },
+    {
+      "file": "assets/legal-CqgcWj4A.css",
+      "status": 200,
+      "local_sha256": "e098e23ad8b8db56ea2e7617f83090ba0370ae04539c39af59e6172abdd59ada",
+      "remote_sha256": "e098e23ad8b8db56ea2e7617f83090ba0370ae04539c39af59e6172abdd59ada",
+      "match": true
+    },
+    {
+      "file": "assets/main-BAWVSm5D.css",
+      "status": 200,
+      "local_sha256": "471f9894b294a6bf5e75a658364e84d59b1079e9048a51de4f7eb95919f9e594",
+      "remote_sha256": "471f9894b294a6bf5e75a658364e84d59b1079e9048a51de4f7eb95919f9e594",
+      "match": true
+    },
+    {
+      "file": "assets/main-Dq0vqsaq.js",
+      "status": 200,
+      "local_sha256": "6c9a2e876947fc5e1ae85c7cceaa74838e245fe6174d3a60f01ea49cfe227718",
+      "remote_sha256": "6c9a2e876947fc5e1ae85c7cceaa74838e245fe6174d3a60f01ea49cfe227718",
+      "match": true
+    },
+    {
+      "file": "assets/social-card.webp",
+      "status": 200,
+      "local_sha256": "b2aa7a204cf248dca43cae7f8791bde802906cb29e342feec33eb9bdf431f34d",
+      "remote_sha256": "b2aa7a204cf248dca43cae7f8791bde802906cb29e342feec33eb9bdf431f34d",
+      "match": true
+    },
+    {
+      "file": "contrast.css",
+      "status": 200,
+      "local_sha256": "f0ee8133b1dff1ec4cb16364c764ce99c0a9aff2e23d77c5ee238f3873082cd9",
+      "remote_sha256": "f0ee8133b1dff1ec4cb16364c764ce99c0a9aff2e23d77c5ee238f3873082cd9",
+      "match": true
+    },
+    {
+      "file": "demo/index.html",
+      "status": 200,
+      "local_sha256": "6f1b739008ed5f11b32cd0bcd6c4a0cf371bd718663bf1255f0617c8ac844f6f",
+      "remote_sha256": "6f1b739008ed5f11b32cd0bcd6c4a0cf371bd718663bf1255f0617c8ac844f6f",
+      "match": true
+    },
+    {
+      "file": "favicon.svg",
+      "status": 200,
+      "local_sha256": "3a867d5e4ccac700d81d7db05c6d8c9af05d4f0c118474d874390e59f5c6f401",
+      "remote_sha256": "3a867d5e4ccac700d81d7db05c6d8c9af05d4f0c118474d874390e59f5c6f401",
+      "match": true
+    },
+    {
+      "file": "index.html",
+      "status": 200,
+      "local_sha256": "c402101e23d33b8a4a7cb0b5a7c71c2e106c732940a699393c608e55a51280c8",
+      "remote_sha256": "c402101e23d33b8a4a7cb0b5a7c71c2e106c732940a699393c608e55a51280c8",
+      "match": true
+    },
+    {
+      "file": "install.ps1",
+      "status": 200,
+      "local_sha256": "b4ba482027182d6eb6ef44d9433e3fab60ed8e31059b744e26dc4cf18968e1e8",
+      "remote_sha256": "b4ba482027182d6eb6ef44d9433e3fab60ed8e31059b744e26dc4cf18968e1e8",
+      "match": true
+    },
+    {
+      "file": "install.sh",
+      "status": 200,
+      "local_sha256": "54a29e2751ef370d3c318864915913aef2b6a1b48c166b010f80b3f51395f96e",
+      "remote_sha256": "54a29e2751ef370d3c318864915913aef2b6a1b48c166b010f80b3f51395f96e",
+      "match": true
+    },
+    {
+      "file": "privacy/index.html",
+      "status": 200,
+      "local_sha256": "13babc09b8b3822fe4b2c825924b4ed6633be6f74e9bbfb3c17170b23534ac89",
+      "remote_sha256": "13babc09b8b3822fe4b2c825924b4ed6633be6f74e9bbfb3c17170b23534ac89",
+      "match": true
+    },
+    {
+      "file": "robots.txt",
+      "status": 200,
+      "local_sha256": "c6339b1ad21265cfc28628ea6d5814ea8f50bfcb03ac4dc0fa02712f7a74c8a6",
+      "remote_sha256": "c6339b1ad21265cfc28628ea6d5814ea8f50bfcb03ac4dc0fa02712f7a74c8a6",
+      "match": true
+    },
+    {
+      "file": "sitemap.xml",
+      "status": 200,
+      "local_sha256": "c1008380797e300156e1b4c02dc60ce3338557c91e41e168e9c0b5a6b51aa5db",
+      "remote_sha256": "c1008380797e300156e1b4c02dc60ce3338557c91e41e168e9c0b5a6b51aa5db",
+      "match": true
+    },
+    {
+      "file": "sw.js",
+      "status": 200,
+      "local_sha256": "5b4abbedac4a7c4e94aa003e6393bf46b37640368170a4dd69645448c446be1a",
+      "remote_sha256": "5b4abbedac4a7c4e94aa003e6393bf46b37640368170a4dd69645448c446be1a",
+      "match": true
+    },
+    {
+      "file": "terms/index.html",
+      "status": 200,
+      "local_sha256": "55bdbfa9c530830eca0744e580e600f59e86f1b6d141b080fc533bce4f1a3faf",
+      "remote_sha256": "55bdbfa9c530830eca0744e580e600f59e86f1b6d141b080fc533bce4f1a3faf",
+      "match": true
+    }
+  ]
+}

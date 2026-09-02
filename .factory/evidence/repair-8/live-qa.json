@@ -1,0 +1,393 @@
+{
+  "checked_at": "2026-09-02T03:11:54.163Z",
+  "results": [
+    {
+      "name": "desktop / status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "desktop / semantics",
+      "pass": true,
+      "evidence": "Clipboard LAN Bridge — send text to nearby devices"
+    },
+    {
+      "name": "desktop / no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop / 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop / Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /demo/ status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "desktop /demo/ semantics",
+      "pass": true,
+      "evidence": "Demo — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /demo/ no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /demo/ 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /demo/ Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /privacy/ status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "desktop /privacy/ semantics",
+      "pass": true,
+      "evidence": "Privacy — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /privacy/ no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /privacy/ 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /privacy/ Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /terms/ status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "desktop /terms/ semantics",
+      "pass": true,
+      "evidence": "Terms — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /terms/ no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /terms/ 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /terms/ Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /404.html status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "desktop /404.html semantics",
+      "pass": true,
+      "evidence": "Page not found — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /404.html no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /404.html 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /404.html Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop keyboard skip link",
+      "pass": true,
+      "evidence": "Skip to main content"
+    },
+    {
+      "name": "desktop reduced motion",
+      "pass": true,
+      "evidence": "auto"
+    },
+    {
+      "name": "desktop checkout gated",
+      "pass": true,
+      "evidence": "no checkout action"
+    },
+    {
+      "name": "desktop v0.1.9 download",
+      "pass": true,
+      "evidence": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.9/windows-x86_64-Clipboard.LAN.Bridge_0.1.9_x64_en-US.msi"
+    },
+    {
+      "name": "desktop demo isolation",
+      "pass": true,
+      "evidence": {
+        "demo": "[{\"id\":\"a297dfdc-2046-418a-b745-c1ab0b041cf0\",\"from\":\"Studio laptop\",\"text\":\"Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q\",\"expires\":1788319305619},{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788319300568}]",
+        "real": null
+      }
+    },
+    {
+      "name": "desktop same-origin requests",
+      "pass": true,
+      "evidence": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "desktop no console errors",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 / status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "mobile-390 / semantics",
+      "pass": true,
+      "evidence": "Clipboard LAN Bridge — send text to nearby devices"
+    },
+    {
+      "name": "mobile-390 / no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "mobile-390 / 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 / Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /demo/ status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "mobile-390 /demo/ semantics",
+      "pass": true,
+      "evidence": "Demo — Clipboard LAN Bridge"
+    },
+    {
+      "name": "mobile-390 /demo/ no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "mobile-390 /demo/ 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /demo/ Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /privacy/ status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "mobile-390 /privacy/ semantics",
+      "pass": true,
+      "evidence": "Privacy — Clipboard LAN Bridge"
+    },
+    {
+      "name": "mobile-390 /privacy/ no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "mobile-390 /privacy/ 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /privacy/ Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /terms/ status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "mobile-390 /terms/ semantics",
+      "pass": true,
+      "evidence": "Terms — Clipboard LAN Bridge"
+    },
+    {
+      "name": "mobile-390 /terms/ no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "mobile-390 /terms/ 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /terms/ Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /404.html status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "mobile-390 /404.html semantics",
+      "pass": true,
+      "evidence": "Page not found — Clipboard LAN Bridge"
+    },
+    {
+      "name": "mobile-390 /404.html no horizontal overflow",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "mobile-390 /404.html 44px targets",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 /404.html Axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "mobile-390 keyboard skip link",
+      "pass": true,
+      "evidence": "Skip to main content"
+    },
+    {
+      "name": "mobile-390 reduced motion",
+      "pass": true,
+      "evidence": "auto"
+    },
+    {
+      "name": "mobile-390 checkout gated",
+      "pass": true,
+      "evidence": "no checkout action"
+    },
+    {
+      "name": "mobile-390 v0.1.9 download",
+      "pass": true,
+      "evidence": "https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/download/v0.1.9/linux-x86_64-Clipboard.LAN.Bridge_0.1.9_amd64.AppImage"
+    },
+    {
+      "name": "mobile-390 200% text reflow",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "mobile-390 demo isolation",
+      "pass": true,
+      "evidence": {
+        "demo": "[{\"id\":\"49efe446-a7ee-4c8a-aba4-844b2049b7d1\",\"from\":\"Studio laptop\",\"text\":\"Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q\",\"expires\":1788319311952},{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788319307003}]",
+        "real": null
+      }
+    },
+    {
+      "name": "mobile-390 same-origin requests",
+      "pass": true,
+      "evidence": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "mobile-390 no console errors",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "existing-token return",
+      "pass": true,
+      "evidence": "https://clipboard-lan-bridge.sociobot.in/"
+    },
+    {
+      "name": "live cache replacement",
+      "pass": true,
+      "evidence": {
+        "caches": [
+          "clipboard-lan-bridge-v8"
+        ],
+        "controlled": true
+      }
+    },
+    {
+      "name": "live offline demo reload",
+      "pass": true,
+      "evidence": []
+    }
+  ]
+}
