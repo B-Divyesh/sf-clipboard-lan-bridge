@@ -1,42 +1,53 @@
-# Clipboard LAN Bridge — review 2 handoff
+# Clipboard LAN Bridge — polish round 2 handoff
 
 ## Result
 
-Independent adversarial review 2 is **FAIL**. The complete report is in `.factory/review-2.md`.
+Polish round 2 is repaired in commits `996e392dc4fcb2f9449525b6d5afb21cd90e5ee5` and `4fdad73ea02a25b07ac8de1777601cea9dd95234`. Release `v0.1.10` is published from the latter commit with macOS, Windows, and Linux packages, `SHA256SUMS`, and `latest.json`.
 
-No product code, deployment, infrastructure, DNS, billing, secrets, or external resources were changed or accessed. Only review documentation was changed.
+The static site is ready for deployment from `dist/site/`. The release workflow succeeded at <https://github.com/B-Divyesh/sf-clipboard-lan-bridge/actions/runs/33591447659>.
 
-## Main blockers
+## What changed
 
-- Demo Reset restores arrivals but not edited text or expiry.
-- The desktop app lacks the required native sample path and 3–5 frame actual-app walkthrough.
-- Prior findings F-1-7, F-1-8, F-1-13, and F-1-19 remain unfixed or only partly fixed.
-- The README's cross-platform runtime statement and the landing page's future payment/refund statement are not covered by claims.
+- The demo resets all sample form state, uses only its `demo:` session namespace, and exits to the real install step with restored keyboard focus.
+- The installed desktop app has **Load sample transfer**, a persistent sample banner, reset/exit controls, and no writes to real app data while sample mode is active.
+- The landing page includes a three-frame walkthrough captured from that actual app UI: `site/public/walkthrough/{pair,send,receive}.png`.
+- Purchase copy now links directly to the product-scoped Sociobot checkout; returned licenses are stored under `sb_license:clipboard-lan-bridge`, verified at the scoped endpoint, and available to paste into the desktop app.
+- Product copy now says local network, receiving device, exact free/paid limits, plain checksum instructions, and a plain 404 state. The artifact warning says only that an operating system may show an unverified-publisher warning.
+- Every review finding is mapped in `.factory/polish-2.md`; claims are listed in `.factory/claims.json`.
 
-## Verification performed
+## Verification
 
-- Cold live inspection at 390 × 844 and 1440 × 900.
-- Live demo send, reset, exit, storage isolation, and request-log checks.
-- All 21 `.factory/claims.json` commands run individually from a clean clone at `e0eb2ed7c1c11c1b62b51ae9552e3c78f9089842`; all exited 0.
-- `npm test`: PASS — 3 Vitest, 3 Node, 47 Playwright, and 8 Rust tests.
-- `npm run check`: PASS.
-- `npm run build`: PASS — `dist/app/` and `dist/site/` produced.
-- Live metadata, HTTP 404, internal/external link crawl, same-origin requests, desktop/mobile layout, and Axe checks completed.
-- Every F-1-1 through F-1-33 item was reconciled against live behavior and source.
+From a clean clone at `4fdad73ea02a25b07ac8de1777601cea9dd95234`:
 
-## Reproduce the key failures
+- `npm ci`: PASS
+- `npm run check`: PASS
+- `npm run build`: PASS; creates `dist/app/` and `dist/site/`
+- `npm test`: PASS — 3 unit tests, 3 release tests, 51 Playwright tests, and 8 Rust tests
+- Every command in `.factory/claims.json` was run individually: PASS
 
-1. Open <https://clipboard-lan-bridge.sociobot.in/demo/>.
-2. Replace the sample text with `Visitor draft` and select `2 minutes`.
-3. Choose **Reset demo**. The grocery sample returns, but the draft and two-minute selection remain.
-4. Open <https://clipboard-lan-bridge.sociobot.in/>, activate **Try it with sample data**, and inspect `document.activeElement`; it is `body`, not the demo h1. Browser Back also leaves focus on `body`.
-5. Inspect `tests/site.spec.ts`: `@claim:unsigned-packages` asserts warning text, not published artifact signatures.
+Local static checks:
 
-## Files changed
+- `/opt/fleet/lib/verify-url.sh` passed for `/`, `/demo/`, and `/privacy/`: correct title/lang/one h1/main/alt text, no console errors. Evidence is in `.factory/evidence/polish-2/local-{root,demo,privacy}/`.
+- The Playwright Axe integration found no serious or critical violations across landing, demo, privacy, terms, and 404 in both desktop and mobile projects.
+- Production build budgets: site JS 5.31 KB gzip for the landing bundle; site CSS 10.38 KB gzip; desktop JS 15.79 KB gzip.
 
-- `.factory/review-2.md`
-- `.factory/handoff.md`
+## Run and deploy
 
-## Next steps
+```sh
+npm ci
+npm run tauri dev
+npm run dev:site
+npm test
+npm run check
+npm run build
+```
 
-Address every finding in `.factory/review-2.md`, preserve the same IDs for the four recurring findings, add the missing regression coverage, and rerun the complete review from a clean clone.
+Deploy the static output with:
+
+```sh
+/opt/fleet/lib/deploy-static.sh clipboard-lan-bridge dist/site
+```
+
+## Operator note
+
+The product UI and claim tests use the correct scoped checkout URL. A direct unauthenticated `HEAD` to that external gateway returned `404 {"error":"enabled factory product","status":404}` at 2026-09-02T04:35Z; this worker image has no documented `fleet/new-paid-product.sh` enrollment command or factory billing key. If the factory control plane has not already enabled the scoped product record, it must enable that record before a real buyer can complete checkout. No unrelated service, secret, database, or resource was accessed.
