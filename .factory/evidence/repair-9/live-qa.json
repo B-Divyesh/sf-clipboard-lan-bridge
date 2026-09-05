@@ -1,0 +1,379 @@
+{
+  "checked_at": "2026-09-05T20:13:13.165Z",
+  "implementation_commit": "85e17b7",
+  "results": [
+    {
+      "name": "desktop root status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "desktop job",
+      "pass": true,
+      "evidence": "Send text to nearby devices"
+    },
+    {
+      "name": "desktop audience",
+      "pass": true,
+      "evidence": "audience sentence visible"
+    },
+    {
+      "name": "desktop first action",
+      "pass": true,
+      "evidence": {
+        "x": 70,
+        "y": 650.84375,
+        "width": 249.671875,
+        "height": 52
+      }
+    },
+    {
+      "name": "desktop keyboard skip link",
+      "pass": true,
+      "evidence": "Skip to main content"
+    },
+    {
+      "name": "desktop demo route",
+      "pass": true,
+      "evidence": "https://clipboard-lan-bridge.sociobot.in/demo/"
+    },
+    {
+      "name": "desktop demo label",
+      "pass": true,
+      "evidence": "visible"
+    },
+    {
+      "name": "desktop realistic arrival",
+      "pass": true,
+      "evidence": "visible"
+    },
+    {
+      "name": "desktop populated result",
+      "pass": true,
+      "evidence": "visible"
+    },
+    {
+      "name": "desktop persistent demo label",
+      "pass": true,
+      "evidence": "visible after scroll"
+    },
+    {
+      "name": "desktop reset text",
+      "pass": true,
+      "evidence": "Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q"
+    },
+    {
+      "name": "desktop reset result",
+      "pass": true,
+      "evidence": "sent sample removed"
+    },
+    {
+      "name": "desktop real data unchanged",
+      "pass": true,
+      "evidence": {
+        "local": "real-local-unchanged",
+        "session": "real-session-unchanged",
+        "demo": "[{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788639778579}]"
+      }
+    },
+    {
+      "name": "desktop / semantics",
+      "pass": true,
+      "evidence": "Clipboard LAN Bridge — send text to nearby devices"
+    },
+    {
+      "name": "desktop / layout",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop / axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /demo/ semantics",
+      "pass": true,
+      "evidence": "Demo — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /demo/ layout",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /demo/ axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /privacy/ semantics",
+      "pass": true,
+      "evidence": "Privacy — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /privacy/ layout",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /privacy/ axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop /terms/ semantics",
+      "pass": true,
+      "evidence": "Terms — Clipboard LAN Bridge"
+    },
+    {
+      "name": "desktop /terms/ layout",
+      "pass": true,
+      "evidence": [
+        1440,
+        1440
+      ]
+    },
+    {
+      "name": "desktop /terms/ axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "desktop reduced motion",
+      "pass": true,
+      "evidence": "auto"
+    },
+    {
+      "name": "desktop ordinary request boundary",
+      "pass": true,
+      "evidence": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "desktop no normal-route errors",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "phone-390 root status",
+      "pass": true,
+      "evidence": 200
+    },
+    {
+      "name": "phone-390 job",
+      "pass": true,
+      "evidence": "Send text to nearby devices"
+    },
+    {
+      "name": "phone-390 audience",
+      "pass": true,
+      "evidence": "audience sentence visible"
+    },
+    {
+      "name": "phone-390 first action",
+      "pass": true,
+      "evidence": {
+        "x": 20,
+        "y": 463.46875,
+        "width": 350,
+        "height": 52
+      }
+    },
+    {
+      "name": "phone-390 keyboard skip link",
+      "pass": true,
+      "evidence": "Skip to main content"
+    },
+    {
+      "name": "phone-390 demo route",
+      "pass": true,
+      "evidence": "https://clipboard-lan-bridge.sociobot.in/demo/"
+    },
+    {
+      "name": "phone-390 demo label",
+      "pass": true,
+      "evidence": "visible"
+    },
+    {
+      "name": "phone-390 realistic arrival",
+      "pass": true,
+      "evidence": "visible"
+    },
+    {
+      "name": "phone-390 populated result",
+      "pass": true,
+      "evidence": "visible"
+    },
+    {
+      "name": "phone-390 persistent demo label",
+      "pass": true,
+      "evidence": "visible after scroll"
+    },
+    {
+      "name": "phone-390 reset text",
+      "pass": true,
+      "evidence": "Meet at Platform 4 at 18:20. The booking link is https://rail.example/BD7Q"
+    },
+    {
+      "name": "phone-390 reset result",
+      "pass": true,
+      "evidence": "sent sample removed"
+    },
+    {
+      "name": "phone-390 real data unchanged",
+      "pass": true,
+      "evidence": {
+        "local": "real-local-unchanged",
+        "session": "real-session-unchanged",
+        "demo": "[{\"id\":\"sample-arrival\",\"from\":\"Kitchen phone\",\"text\":\"Groceries: oat milk, coriander, and AA batteries.\",\"expires\":1788639785479}]"
+      }
+    },
+    {
+      "name": "phone-390 / semantics",
+      "pass": true,
+      "evidence": "Clipboard LAN Bridge — send text to nearby devices"
+    },
+    {
+      "name": "phone-390 / layout",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "phone-390 / axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "phone-390 /demo/ semantics",
+      "pass": true,
+      "evidence": "Demo — Clipboard LAN Bridge"
+    },
+    {
+      "name": "phone-390 /demo/ layout",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "phone-390 /demo/ axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "phone-390 /privacy/ semantics",
+      "pass": true,
+      "evidence": "Privacy — Clipboard LAN Bridge"
+    },
+    {
+      "name": "phone-390 /privacy/ layout",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "phone-390 /privacy/ axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "phone-390 /terms/ semantics",
+      "pass": true,
+      "evidence": "Terms — Clipboard LAN Bridge"
+    },
+    {
+      "name": "phone-390 /terms/ layout",
+      "pass": true,
+      "evidence": [
+        390,
+        390
+      ]
+    },
+    {
+      "name": "phone-390 /terms/ axe",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "phone-390 reduced motion",
+      "pass": true,
+      "evidence": "auto"
+    },
+    {
+      "name": "phone-390 ordinary request boundary",
+      "pass": true,
+      "evidence": [
+        "https://clipboard-lan-bridge.sociobot.in"
+      ]
+    },
+    {
+      "name": "phone-390 no normal-route errors",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "license return cleans URL",
+      "pass": true,
+      "evidence": "https://clipboard-lan-bridge.sociobot.in/"
+    },
+    {
+      "name": "license return shows token",
+      "pass": true,
+      "evidence": "token shown for desktop restore"
+    },
+    {
+      "name": "license return request boundary",
+      "pass": true,
+      "evidence": [
+        {
+          "method": "GET",
+          "url": "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/verify?license=repair-9-fixture-token"
+        }
+      ]
+    },
+    {
+      "name": "license return no errors",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "missing route is deliberate 404",
+      "pass": true,
+      "evidence": 404
+    },
+    {
+      "name": "missing route design",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "offline demo reload",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "Sociobot checkout dependency",
+      "pass": false,
+      "evidence": {
+        "status": 404
+      }
+    }
+  ]
+}

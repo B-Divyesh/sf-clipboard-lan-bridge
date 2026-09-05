@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-09-05T20:22:00Z",
+  "release": "v0.1.11",
+  "release_source_commit": "a97c9fdb3fb3e58640a16c17228b2db0081056ea",
+  "artifact": "linux-x86_64-Clipboard.LAN.Bridge_0.1.11_amd64.AppImage",
+  "sha256": "369493702c681d80e70483bb49500a4d0c16f832a59580493408975ba18b0656",
+  "checksum_matches_release": true,
+  "clean_config_directory": "/tmp/clb-consumer-G1a4S3/config",
+  "documented_prerequisites_installed": true,
+  "artifact_started": true,
+  "phone_companion_http_status": 200,
+  "phone_companion_h1_count": 1,
+  "allowance": {
+    "successful_requests": 30,
+    "next_status": 429,
+    "retry_after_seconds": 10
+  }
+}
