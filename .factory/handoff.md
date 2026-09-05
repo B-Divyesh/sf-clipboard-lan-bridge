@@ -1,5 +1,13 @@
 # Send text to nearby devices — repair 9 handoff
 
+## Independent verification 11: FAIL
+
+Verification 11 reviewed implementation `85e17b7f753a076f6c508f06bf5a697b9052e16f` and documentation `c87de593b5f3a0dbce3800419c0dd247d84e6c34` against live deployment `2175ff9d-c69e-4973-91ed-488976d26e19`.
+
+All 23 declared claim commands, `npm test`, `npm run check`, `npm run build`, Rust formatting, and Clippy passed from a clean checkout. Fresh desktop and phone live checks passed the first-screen, demo/reset/storage, accessibility, keyboard, reduced-motion, offline, legal, 404, links, privacy-boundary, and installed AppImage paths. The clean AppImage check matched its published SHA-256 and observed the documented 30-request allowance followed by 429 and `Retry-After: 10`.
+
+The verdict remains **FAIL with one P1 finding**: the brief requires one-time monetization, but the scoped live checkout still returns HTTP 404 because this product is not registered in Sociobot billing. The disabled purchase control is honest and its claim passes; it does not make a new license obtainable. The report is `.factory/verification-11.md`.
+
 ## Result: blocked by billing registration
 
 The site, app, demo, release, and documented claims pass. Two review 4 findings are fixed. New one-time purchases still cannot start because the Sociobot billing engine has no enabled product for `clipboard-lan-bridge`.
