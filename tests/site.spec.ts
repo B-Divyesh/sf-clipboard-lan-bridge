@@ -47,15 +47,15 @@ test("@claim:platform-download selects the current package for this operating sy
   await context.close();
 });
 
-test("@claim:public-page-network-boundary cold public routes do not request GitHub or emit HTTP errors", async ({ page }) => {
-  const githubRequests: string[] = [];
+test("@claim:public-page-network-boundary ordinary routes stay local and a license return only verifies with Sociobot", async ({ page }) => {
+  const requests: { method: string; url: string }[] = [];
   const failedResponses: string[] = [];
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
-  await page.route("https://api.github.com/**", route => {
-    githubRequests.push(route.request().url());
-    return route.fulfill({ status: 403, contentType: "application/json", body: JSON.stringify({ message: "API rate limit exceeded" }) });
-  });
+  page.on("request", request => requests.push({ method: request.method(), url: request.url() }));
+  await page.route("https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/verify?license=fixture-boundary-token", route =>
+    route.fulfill({ contentType: "application/json", body: JSON.stringify({ valid: true, reason: "ok", expires_at: null }) })
+  );
   page.on("response", response => {
     if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.request().method()} ${response.url()}`);
   });
@@ -67,7 +67,15 @@ test("@claim:public-page-network-boundary cold public routes do not request GitH
     await expect(page.locator("main")).toBeVisible();
   }
 
-  expect(githubRequests).toEqual([]);
+  expect(requests.every(request => new URL(request.url).origin === "http://127.0.0.1:4173")).toBe(true);
+
+  requests.length = 0;
+  await page.goto("/?license=fixture-boundary-token");
+  await expect(page.getByRole("heading", { name: "Finish on your desktop app" })).toBeVisible();
+  await expect.poll(() => requests.filter(request => new URL(request.url).origin === "https://api.sociobot.in").length).toBe(1);
+  const externalRequests = requests.filter(request => new URL(request.url).origin !== "http://127.0.0.1:4173");
+  expect(externalRequests).toEqual([{ method: "GET", url: "https://api.sociobot.in/api/v1/products/clipboard-lan-bridge/verify?license=fixture-boundary-token" }]);
+  await expect(page).toHaveURL(/\/$/);
   expect(failedResponses).toEqual([]);
   expect(consoleErrors).toEqual([]);
   expect(pageErrors).toEqual([]);

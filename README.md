@@ -52,7 +52,7 @@ CI=true npm run tauri build
 
 ## Install and release
 
-GitHub Actions builds packages for macOS, Windows, and Linux. Your operating system may show an unverified-publisher warning. On macOS, right-click the app and choose **Open**. On Windows, confirm the publisher warning.
+Your operating system may show an unverified-publisher warning. On macOS, right-click the app and choose **Open**. On Windows, confirm the publisher warning.
 
 ```sh
 curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh
@@ -60,7 +60,7 @@ curl -fsSL https://clipboard-lan-bridge.sociobot.in/install.sh | sh
 
 Windows PowerShell: `irm https://clipboard-lan-bridge.sociobot.in/install.ps1 | iex`
 
-Packages and SHA-256 checksums are in the [latest release](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest). The site bundles the current release manifest. Public pages contact only this product website.
+Packages and SHA-256 checksums are in the [latest release](https://github.com/B-Divyesh/sf-clipboard-lan-bridge/releases/latest). The site bundles the current release manifest. Ordinary pages and the demo contact only this product website. A license-return page sends its token to Sociobot for verification.
 
 ## License and policy
 

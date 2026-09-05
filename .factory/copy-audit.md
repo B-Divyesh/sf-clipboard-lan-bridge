@@ -1,6 +1,6 @@
 # Copy audit
 
-Audited 2026-09-02 after polish round 3. Every prose sentence rendered on the landing page is listed below. No sentence exceeds 22 words or uses a banned marketing term.
+Audited 2026-09-05 during repair 9. Every prose sentence rendered on the landing page is listed below. No sentence exceeds 22 words or uses a banned marketing term.
 
 | Words | Landing-page sentence |
 | ---: | --- |
@@ -37,7 +37,7 @@ Dynamic landing states are also within the limit: “Downloads are being publish
 
 ## README check
 
-All README prose sentences are 22 words or fewer. The license section says new licenses are unavailable and describes only existing-token recovery. It contains no checkout link, price, merchant, or refund claim.
+All README prose sentences are 22 words or fewer. Ordinary website traffic and the license-verification exception use separate, exact sentences. The redundant GitHub Actions builder statement is absent.
 
 ## Terminology
 
